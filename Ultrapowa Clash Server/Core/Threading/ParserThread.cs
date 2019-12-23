@@ -64,7 +64,7 @@ namespace UCS.Helpers
                             Say($"LicenseID:           {Constants.LicensePlanID}");
                             Say($"CoC Version from SC: {VersionChecker.LatestCoCVersion()}");
                             Say("");
-                            Say($"©Ultrapowa 2014 - {DateTime.Now.Year}");
+                            Say($"Ultrapower  - {DateTime.Now.Year}");
                             Console.WriteLine("------------------------------------->");
                             break;
 
@@ -194,13 +194,9 @@ namespace UCS.Helpers
                             Clear();
                             break;
 
-                        case "/exit":
-                            UCSControl.UCSClose();
-                            break;
-
-                        case "/info exit":
+                        case "/info shutdown":
                             Print("---------------------------------------------------------------------------->");
-                            Say(@"/exit > Shuts Down UCS instantly after doing the following:");
+                            Say(@"/shutdown > Shuts Down UCS instantly after doing the following:");
                             Say(@"     - Throws all Players an 'Client Out of Sync Message'");
                             Say(@"     - Disconnects All Players From the Server");
                             Say(@"     - Saves all Players in Database");
@@ -225,9 +221,13 @@ namespace UCS.Helpers
                             UCSControl.UCSRestart();
                             break;
 
+                        case "/shutdown":
+                            UCSControl.UCSClose();
+                            break;
+
                         case "/info restart":
                             Print("---------------------------------------------------------------------------->");
-                            Say(@"/shutdown > Restarts UCS instantly after doing the following:");
+                            Say(@"/restart > Restarts UCS instantly after doing the following:");
                             Say(@"     - Throws all Players an 'Client Out of Sync Message'");
                             Say(@"     - Disconnects All Players From the Server");
                             Say(@"     - Saves all Players in Database");

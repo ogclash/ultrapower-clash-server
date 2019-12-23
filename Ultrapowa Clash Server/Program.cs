@@ -17,9 +17,9 @@ namespace UCS
 {
     internal class Program
     {
-        internal static int OP                   = 0;
-        internal static string Title             = $"Ultrapowa Clash Server v{Constants.Version} - ©Ultrapowa | Online Players: ";
-        public static Stopwatch _Stopwatch       = new Stopwatch();
+        internal static int OP = 0;
+        internal static string Title = $"Ultrapowwe Clash Server v{Constants.Version} - Â©Ultrapowa & Naix | Online Players: ";
+        public static Stopwatch _Stopwatch = new Stopwatch();
         public static string Version { get; set; }
 
         internal static void Main()
@@ -29,6 +29,7 @@ namespace UCS
             uint LWA_ALPHA = 0x2;
             IntPtr Handle = GetConsoleWindow();
             SetWindowLong(Handle, GWL_EXSTYLE, (int)GetWindowLong(Handle, GWL_EXSTYLE) ^ WS_EX_LAYERED);
+            Console.SetWindowSize(92,32);
 
             if (Utils.ParseConfigBoolean("Animation"))
             {
@@ -71,12 +72,12 @@ namespace UCS
             Say();
 
             Console.ForegroundColor = ConsoleColor.Blue;
-            Logger.WriteCenter(@" ____ ___.__   __                                                  ");
-            Logger.WriteCenter(@"|    |   \  |_/  |_____________  ______   ______  _  _______       ");
-            Logger.WriteCenter(@"|    |   /  |\   __\_  __ \__  \ \____ \ /  _ \ \/ \/ /\__  \      ");
-            Logger.WriteCenter(@"|    |  /|  |_|  |  |  | \// __ \|  |_> >  <_> )     /  / __ \_    ");
-            Logger.WriteCenter(@"|______/ |____/__|  |__|  (____  /   __/ \____/ \/\_/  (____  /    ");
-            Logger.WriteCenter(@"                               \/|__|                       \/     ");
+            Logger.WriteCenter(" _   _ _ _                                         ");
+            Logger.WriteCenter(" | | | | | |_ _ __ __ _ _ __   _____      _____ _ __ ");
+            Logger.WriteCenter(" | | | | | __| '__/ _` | '_ \\ / _ \\ \\ /\\ / / _ \\ '__|");
+            Logger.WriteCenter(" | |_| | | |_| | | (_| | |_) | (_) \\ V  V /  __/ |   ");
+            Logger.WriteCenter("  \\___/|_|\\__|_|  \\__,_| .__/ \\___/ \\_/\\_/ \\___|_|   ");
+            Logger.WriteCenter("                       |_|                           ");
             Logger.WriteCenter("            ");
 
             Console.ResetColor();
@@ -84,10 +85,12 @@ namespace UCS
             Console.ForegroundColor = ConsoleColor.Blue;
             Logger.WriteCenter("+-------------------------------------------------------+");
             Console.ResetColor();
+            Console.ForegroundColor = ConsoleColor.Green;
             Logger.WriteCenter("|This program is made by the Ultrapowa Development Team.|");
             Logger.WriteCenter("|    Ultrapowa is not affiliated to \"Supercell, Oy\".    |");
+            Logger.WriteCenter("|         Nor is Naix affiliated to \"Supercell, Oy\".    |");
             Logger.WriteCenter("|        This program is copyrighted worldwide.         |");
-            Logger.WriteCenter("|   Visit www.ultrapowa.com daily for News & Updates!   |");
+            Logger.WriteCenter("|         Modified by Naix to Ensure Functionality      |");
             Console.ForegroundColor = ConsoleColor.Blue;
             Logger.WriteCenter("+-------------------------------------------------------+");
             Console.ResetColor();
@@ -104,17 +107,14 @@ namespace UCS
             {
                 Console.WriteLine($"> UCS is up-to-date: {Constants.Version}");
                 Console.ResetColor();
-                Say();
+                Console.ForegroundColor = ConsoleColor.Green;
                 Say("Preparing Server...\n");
-
                 Resources.Initialize();
             }
             else if (Version == "Error")
             {
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine("> An Error occured when requesting the Version number.");
-                Console.WriteLine();
-                Logger.Say("Please contact the Support at https://ultrapowa.com/forum!");
                 Console.WriteLine();
                 Logger.Say("Aborting...");
                 Thread.Sleep(5000);

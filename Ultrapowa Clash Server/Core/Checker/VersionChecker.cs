@@ -30,9 +30,8 @@ namespace UCS.Core.Web
         {
             try
             {
-                string Version = new WebClient().DownloadString(new Uri("https://clashoflights.xyz/UCS/version.json"));
-                JObject obj = JObject.Parse(Version);
-                return (string)obj["version"];
+                string Version = "0.7.3.2";
+                return (Version);
             }
             catch (Exception)
             {

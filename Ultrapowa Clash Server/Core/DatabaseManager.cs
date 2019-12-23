@@ -40,7 +40,7 @@ namespace UCS.Core
                     db.SaveChanges();
                 }
             }
-            catch (Exception)
+            catch (Exception a)
             {
             }
         }
@@ -370,7 +370,7 @@ namespace UCS.Core
             {
                 switch (Save)
                 {
-                    case Save.Redis:
+                    /*case Save.Redis:
                         {
                             foreach (Level pl in avatars)
                             {
@@ -378,7 +378,7 @@ namespace UCS.Core
                                     pl.Avatar.SaveToJSON() + "#:#:#:#" + pl.SaveToJSON(), TimeSpan.FromHours(4));
                             }
                             break;
-                        }
+                        }*/
 
                     case Save.Mysql:
                         {
@@ -396,18 +396,19 @@ namespace UCS.Core
 
                                 }
                                 await context.SaveChangesAsync();
+                                context.SaveChanges();
                             }
                             break;
                         }
                     case Save.Both:
                         {
-                            this.Save(avatars, Save.Mysql);
-                            this.Save(avatars, Save.Redis);
+                            /*this.Save(avatars, Save.Redis);*/
+                            await this.Save(avatars, Save.Mysql);
                             break;
                         }
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
             }
         }
@@ -419,7 +420,7 @@ namespace UCS.Core
                 switch (Save)
                 {
 
-                    case Save.Redis:
+                    /*case Save.Redis:
                         {
                             foreach (Alliance alliance in alliances)
                             {
@@ -427,7 +428,7 @@ namespace UCS.Core
                                     TimeSpan.FromHours(4));
                             }
                             break;
-                        }
+                        }*/
                     case Save.Mysql:
                         {
                             using (Mysql context = new Mysql())
@@ -443,19 +444,20 @@ namespace UCS.Core
 
                                 }
                                 await context.SaveChangesAsync();
+                                context.SaveChanges();
                             }
                             break;
                         }
                     case Save.Both:
                         {
-                            this.Save(alliances, Save.Mysql);
-                            this.Save(alliances, Save.Redis);
+                            /*this.Save(alliances, Save.Redis);*/
+                            await this.Save(alliances, Save.Mysql);
                             break;
                         }
                 }
             }
-            catch (Exception)
-            {           
+            catch (Exception ez)
+            {
             }
         }
     }
