@@ -2,8 +2,6 @@
 
 All programs developed by the Ultrapowa Development Team are licensed
 
-So don't Always Expect it to work
-
 # Projects
 
 Projects developed by the Ultrapowa Development Team include:  
