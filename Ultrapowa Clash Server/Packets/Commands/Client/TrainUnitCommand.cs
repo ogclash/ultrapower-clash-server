@@ -19,11 +19,11 @@ namespace UCS.Packets.Commands.Client
 
         internal override void Decode()
         {
-            this.Reader.ReadInt32();
-            this.Reader.ReadUInt32();
+            int t1 = this.Reader.ReadInt32();
+            uint t2 = this.Reader.ReadUInt32();
             this.UnitType = this.Reader.ReadInt32();
             this.Count    = this.Reader.ReadInt32();
-            this.Reader.ReadUInt32();
+            uint t3 = this.Reader.ReadUInt32();
             Tick     = this.Reader.ReadInt32();
         }
 

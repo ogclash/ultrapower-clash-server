@@ -35,18 +35,21 @@ namespace UCS.Packets.GameOpCommands
                     mail.Message = @"/help" +
                         "\n/ban" +
                         "\n/kick" +
-                        "\n/rename" +
+                        "\n/rename " +
                         "\n/setprivileges" +
                         "\n/shutdown" +
                         "\n/unban" +
                         "\n/visit" +
                         "\n/sysmsg" +
                         "\n/id" +
+                        "\n/min" +
                         "\n/max" +
                         "\n/saveacc" +
                         "\n/saveall" +
                         "\n/becomeleader" +
-                        "\n/status";
+                        "\n/status" +
+                        "\n/help"+
+                        "\n/accinfo";
 
                     var p = new AvatarStreamEntryMessage(level.Client);
                     p.SetAvatarStreamEntry(mail);

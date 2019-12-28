@@ -2,6 +2,7 @@
 using UCS.Files.Logic;
 using UCS.Helpers.Binary;
 using UCS.Logic;
+using System.Collections.Generic;
 
 namespace UCS.Packets.Commands.Client
 {
@@ -15,35 +16,38 @@ namespace UCS.Packets.Commands.Client
         internal override void Decode()
         {
             this.BuildingId = this.Reader.ReadInt32();
-            this.Unknown1 = this.Reader.ReadUInt32();
+            this.Reader.ReadInt32();
             this.UnitType = this.Reader.ReadInt32();
             this.Count = this.Reader.ReadInt32();
-            this.Unknown3 = this.Reader.ReadUInt32();
-            this.Unknown4 = this.Reader.ReadUInt32();
+
         }
 
         internal override void Process()
         {
-            var go = this.Device.Player.GameObjectManager.GetGameObjectByID(BuildingId);
-            if (Count > 0)
+            List<DataSlot> _PlayerUnits = this.Device.Player.Avatar.GetUnits();
+            List<DataSlot> _PlayerSpells = this.Device.Player.Avatar.GetSpells();
+            if (UnitType.ToString().StartsWith("400"))
             {
-                var b = (Building) go;
-                var c = b.GetUnitProductionComponent();
-                var cd = (CombatItemData)CSVManager.DataTables.GetDataById(UnitType);
-                do
+                CombatItemData _Troop = (CombatItemData)CSVManager.DataTables.GetDataById(UnitType); ;
+                DataSlot _DataSlot = _PlayerUnits.Find(t => t.Data.GetGlobalID() == _Troop.GetGlobalID());
+                if (_DataSlot != null)
                 {
-                    c.RemoveUnit(cd);
-                    Count--;
+                    _DataSlot.Value = _DataSlot.Value - Count;
                 }
-                while (Count > 0);
+            }
+            else if (UnitType.ToString().StartsWith("260"))
+            {
+                SpellData _Spell = (SpellData)CSVManager.DataTables.GetDataById(UnitType); ;
+                DataSlot _DataSlot = _PlayerSpells.Find(t => t.Data.GetGlobalID() == _Spell.GetGlobalID());
+                if (_DataSlot != null)
+                {
+                    _DataSlot.Value = _DataSlot.Value - Count;
+                }
             }
         }
 
         public int BuildingId;
         public int Count;
         public int UnitType;
-        public uint Unknown1;
-        public uint Unknown3;
-        public uint Unknown4;
     }
 }

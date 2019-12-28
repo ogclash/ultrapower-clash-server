@@ -370,7 +370,7 @@ namespace UCS.Core
             {
                 switch (Save)
                 {
-                    /*case Save.Redis:
+                    case Save.Redis:
                         {
                             foreach (Level pl in avatars)
                             {
@@ -378,7 +378,7 @@ namespace UCS.Core
                                     pl.Avatar.SaveToJSON() + "#:#:#:#" + pl.SaveToJSON(), TimeSpan.FromHours(4));
                             }
                             break;
-                        }*/
+                        }
 
                     case Save.Mysql:
                         {
@@ -402,7 +402,7 @@ namespace UCS.Core
                         }
                     case Save.Both:
                         {
-                            /*this.Save(avatars, Save.Redis);*/
+                            await this.Save(avatars, Save.Redis);
                             await this.Save(avatars, Save.Mysql);
                             break;
                         }
@@ -420,7 +420,7 @@ namespace UCS.Core
                 switch (Save)
                 {
 
-                    /*case Save.Redis:
+                    case Save.Redis:
                         {
                             foreach (Alliance alliance in alliances)
                             {
@@ -428,7 +428,7 @@ namespace UCS.Core
                                     TimeSpan.FromHours(4));
                             }
                             break;
-                        }*/
+                        }
                     case Save.Mysql:
                         {
                             using (Mysql context = new Mysql())
@@ -450,13 +450,13 @@ namespace UCS.Core
                         }
                     case Save.Both:
                         {
-                            /*this.Save(alliances, Save.Redis);*/
+                            await this.Save(alliances, Save.Redis);
                             await this.Save(alliances, Save.Mysql);
                             break;
                         }
                 }
             }
-            catch (Exception ez)
+            catch (Exception)
             {
             }
         }

@@ -39,7 +39,7 @@ namespace UCS.Packets.GameOpCommands
                         {
                         }
                     }
-                    catch (Exception ex)
+                    catch (Exception)
                     {
                     }
                 }

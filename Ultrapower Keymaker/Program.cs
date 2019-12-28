@@ -21,7 +21,6 @@ namespace Ultrapower_Keymaker
         }
         private static void Main(string[] args)
         {
-            Console.SetWindowSize(120, 52);
             var arr = new[]
             {
                   @" __",
@@ -51,8 +50,7 @@ namespace Ultrapower_Keymaker
                 Console.WriteLine("");
                 Console.WriteLine("License Types");
                 Console.WriteLine("=================");
-                Console.WriteLine("");
-                Console.WriteLine("[l/lite] Generates a Lite License the Default Free Licence limits to 350 players not gui");
+                Console.WriteLine("[l/lite] Generates a Lite License the Default Free Licence limits to 350 players no gui");
                 Console.WriteLine("[p/pro] Generates a Pro License Limits to 700 players no gui");
                 Console.WriteLine("[u/ultra] Generates a Ultra License no limits");
                 Environment.Exit(0);
@@ -65,7 +63,7 @@ namespace Ultrapower_Keymaker
                     key = "1" + RandomString(31);
                     WriteKeyToFile(key);
                     Console.WriteLine("Key generated : " + key);
-                    Console.WriteLine("You can either use the key above to authenticate your license or move Ky01.lic into Ultrapower's directory");
+                    Console.WriteLine("You can either use the key above to authenticate your \nlicense or move Ky01.lic into Ultrapower's directory");
                 }
                 else if (args.Contains("p") || args.Contains("pro"))
                 {
@@ -73,7 +71,7 @@ namespace Ultrapower_Keymaker
                     key = "2" + RandomString(31);
                     WriteKeyToFile(key);
                     Console.WriteLine("Key generated : " + key);
-                    Console.WriteLine("You can either use the key above to authenticate your license or move Ky01.lic into Ultrapower's directory");
+                    Console.WriteLine("You can either use the key above to authenticate your \nlicense or move Ky01.lic into Ultrapower's directory");
                 }
                 else if (args.Contains("u") || args.Contains("ultra"))
                 {
@@ -81,7 +79,7 @@ namespace Ultrapower_Keymaker
                     key = "3" + RandomString(31);
                     WriteKeyToFile(key);
                     Console.WriteLine("Key generated : " + key);
-                    Console.WriteLine("You can either use the key above to authenticate your license or move Ky01.lic into Ultrapower's directory");
+                    Console.WriteLine("You can either use the key above to authenticate your \nlicense or move Ky01.lic into Ultrapower's directory");
                 }
                 else
                 {
@@ -89,27 +87,24 @@ namespace Ultrapower_Keymaker
                     key = "1" + RandomString(31);
                     WriteKeyToFile(key);
                     Console.WriteLine("Key generated : " + key);
-                    Console.WriteLine("You can either use the key above to authenticate your license or move Ky01.lic into Ultrapower's directory");
+                    Console.WriteLine("You can either use the key above to authenticate your \nlicense or move Ky01.lic into Ultrapower's directory");
                 }
                 Environment.Exit(0);
             }
             else
             {
-                Console.WriteLine("\n");
                 Console.WriteLine("Unrecongnised Option Please select a valid argument listed below.");
-                Console.WriteLine("\n");
-                Console.WriteLine("Ultrapower keymaker v" + Assembly.GetExecutingAssembly().GetName().Version.ToString() + " Console interface\n");
+                Console.WriteLine("");
                 Console.WriteLine("Command line options");
                 Console.WriteLine("====================");
                 Console.WriteLine("");
                 Console.WriteLine("Usage: Ultrapower Keymaker [arguments]");
                 Console.WriteLine("-h | --help Displays this help menu");
-                Console.WriteLine("-g | --generate Generate a License Key (Select from one of the options below from License types)");
+                Console.WriteLine("-g | --generate Generate a License Key (Select from one of the options below from License types. Default: Lite)");
                 Console.WriteLine("");
                 Console.WriteLine("License Types");
                 Console.WriteLine("=================");
-                Console.WriteLine("");
-                Console.WriteLine("[l/lite] Generates a Lite License the Default Free Licence limits to 350 players not gui");
+                Console.WriteLine("[l/lite] Generates a Lite License the Default Free Licence limits to 350 players no gui");
                 Console.WriteLine("[p/pro] Generates a Pro License Limits to 700 players no gui");
                 Console.WriteLine("[u/ultra] Generates a Ultra License no limits");
                 Environment.Exit(0);

@@ -46,11 +46,10 @@ namespace UCS.Helpers
                             Say("/gui               - Shows the UCS Graphical User Interface.");
                             Say("/restart           - Restarts UCS instantly.");
                             Say("/shutdown          - Shuts UCS down instantly.");
-                            Say("/addpremium        - Add a Premium Player.");
                             Say("/banned            - Writes all Banned IP's into the Console.");
                             Say("/addip             - Add an IP to the Blacklist");
                             Say("/maintenance       - Begin Server Maintenance.");
-                            Say("/saveall           - Saves everything to the Database");
+                            Say("/saveall           - Saves everything in memory to the Database");
                             Say("/dl csv            - Downloads latest CSV Files (if Fingerprint is up to Date).");
                             Say("/info              - Shows the UCS Informations.");
                             Say("/info 'command'    - More Info On a Command. Ex: /info gui");
@@ -70,6 +69,15 @@ namespace UCS.Helpers
 
                         case "/dl csv":
                             CSVManager.DownloadLatestCSVFiles();
+                            break;
+
+                        case "/info dl csv":
+                            Print("------------------------------------------------------------------------------>");
+                            Say(@"/dl csv > Downloads COC Assets such as CSVs and if enabled:");
+                            Say(@"     - Logic,");
+                            Say(@"     - Sound Files ");
+                            Say(@"     - SCs");
+                            Print("------------------------------------------------------------------------------>");
                             break;
 
                         case "/banned":
@@ -101,55 +109,7 @@ namespace UCS.Helpers
                             Console.ResetColor();
                             break;
 
-                        /*case "/addpremium":
-                            Print("------------------------------------->");
-                            Say("Type in now the Player ID: ");
-                            var id = ReadLine();
-                            Print("------------------------------------->");
-                            try
-                            {
-                                var l = await ResourcesManager.GetPlayer(long.Parse(id));
-                                var avatar = l.Avatar;
-                                var playerID = avatar.GetId();
-                                var p = avatar.GetPremium();
-                                Say("Set the Privileges for Player: '" + avatar.AvatarName + "' ID: '" + avatar.GetId() + "' to Premium?");
-                                Say("Type in 'y':Yes or 'n': Cancel");
-                                loop:
-                                var a = ReadLine();
-                                if (a == "y")
-                                {
-                                    if (p == true)
-                                    {
-                                        Say("Privileges already set to 'Premium'");
-                                    }
-                                    else if (p == false)
-                                    {
-                                        ResourcesManager.GetPlayer(playerID).Avatar.SetPremium(true);
-                                        Say("Privileges set succesfully for: '" + avatar.AvatarName + "' ID: '" + avatar.GetId() + "'");
-                                        Resources.DatabaseManager.Save(ResourcesManager.GetInMemoryLevels());
-                                    }
-                                }
-                                else if (a == "n")
-                                {
-                                    Say("Canceled.");
-                                }
-                                else
-                                {
-                                    Error("Type in 'y':Yes or 'n': Cancel");
-                                    goto loop;
-                                }
-                            }
-                            catch (NullReferenceException)
-                            {
-                                Say("Player doesn't exists!");
-                            }
-                            break;*/
-
-                        case "/info addpremium":
-                            Print("------------------------------------------------------------------------------->");
-                            Say("/addpremium > Adds a Premium Player, which will get more Privileges.");
-                            Print("------------------------------------------------------------------------------->");
-                            break;
+                        
 
                         case "/maintenance":
                             StartMaintenance();
