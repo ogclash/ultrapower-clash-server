@@ -1,9 +1,9 @@
 using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Management;
 using UCS.Core;
 using UCS.Core.Network;
 using UCS.Logic;
@@ -21,6 +21,12 @@ namespace UCS.Packets.GameOpCommands
             m_vArgs = args;
             SetRequiredAccountPrivileges(0);
         }
+        private double RAMUsage;
+        private DriveInfo DiskSpace;
+        private string DriveLetter;
+        private double DiskspaceUsed;
+        private double TotalFreeSpace;
+        private double TotalDiskSize;
 
         public override void Execute(Level level)
         {
@@ -28,6 +34,24 @@ namespace UCS.Packets.GameOpCommands
             {
                 if (m_vArgs.Length >= 1)
                 {
+                    ManagementObjectSearcher searcher = new ManagementObjectSearcher("select * from Win32_PerfFormattedData_PerfOS_Processor");
+                    var cpuTimes = searcher.Get()
+                        .Cast<ManagementObject>()
+                        .Select(mo => new
+                        {
+                            Name = mo["Name"],
+                            Usage = mo["PercentProcessorTime"]
+                        }
+                        )
+                        .ToList();
+                    var query = cpuTimes.Where(x => x.Name.ToString() == "_Total").Select(x => x.Usage);
+                    var CPUParcentage = query.SingleOrDefault();
+                    RAMUsage = PerformanceInfo.GetTotalMemoryInMiB() - PerformanceInfo.GetPhysicalAvailableMemoryInMiB();
+                    DriveLetter = Path.GetPathRoot(Directory.GetCurrentDirectory());
+                    DiskSpace = new DriveInfo(DriveLetter.Substring(0, DriveLetter.Length - 2));
+                    TotalFreeSpace = DiskSpace.TotalFreeSpace / 1073741824;
+                    TotalDiskSize = DiskSpace.TotalSize / 1073741824;
+                    DiskspaceUsed = TotalDiskSize - TotalFreeSpace;
                     ClientAvatar avatar = level.Avatar;
                     var mail = new AllianceMailStreamEntry();
                     mail.ID = (int)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
@@ -36,10 +60,13 @@ namespace UCS.Packets.GameOpCommands
                     mail.AllianceId = 0;
                     mail.AllianceBadgeData = 1526735450;
                     mail.AllianceName = "UCS Server Information";
-					mail.Message = @"Online Players: " + ResourcesManager.m_vOnlinePlayers.Count +
-						"\nIn Memory Players: " + ResourcesManager.m_vInMemoryLevels.Count +
-						"\nConnected Players: " + ResourcesManager.GetConnectedClients().Count +
-						"\nServer Ram: " + Performances.GetUsedMemory() + "% / " + Performances.GetTotalMemory() + "MB";
+                    mail.Message = @"Online Players: " + ResourcesManager.m_vOnlinePlayers.Count +
+                        "\nIn Memory Players: " + ResourcesManager.m_vInMemoryLevels.Count +
+                        "\nConnected Players: " + ResourcesManager.GetConnectedClients().Count +
+                        "\nTotal System CPU Usage: " + CPUParcentage + "%" +
+                        "\nServer RAM: " + Performances.GetUsedMemory() + "% / " + Performances.GetTotalMemory() + "MB" +
+                        "\nTotal Server Ram Usage: " + RAMUsage + "MB / " + Performances.GetTotalMemory() + "MB" +
+                        "\nServer Disk Space Used: " + Math.Round(DiskspaceUsed, 2) + "GB / " + Math.Round(TotalDiskSize, 2) + "GB";
 
                     var p = new AvatarStreamEntryMessage(level.Client);
                     p.SetAvatarStreamEntry(mail);

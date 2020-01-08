@@ -59,7 +59,7 @@ namespace UCS.Packets.GameOpCommands
                                         break;
                                 }
                             }
-                            Message = Message + "\nLevel : " + acc.m_vAvatarLevel + "\nTrophy : " + acc.GetScore() +
+                            Message = Message + "\nLevel : " + acc.m_vAvatarLevel + "\nTrophies : " + acc.GetScore() +
                                       "\nTown Hall Level : " + (acc.m_vTownHallLevel + 1) +
                                       "\nAlliance Castle Level : " + (acc.GetAllianceCastleLevel() + 1);
 
