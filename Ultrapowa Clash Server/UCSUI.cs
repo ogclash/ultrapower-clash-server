@@ -50,6 +50,8 @@ namespace UCS
             materialLabel14.Text = Convert.ToString(ObjectManager.GetMaxPlayerID() + ObjectManager.GetMaxAllianceID());
 			materialLabel15.Text = Convert.ToString(ObjectManager.GetMaxAllianceID());
 			materialLabel16.Text = Convert.ToString(ObjectManager.GetMaxPlayerID());
+            Version.Text = $"Version: {Constants.Version}";
+            Build.Text = $"Build: {Constants.Version}";
 
             if (Core.Settings.Constants.LicensePlanID < 2)
             {
@@ -261,7 +263,7 @@ namespace UCS
             l.Avatar.SetTownHallLevel(Convert.ToInt32(txtTownHallLevel.Text));
             l.Avatar.AllianceId = Convert.ToInt32(txtAllianceID.Text);
             l.Avatar.m_vAvatarLevel = Convert.ToInt32(txtPlayerLevel.Text);
-
+            await Resources.DatabaseManager.Save(l);
             var title = "Finished!";
             MessageBox.Show("Player has been saved!", title, MessageBoxButtons.OK, MessageBoxIcon.Information);
             /* SAVE PLAYER */
@@ -286,7 +288,7 @@ namespace UCS
             txtUsePatch.Text = "false";
             txtPatchURL.Text = "";
             txtMintenance.Text = "0";
-            txtDatabaseType.Text = "sqlite";
+            txtDatabaseType.Text = "";
             txtPort.Text = "9339";
             txtAdminMessage.Text = "Welcome to Ultrapower Clash Server v0.7.3.2 Modded By Naix";
             txtLogLevel.Text = "0";
@@ -631,6 +633,23 @@ namespace UCS
         private void materialLabel40_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void tabPage1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void materialTabSelector1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void materialRaisedButton25_Click_1(object sender, EventArgs e)
+        {
+            Resources.DatabaseManager.Save(ResourcesManager.m_vInMemoryLevels.Values.ToList()).Wait();
+            Resources.DatabaseManager.Save(ResourcesManager.GetInMemoryAlliances()).Wait();
+            MessageBox.Show("All In-memory data saved to MySQL Database", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
     }
 }

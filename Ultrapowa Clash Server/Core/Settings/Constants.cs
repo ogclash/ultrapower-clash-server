@@ -9,7 +9,7 @@ namespace UCS.Core.Settings
     internal class Constants
     {
         public static string Version                 = Assembly.GetExecutingAssembly().GetName().Version.ToString();
-        public static string Build                   = "125";
+        public static string Build                   = "6";
         
         public static readonly bool UseCacheServer   = Utils.ParseConfigBoolean("CacheServer");
         public const bool Local = false;

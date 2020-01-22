@@ -1,12 +1,11 @@
 using System;
 using System.Configuration;
-using System.Diagnostics;
+using System.Linq;
+using System.Management;
 using System.IO;
 using System.Net;
-using System.Net.Sockets;
 using System.Threading;
 using System.Windows.Forms;
-using System.Xml;
 using static UCS.Core.Logger;
 using static System.Console;
 using UCS.Core;
@@ -14,8 +13,6 @@ using UCS.Core.Network;
 using UCS.Core.Settings;
 using UCS.Logic;
 using UCS.Packets.Messages.Server;
-using UCS.Core.Threading;
-using System.Threading.Tasks;
 using UCS.Core.Checker;
 using UCS.Core.Web;
 using System.Linq;
@@ -62,7 +59,6 @@ namespace UCS.Helpers
                             Say($"Build:               {Constants.Build}");
                             Say($"LicenseID:           {Constants.LicensePlanID}");
                             Say($"CoC Version from SC: {VersionChecker.LatestCoCVersion()}");
-                            Say("");
                             Say($"Ultrapower  - {DateTime.Now.Year}");
                             Console.WriteLine("------------------------------------->");
                             break;
@@ -126,7 +122,22 @@ namespace UCS.Helpers
                             break;
 
                         case "/status":
+                            Say($"Please wait retrieving Ultrapower Server status");
+                            ManagementObjectSearcher searcher = new ManagementObjectSearcher("select * from Win32_PerfFormattedData_PerfOS_Processor");
+                            var cpuTimes = searcher.Get()
+                                .Cast<ManagementObject>()
+                                .Select(mo => new
+                                {
+                                    Name = mo["Name"],
+                                    Usage = mo["PercentProcessorTime"]
+                                }
+                                )
+                                .ToList();
+                            var query = cpuTimes.Where(x => x.Name.ToString() == "_Total").Select(x => x.Usage);
+                            var CPUParcentage = query.SingleOrDefault();
                             Print("------------------------------------------------------->");
+                            Say($"CPU Usage:                {CPUParcentage}%");
+                            Say($"RAM Usage:                {Performances.GetUsedMemory()}%");
                             Say($"Time:                     {DateTime.Now}");
                             Say($"IP Address:               {Dns.GetHostByName(Dns.GetHostName()).AddressList[0]}");
                             Say($"Online Players:           {ResourcesManager.m_vOnlinePlayers.Count}");

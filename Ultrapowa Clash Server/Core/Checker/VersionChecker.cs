@@ -41,17 +41,8 @@ namespace UCS.Core.Web
 
         public static string LatestCoCVersion()
         {
-            try
-            {
-                JObject obj = JObject.Parse(new WebClient().DownloadString("http://carreto.pt/tools/android-store-version/?package=com.supercell.clashofclans"));
-                string Version = (string)obj["version"];
 
-                return Version;
-            }
-            catch (Exception)
-            {
-                return "Couldn't get last CoC Version.";
-            }
+                return "8.709.16";
         }
     }
 }
