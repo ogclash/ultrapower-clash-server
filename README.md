@@ -32,4 +32,4 @@ They have gone private with node.js and are no longer supporting C# versions of 
 ~~* [Clash of Clans - Patched APK - v8.709.16]~(https://uploadify.net/5b9fad82894225d6/Ultrapowa_8.709.16_Client.apk)~~
 
 Provided in the release section
-Note: You need to manually add NuGet Package System.Management before server can build.
+##Note:You need to manually add NuGet Package System.Management before server can build.
