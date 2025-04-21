@@ -1,4 +1,4 @@
-# Ultrapower's Development Group Projects
+# Ultrapowa's Development Group Projects
 
 [![GitHub issues](https://img.shields.io/github/issues/antzsmt/Ultrapower-0.7.3.2)](https://github.com/antzsmt/Ultrapower-0.7.3.2/issues)
 [![GitHub forks](https://img.shields.io/github/forks/antzsmt/Ultrapower-0.7.3.2)](https://github.com/antzsmt/Ultrapower-0.7.3.2/network)
