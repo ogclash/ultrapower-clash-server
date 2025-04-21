@@ -31,7 +31,7 @@
   <!-- (Max 2000) This Function is only available for Ultra Users -->
       
   <!-- ____________________________________ UCS SETTINGS ____________________________________ -->
-  <add key="CacheServer" value="false" />
+  <add key="CacheServer" value="true" />
       <!-- Use Redis as cache server-->
   <add key="UseWebAPI" value="false" />
       <!-- Choose if you want to use the Web API-->
@@ -50,14 +50,14 @@
   <!-- Redis server IP address-->
   <add key="RedisPort" value="6379" />
   <!--  Redis server port-->
-  <add key="RedisPassword" value="root" />
+  <add key="RedisPassword" value="" />
   <!--  Redis server password-->
 
   <add key="MysqlIPAddress" value="127.0.0.1" />
   <!-- MySql IP Address -->
   <add key="MysqlPort" value="3306" />
   <!-- MySql Username -->
-  <add key="MysqlUsername" value="ucs" />
+  <add key="MysqlUsername" value="root" />
   <!-- MySql Username -->
   <add key="MysqlPassword" value="" />
   <!--  MySql server password-->
