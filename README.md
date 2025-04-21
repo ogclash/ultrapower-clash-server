@@ -1,6 +1,8 @@
 # Ultrpowa's Development Group Projects
 
-All programs developed by the Ultrapowa Development Team are licensed
+[![GitHub issues](https://img.shields.io/github/issues/antzsmt/Ultrapower-0.7.3.2)](https://github.com/antzsmt/Ultrapower-0.7.3.2/issues)
+[![GitHub forks](https://img.shields.io/github/forks/antzsmt/Ultrapower-0.7.3.2)](https://github.com/antzsmt/Ultrapower-0.7.3.2/network)
+[![GitHub stars](https://img.shields.io/github/stars/antzsmt/Ultrapower-0.7.3.2)](https://github.com/antzsmt/Ultrapower-0.7.3.2/stargazers)
 
 # Projects
 
@@ -16,20 +18,3 @@ Projects developed by the Ultrapowa Development Team include:
 
 * Ultrapower Key maker      (UKG)
 * Ultrapowa Client Patcher  (UCP)
-
-##Websites
-
-~~* [Ultrapowa - Home Page]~(http://ultrapowa.com/)~~
-
-~~* [Ultrapowa - Forum]~(http://ultrapowa.com/forum)~~
-
-They have gone private with node.js and are no longer supporting C# versions of the server
-
-##Patched Versions
-
-~~* [Clash of Clans - Patched APK - v8.551.24]~(https://www.mediafire.com/?wgl58x1x0a0wn88)~~
-
-~~* [Clash of Clans - Patched APK - v8.709.16]~(https://uploadify.net/5b9fad82894225d6/Ultrapowa_8.709.16_Client.apk)~~
-
-Provided in the release section
-##Note:You need to manually add NuGet Package System.Management before server can build.
