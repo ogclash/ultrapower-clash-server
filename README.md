@@ -19,4 +19,4 @@ Projects developed by the Ultrapowa Development Team include:
 * Ultrapower Key maker      (UKG)
 * Ultrapowa Client Patcher  (UCP)
 
-![ProdLogProg Screenshot](0732_Screenshot.PNG)
+![UCS 0.7.3.2 Screenshot](0732_Screenshot.PNG)
