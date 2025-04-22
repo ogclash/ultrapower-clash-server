@@ -21,4 +21,4 @@ Projects developed by the Ultrapowa Development Team include:
 
 ![UCS 0.7.3.2 Screenshot](0732_Screenshot.PNG)
 
-![UCS 0.7.3.2 API Screenshot](screenshot_API.PNG)
+![UCS 0.7.3.2 API Screenshot](Screenshot_API.PNG)
