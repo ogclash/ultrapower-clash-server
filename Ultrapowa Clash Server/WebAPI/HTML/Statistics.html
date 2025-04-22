@@ -1,1 +1,143 @@
-﻿<!DOCTYPE html><html lang="en" >  <head>    <meta charset="utf-8">    <meta http-equiv="X-UA-Compatible" content="IE=edge">    <meta name="viewport" content="width=device-width, initial-scale=1">    <title>UCS API</title>	<meta description="Ultrapower Clash Server WebAPI" />	<link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">	<link rel="stylesheet" href="https://clashoflights.xyz/UCS/API/css/animate.css">    <link href="https://clashoflights.xyz/UCS/API/css/bootstrap.min.css" rel="stylesheet">    <link href="https://clashoflights.xyz/UCS/API/style.css" rel="stylesheet">    <link href="https://clashoflights.xyz/UCS/API/css/style-responsive.css" rel="stylesheet">	<script>        (function () {            var link = document.createElement('link');            link.type = 'image/x-icon';            link.rel = 'shortcut icon';            link.href = 'http://www.ultrapowa.com/forum/favicon.ico';            document.getElementsByTagName('head')[0].appendChild(link);        }());    </script>  </head>  <body >	<header id="header_part">		<div class="header_part" id="head">			<div class="overlay">				<div class="start_part">							<div class="container">							<div class="row">								<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">									<div class="row">										<div class="site_logo">											<a target="_blank" href="https://ultrapowa.com" title=""><img src="https://ultrapowa.com/ultrablue.png" alt="" title=""/></a>										</div>											<div class="site_title">											<h1>Server Statistic</h1>											<p><br/><br/></p>                                        <p>Status:<font color="green"> ONLINE</font></p>										<p>Online Players: %ONLINEPLAYERS%</p>										<p>In Memory Players: %INMEMORYPLAYERS%</p>										<p>In Memory Alliances: %INMEMORYALLIANCES%</p>										<p>Connected Sockets: %TOTALCONNECTIONS%</p>										<p><br/>The Site will be reloaded in <span id="timer">10</span> Seconds</p>										</div>									</div>								</div>							</div>						</div>				</div>					<div class="menu_area" id="stick_menu">					<div class="container">						<div class="row">							<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">								<nav class="navbar navbar-default" role="navigation">									<div class="container-fluid">										<div class="collapse navbar-collapse mainnavmenu" id="bs-example-navbar-collapse-1">										<div id="menu-center">											<ul class="nav navbar-nav navbar-right mainnav">												<li><a target="_blank" href="https://ultrapowa.com" >Official Ultrapowa Site</a></li>											</ul>										</div>										</div>									</div>								</nav>							</div>						</div>					</div>				</div>			</div>		</div>		</header>	    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>    <script src="https://clashoflights.xyz/UCS/API/js/bootstrap.min.js"></script>    <script src="https://clashoflights.xyz/UCS/API/js/jquery.countdown.min.js"></script>    <script src="https://clashoflights.xyz/UCS/API/js/jquery.smooth-scroll.js"></script>    <script src="https://clashoflights.xyz/UCS/API/js/wow.min.js"></script>    <script src="https://clashoflights.xyz/UCS/API/js/jquery.nicescroll.min.js"></script>    <script src="https://clashoflights.xyz/UCS/API/js/script.js"></script>	<script>function reload() {location.reload();}</script>    <script>   window.onload = function(){     var sec = 10;     setInterval(function(){       document.getElementById("timer").innerHTML = sec;       sec--;       if(sec == 0)       {	   reload()       }      },1000);    }    </script>  </body></html>
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>UCS API</title>
+	<meta name="description" content="Ultrapower Clash Server WebAPI" />
+
+	<!-- Font Awesome -->
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+	<!-- Bootstrap CSS -->
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+	<!-- Custom CSS -->
+	<style>
+		body {
+			font-family: 'Arial', sans-serif;
+			background-color: #f8f9fa;
+			color: #333;
+		}
+
+		.header {
+			background: linear-gradient(90deg, #007bff, #6610f2);
+			color: white;
+			padding: 20px 0;
+			text-align: center;
+		}
+
+			.header h1 {
+				font-size: 2.5rem;
+				margin-bottom: 10px;
+			}
+
+			.header p {
+				font-size: 1.2rem;
+			}
+
+		.statistics {
+			margin: 20px auto;
+			max-width: 800px;
+			background: white;
+			border-radius: 8px;
+			box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+			padding: 20px;
+		}
+
+			.statistics h2 {
+				text-align: center;
+				margin-bottom: 20px;
+				color: #007bff;
+			}
+
+			.statistics p {
+				font-size: 1.1rem;
+				margin: 10px 0;
+			}
+
+		.reload-timer {
+			text-align: center;
+			margin-top: 20px;
+		}
+
+		.progress {
+			height: 20px;
+			border-radius: 10px;
+			overflow: hidden;
+		}
+
+		.progress-bar {
+			background: #007bff;
+			transition: width 1s linear;
+		}
+
+		footer {
+			text-align: center;
+			margin-top: 20px;
+			padding: 10px 0;
+			background: #f1f1f1;
+			color: #666;
+		}
+
+			footer a {
+				color: #007bff;
+				text-decoration: none;
+			}
+
+				footer a:hover {
+					text-decoration: underline;
+				}
+	</style>
+</head>
+<body>
+	<header class="header">
+		<h1>Ultrapower Clash Server</h1>
+		<p>Server Statistics</p>
+	</header>
+
+	<div class="container">
+		<div class="statistics">
+			<h2>Server Status</h2>
+			<p>Status: <span style="color: green; font-weight: bold;">ONLINE</span></p>
+			<p>Online Players: <span id="online-players">%ONLINEPLAYERS%</span></p>
+			<p>In Memory Players: <span id="in-memory-players">%INMEMORYPLAYERS%</span></p>
+			<p>In Memory Alliances: <span id="in-memory-alliances">%INMEMORYALLIANCES%</span></p>
+			<p>Connected Sockets: <span id="connected-sockets">%TOTALCONNECTIONS%</span></p>
+
+			<div class="reload-timer">
+				<p>The page will reload in <span id="timer">10</span> seconds.</p>
+				<div class="progress">
+					<div id="progress-bar" class="progress-bar" role="progressbar" style="width: 100%;"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<footer>
+		<p>
+			<a href="https://ultrapowa.com" target="_blank">Official Ultrapowa Site</a> |
+			<a href="https://github.com" target="_blank">GitHub</a>
+		</p>
+	</footer>
+
+	<!-- Bootstrap JS -->
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+	<!-- Custom JS -->
+	<script>
+		let timer = 10;
+		const timerElement = document.getElementById("timer");
+		const progressBar = document.getElementById("progress-bar");
+
+		const countdown = setInterval(() => {
+			timer--;
+			timerElement.textContent = timer;
+			progressBar.style.width = (timer * 10) + "%";
+
+			if (timer <= 0) {
+				clearInterval(countdown);
+				location.reload();
+			}
+		}, 1000);
+	</script>
+</body>
+</html>

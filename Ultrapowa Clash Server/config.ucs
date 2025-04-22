@@ -33,7 +33,7 @@
   <!-- ____________________________________ UCS SETTINGS ____________________________________ -->
   <add key="CacheServer" value="true" />
       <!-- Use Redis as cache server-->
-  <add key="UseWebAPI" value="false" />
+  <add key="UseWebAPI" value="true" />
       <!-- Choose if you want to use the Web API-->
   <add key="APIPort" value="88" /> 
       <!-- The Port of the WebAPI-->

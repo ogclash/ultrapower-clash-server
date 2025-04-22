@@ -278,6 +278,8 @@
     <Compile Include="Packets\Commands\Server\ReceivedAllianceUnitCommand.cs" />
     <Compile Include="Packets\Crypto.cs" />
     <Compile Include="Packets\GameOpCommands\MinRessourcesGameOpCommand.cs" />
+    <Compile Include="Packets\GameOpCommands\ToggleBroadcastGameOpCommand.cs" />
+    <Compile Include="Packets\Messages\BroadcastManager.cs" />
     <Compile Include="Packets\Messages\Client\AccountSwitchMessage.cs" />
     <Compile Include="Packets\Messages\Client\Api\Bind_Google_Message.cs" />
     <Compile Include="Packets\Messages\Client\RetributionAttackerMessage.cs" />

@@ -48,8 +48,9 @@ namespace UCS.Packets.GameOpCommands
                         "\n/saveall" +
                         "\n/becomeleader" +
                         "\n/status" +
-                        "\n/help"+
-                        "\n/accinfo";
+                        "\n/help" +
+                        "\n/accinfo" +
+                        "\n/togglebroadcast";
 
                     var p = new AvatarStreamEntryMessage(level.Client);
                     p.SetAvatarStreamEntry(mail);

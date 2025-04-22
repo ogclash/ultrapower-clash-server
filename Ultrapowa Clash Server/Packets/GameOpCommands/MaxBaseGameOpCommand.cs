@@ -24,15 +24,46 @@ namespace UCS.Packets.GameOpCommands
             {
                 string Home;
 
-                using (StreamReader sr = new StreamReader(@"Gamefiles/level/PVP/Base55.json"))
+                try
                 {
-                    Home = sr.ReadToEnd();
-                    ResourcesManager.SetGameObject(level, Home);
-                    Processor.Send(new OutOfSyncMessage(level.Client));
+                    using (StreamReader sr = new StreamReader(@"Gamefiles/level/NPC/highlevel1.json"))
+                    {
+                        Home = sr.ReadToEnd();
+                    }
+
+                    if (string.IsNullOrWhiteSpace(Home))
+                    {
+                        Logger.Write("Error: highlevel1.json is empty or invalid.");
+                        SendCommandFailedMessage(level.Client);
+                        return;
+                    }
+
+                    try
+                    {
+                        ResourcesManager.SetGameObject(level, Home);
+                        Processor.Send(new OutOfSyncMessage(level.Client));
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.Write($"Error while setting game object: {ex.Message}");
+                        SendCommandFailedMessage(level.Client);
+                    }
+                }
+                catch (FileNotFoundException)
+                {
+                    Logger.Write("Error: Base30.json file not found.");
+                    SendCommandFailedMessage(level.Client);
+                }
+                catch (Exception ex)
+                {
+                    Logger.Write($"Unexpected error while reading Base30.json: {ex.Message}");
+                    SendCommandFailedMessage(level.Client);
                 }
             }
             else
+            {
                 SendCommandFailedMessage(level.Client);
+            }
         }
     }
 }

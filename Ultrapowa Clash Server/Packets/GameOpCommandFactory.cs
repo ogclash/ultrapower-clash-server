@@ -34,19 +34,26 @@ namespace UCS.Packets
 
         public static object Parse(string command)
         {
-            var commandArgs = command.ToLower().Split(' ');
-            object result = null;
-            if (commandArgs.Length > 0)
+            if (string.IsNullOrWhiteSpace(command))
+                return null;
+
+            var commandArgs = command.ToLower().Split(' ', (char)StringSplitOptions.RemoveEmptyEntries);
+            if (commandArgs.Length == 0 || string.IsNullOrWhiteSpace(commandArgs[0]))
+                return null;
+
+            if (m_vCommands.ContainsKey(commandArgs[0]))
             {
-                if (m_vCommands.ContainsKey(commandArgs[0]))
+                var type = m_vCommands[commandArgs[0]];
+                var ctor = type.GetConstructor(new[] { typeof(string[]) });
+                if (ctor != null)
                 {
-                    var type = m_vCommands[commandArgs[0]];
-                    var ctor = type.GetConstructor(new[] { typeof(string[]) });
-                    result = ctor.Invoke(new object[] { commandArgs });
+                    return ctor.Invoke(new object[] { commandArgs });
                 }
             }
-            return result;
+
+            return null;
         }
+
 
     }
 }

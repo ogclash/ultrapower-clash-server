@@ -1,13 +1,11 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using UCS.Core;
 using UCS.Helpers;
 
@@ -15,26 +13,10 @@ namespace UCS.WebAPI
 {
     internal class API
     {
-        private static IPHostEntry ipHostInfo = Dns.Resolve(Dns.GetHostName());
+        private static readonly string IP = "localhost"; // Use localhost for testing
+        private static int Port = GetPortFromConfig();
+        private static readonly string URL = $"http://{IP}:{Port}/";
         private static HttpListener Listener;
-        private static int Port = Utils.ParseConfigInt("APIPort"); // TODO: Add it to the config File
-        private static string IP = ipHostInfo.AddressList[0].ToString();
-        private static string URL = "http://" + IP + ":" + Port + "/";
-
-        public static string HTML()
-        {
-            try
-            {
-                using (StreamReader sr = new StreamReader("WebAPI/HTML/Statistics.html"))
-                {
-                    return sr.ReadToEnd();
-                }
-            }
-            catch (Exception)
-            {
-                return "File not Found";
-            }
-        }
 
         public API()
         {
@@ -42,83 +24,110 @@ namespace UCS.WebAPI
             {
                 try
                 {
+                    Logger.Say($"Attempting to start WebAPI with URL: {URL}");
+
                     if (!HttpListener.IsSupported)
                     {
-                        Logger.Say("The current System doesn't support the WebAPI.");
+                        Logger.Say("The current system doesn't support the WebAPI.");
                         return;
                     }
 
-                    if (Port == 80)
+                    if (!Uri.IsWellFormedUriString(URL, UriKind.Absolute))
                     {
-                        Logger.Say("Can't start the API on Port 80 using now default Port(88)");
-                        Port = 88;
-                        URL = "http://" + IP + ":" + Port + "/";
+                        Logger.Say($"Invalid URL format: {URL}");
+                        return;
                     }
 
                     Listener = new HttpListener();
                     Listener.Prefixes.Add(URL);
-                    Listener.Prefixes.Add(URL + "api/");
+                    Listener.Prefixes.Add($"{URL}api/");
                     Listener.AuthenticationSchemes = AuthenticationSchemes.Anonymous;
                     Listener.Start();
 
-                    Logger.Say("The WebAPI has been started on '" + Port + "'");
+                    Logger.Say($"The WebAPI has been started on port '{Port}'.");
 
-                    ThreadPool.QueueUserWorkItem((o) =>
+                    ThreadPool.QueueUserWorkItem(_ =>
                     {
                         while (Listener.IsListening)
                         {
-                            ThreadPool.QueueUserWorkItem((c) =>
+                            try
                             {
-                                try
-                                {
-                                    HttpListenerContext ctx = (HttpListenerContext)c;
-
-                                    foreach (string _URL in Listener.Prefixes.ToList<string>())
-                                    {
-                                        if (ctx.Request.Url.ToString().Contains(_URL))
-                                        {
-                                            if (ctx.Request.Url.ToString() == URL + "api/")
-                                            {
-                                                byte[] responseBuf = Encoding.UTF8.GetBytes(GetjsonAPI());
-                                                ctx.Response.ContentLength64 = responseBuf.Length;
-                                                ctx.Response.OutputStream.Write(responseBuf, 0, responseBuf.Length);
-                                                ctx.Response.OutputStream.Close();
-                                            }
-                                            else
-                                            {
-                                                byte[] responseBuf = Encoding.UTF8.GetBytes(GetStatisticHTML());
-                                                ctx.Response.ContentLength64 = responseBuf.Length;
-                                                ctx.Response.OutputStream.Write(responseBuf, 0, responseBuf.Length);
-                                                ctx.Response.OutputStream.Close();
-                                            }
-                                        }
-                                        else
-                                        {
-                                            byte[] responseBuf = Encoding.UTF8.GetBytes(GetStatisticHTML());
-                                            ctx.Response.ContentLength64 = responseBuf.Length;
-                                            ctx.Response.OutputStream.Write(responseBuf, 0, responseBuf.Length);
-                                            ctx.Response.OutputStream.Close();
-                                        }
-                                    }
-                                }
-                                catch (Exception)
-                                {
-                                }
-
-                            }, Listener.GetContext());
+                                var context = Listener.GetContext();
+                                ThreadPool.QueueUserWorkItem(c => HandleRequest((HttpListenerContext)c), context);
+                            }
+                            catch (Exception ex)
+                            {
+                                Logger.Say($"Error handling request: {ex.Message}");
+                            }
                         }
                     });
                 }
-                catch (Exception)
+                catch (HttpListenerException ex)
                 {
-                    Logger.Say("Please check if the Port '" + Port + "' is not in use.");
+                    Logger.Say($"Failed to start the WebAPI: {ex.Message} (Error Code: {ex.ErrorCode}). Please check if the port '{Port}' is already in use.");
+                }
+                catch (Exception ex)
+                {
+                    Logger.Say($"Unexpected error: {ex.Message}");
                 }
             }).Start();
         }
 
         public static void Stop()
         {
-            Listener.Stop();
+            try
+            {
+                Listener?.Stop();
+                Logger.Say("The WebAPI has been stopped.");
+            }
+            catch (Exception ex)
+            {
+                Logger.Say($"Error stopping the WebAPI: {ex.Message}");
+            }
+        }
+
+        private static void HandleRequest(HttpListenerContext context)
+        {
+            try
+            {
+                string responseText;
+
+                if (context.Request.Url.ToString().EndsWith("api/"))
+                {
+                    responseText = GetjsonAPI();
+                }
+                else
+                {
+                    responseText = GetStatisticHTML();
+                }
+
+                byte[] responseBuf = Encoding.UTF8.GetBytes(responseText);
+                context.Response.ContentLength64 = responseBuf.Length;
+                context.Response.OutputStream.Write(responseBuf, 0, responseBuf.Length);
+                context.Response.OutputStream.Close();
+            }
+            catch (Exception ex)
+            {
+                Logger.Say($"Error processing request: {ex.Message}");
+                context.Response.StatusCode = 500;
+                byte[] errorBuf = Encoding.UTF8.GetBytes("Internal Server Error");
+                context.Response.ContentLength64 = errorBuf.Length;
+                context.Response.OutputStream.Write(errorBuf, 0, errorBuf.Length);
+                context.Response.OutputStream.Close();
+            }
+        }
+
+        private static int GetPortFromConfig()
+        {
+            try
+            {
+                return Utils.ParseConfigInt("APIPort");
+            }
+            catch (Exception ex)
+            {
+                Logger.Say($"Error reading port from config: {ex.Message}. Using default port 88.");
+                return 88; // Default port
+            }
         }
 
         public static string GetStatisticHTML()
@@ -131,24 +140,55 @@ namespace UCS.WebAPI
                     .Replace("%INMEMORYALLIANCES%", ResourcesManager.GetInMemoryAlliances().Count.ToString())
                     .Replace("%TOTALCONNECTIONS%", ResourcesManager.GetConnectedClients().Count.ToString());
             }
-            catch(Exception)
+            catch (Exception ex)
             {
+                Logger.Say($"Error generating statistics HTML: {ex.Message}");
                 return "The server encountered an internal error or misconfiguration and was unable to complete your request. (500)";
             }
         }
 
         public static string GetjsonAPI()
         {
-            JObject _Data = new JObject
+            try
             {
-                {"online_players", ResourcesManager.m_vOnlinePlayers.Count.ToString()},
-                {"in_mem_players", ResourcesManager.m_vInMemoryLevels.Count.ToString()},
-                {"in_mem_alliances", ResourcesManager.GetInMemoryAlliances().Count.ToString()},
-                {"connected_sockets", ResourcesManager.GetConnectedClients().Count.ToString()},
-                {"all_players", ObjectManager.GetMaxPlayerID()},
-                {"all_clans", ObjectManager.GetMaxAllianceID()}
-            };
-            return JsonConvert.SerializeObject(_Data, Formatting.Indented);
+                JObject data = new JObject
+                {
+                    {"online_players", ResourcesManager.m_vOnlinePlayers.Count.ToString()},
+                    {"in_mem_players", ResourcesManager.m_vInMemoryLevels.Count.ToString()},
+                    {"in_mem_alliances", ResourcesManager.GetInMemoryAlliances().Count.ToString()},
+                    {"connected_sockets", ResourcesManager.GetConnectedClients().Count.ToString()},
+                    {"all_players", ObjectManager.GetMaxPlayerID()},
+                    {"all_clans", ObjectManager.GetMaxAllianceID()}
+                };
+                return JsonConvert.SerializeObject(data, Formatting.Indented);
+            }
+            catch (Exception ex)
+            {
+                Logger.Say($"Error generating JSON API: {ex.Message}");
+                return JsonConvert.SerializeObject(new { error = "Internal Server Error" }, Formatting.Indented);
+            }
+        }
+
+        public static string HTML()
+        {
+            try
+            {
+                using (StreamReader sr = new StreamReader("WebAPI/HTML/Statistics.html"))
+                {
+                    return sr.ReadToEnd();
+                }
+            }
+            catch (FileNotFoundException ex)
+            {
+                Logger.Say($"HTML file not found: {ex.Message}");
+                return "File not Found";
+            }
+            catch (Exception ex)
+            {
+                Logger.Say($"Error reading HTML file: {ex.Message}");
+                return "An error occurred while loading the HTML file.";
+            }
         }
     }
 }
+
