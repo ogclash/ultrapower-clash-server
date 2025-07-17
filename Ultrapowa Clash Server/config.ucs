@@ -27,6 +27,8 @@
   <add key="MaxOnlinePlayers" value="2000" />
   <!-- (Max 2000) This Function is only available for Ultra Users -->
   <!-- ____________________________________ UCS SETTINGS ____________________________________ -->
+  <add key="DebugMode" value="true" />
+  <!-- Debug Mode for Shadow-Server -->
   <add key="CacheServer" value="false" />
   <!-- Use Redis as cache server-->
   <add key="UseWebAPI" value="false" />
