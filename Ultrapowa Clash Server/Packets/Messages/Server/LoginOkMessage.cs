@@ -34,13 +34,13 @@ namespace UCS.Packets.Messages.Server
 
             this.Data.AddString(avatar.UserToken);
 
-            this.Data.AddString(avatar.FacebookId);
+            this.Data.AddString(null);
             this.Data.AddString(null);
 
 
-            this.Data.AddInt(ServerMajorVersion);
-            this.Data.AddInt(ServerBuild);
-            this.Data.AddInt(ContentVersion);
+            this.Data.AddInt(8);
+            this.Data.AddInt(709);
+            this.Data.AddInt(16);
 
             this.Data.AddString("prod");
 
@@ -54,7 +54,7 @@ namespace UCS.Packets.Messages.Server
             this.Data.AddString("1482952262000"); // 14 78 03 95 03 10 0
 
             this.Data.AddInt(0);
-            this.Data.AddString(avatar.GoogleId);
+            this.Data.AddString(null);
             this.Data.AddString(avatar.Region.ToUpper());
             this.Data.AddString(null);
             this.Data.AddInt(1);

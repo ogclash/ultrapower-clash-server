@@ -55,7 +55,7 @@
 
             // User
             this.Parser = new ParserThread();
-
+            //this.ResourcesManager.loadAllResources();
         }
     }
 }

@@ -31,46 +31,52 @@ namespace UCS.Packets.Messages.Client
         {
             try
             {
-                ClientAvatar player = this.Device.Player.Avatar;
-
-                /*if (player.State == UserState.PVP)
+                /*var info = default(ClientAvatar.AttackInfo);
+                if (!level.Avatar.AttackingInfo.TryGetValue(level.Avatar.GetId(), out info))
                 {
-                    var info = default(ClientAvatar.AttackInfo);
-                    if (!level.Avatar.AttackingInfo.TryGetValue(level.Avatar.GetId(), out info))
+                    Logger.Write("Unable to obtain attack info.");
+                }
+                else
+                {
+                    Level defender = info.Defender;
+                    Level attacker = info.Attacker;
+
+                    int lost = info.Lost;
+                    int reward = info.Reward;
+
+                    List<DataSlot> usedtroop = info.UsedTroop;
+
+                    int attackerscore = attacker.Avatar.GetScore();
+                    int defenderscore = defender.Avatar.GetScore();
+
+                    if (defender.Avatar.GetScore() > 0)
+                        defender.Avatar.SetScore(defenderscore -= lost);
+
+                    Logger.Write("Used troop type: " + usedtroop.Count);
+                    foreach(DataSlot a in usedtroop)
                     {
-                        Logger.Write("Unable to obtain attack info.");
+                        Logger.Write("Troop Name: " + a.Data.GetName());
+                        Logger.Write("Troop Used Value: " + a.Value);
                     }
-                    else
+                    attacker.Avatar.SetScore(attackerscore += reward);
+                    attacker.Avatar.AttackingInfo.Clear(); //Since we use userid for now,We need to clear to prevent overlapping
+                    Resources(attacker);
+
+                    Resources.DatabaseManager.Save(attacker);
+                    Resources.DatabaseManager.Save(defender);
+
+                }
+                player.State = UserState.Home;
+            }*/
+
+                ClientAvatar player = this.Device.Player.Avatar;
+                if (this.State == 0)
+                {
+                    if (this.Device.AttackInfo == "multiplayer")
                     {
-                        Level defender = info.Defender;
-                        Level attacker = info.Attacker;
-
-                        int lost = info.Lost;
-                        int reward = info.Reward;
-
-                        List<DataSlot> usedtroop = info.UsedTroop;
-
-                        int attackerscore = attacker.Avatar.GetScore();
-                        int defenderscore = defender.Avatar.GetScore();
-
-                        if (defender.Avatar.GetScore() > 0)
-                            defender.Avatar.SetScore(defenderscore -= lost);
-
-                        Logger.Write("Used troop type: " + usedtroop.Count);
-                        foreach(DataSlot a in usedtroop)
-                        {
-                            Logger.Write("Troop Name: " + a.Data.GetName());
-                            Logger.Write("Troop Used Value: " + a.Value);
-                        }
-                        attacker.Avatar.SetScore(attackerscore += reward);
-                        attacker.Avatar.AttackingInfo.Clear(); //Since we use userid for now,We need to clear to prevent overlapping
-                        Resources(attacker);
-
-                        Resources.DatabaseManager.Save(attacker);
-                        Resources.DatabaseManager.Save(defender);
-                    } 
-                    player.State = UserState.Home;
-                }*/
+                        Resources(Device.Player);
+                    }
+                }
                 if (State == 1)
                 {
                     this.Device.PlayerState = Logic.Enums.State.WAR_EMODE;
@@ -83,6 +89,7 @@ namespace UCS.Packets.Messages.Client
                 }
                 else
                 {
+                    this.Device.AttackInfo = null;
                     this.Device.PlayerState = Logic.Enums.State.LOGGED;
                     this.Device.Player.Tick();
                     Alliance alliance = ObjectManager.GetAlliance(this.Device.Player.Avatar.AllianceId);
@@ -104,18 +111,75 @@ namespace UCS.Packets.Messages.Client
             ClientAvatar avatar = level.Avatar;
             int currentGold = avatar.GetResourceCount(CSVManager.DataTables.GetResourceByName("Gold"));
             int currentElixir = avatar.GetResourceCount(CSVManager.DataTables.GetResourceByName("Elixir"));
+            int currentDarkElixir = avatar.GetResourceCount(CSVManager.DataTables.GetResourceByName("DarkElixir"));
             ResourceData goldLocation = CSVManager.DataTables.GetResourceByName("Gold");
             ResourceData elixirLocation = CSVManager.DataTables.GetResourceByName("Elixir");
+            ResourceData darkelixirLocation = CSVManager.DataTables.GetResourceByName("DarkElixir");
 
-            if (currentGold >= 1000000000 | currentElixir >= 1000000000)
+            Random random = new Random();
+    
+            int goldvalue = 0;
+            int elexirvalue = 0;
+            int darkelixirvalue = random.Next(500, 4200);
+            int chance = random.Next(100); // 0-99
+
+            if (chance < 50) // 50%
             {
-                avatar.SetResourceCount(goldLocation, currentGold + 10);
-                avatar.SetResourceCount(elixirLocation, currentElixir + 10);
+                darkelixirvalue = random.Next(500, 1000);
+                goldvalue = random.Next(10000, 420000);
+                elexirvalue = random.Next(10000, 420000);
+                avatar.SetScore(avatar.GetScore() + random.Next(10, 30));
             }
-            else if (currentGold <= 999999999 || currentElixir <= 999999999)
+            else if (chance < 80) // 30% (50-79)
             {
-                avatar.SetResourceCount(goldLocation, currentGold + 1000);
-                avatar.SetResourceCount(elixirLocation, currentElixir + 1000);
+                darkelixirvalue = random.Next(500, 4200);
+                goldvalue = random.Next(10000, 750000);
+                elexirvalue = random.Next(10000, 750000);
+                avatar.SetScore(avatar.GetScore() + random.Next(10, 20));
+            }
+            else if (chance < 95) // 15% (80-94)
+            {
+                darkelixirvalue = random.Next(1000, 4200);
+                goldvalue = random.Next(10000, 800000);
+                elexirvalue = random.Next(10000, 800000);
+                avatar.SetScore(avatar.GetScore() + random.Next(2, 30));
+            }
+            else // 5% (95-99)
+            {
+                darkelixirvalue = random.Next(1500, 4200);
+                goldvalue = random.Next(10000, 1000000);
+                elexirvalue = random.Next(10000, 1000000);
+                avatar.SetScore(avatar.GetScore() + random.Next(2, 10));
+            }
+
+            if (currentGold+goldvalue <= avatar.GetResourceCap(goldLocation))
+            {
+                avatar.SetResourceCount(goldLocation, currentGold + goldvalue);
+            }
+            else
+            {
+                avatar.SetResourceCount(goldLocation, avatar.GetResourceCap(goldLocation));
+            }
+
+            if (currentElixir+elexirvalue <= avatar.GetResourceCap(elixirLocation))
+            {
+                avatar.SetResourceCount(elixirLocation, currentElixir + elexirvalue);
+            }
+            else
+            {
+                avatar.SetResourceCount(elixirLocation, avatar.GetResourceCap(elixirLocation));
+            }
+
+            if (avatar.m_vTownHallLevel >= 7)
+            {
+                if (currentDarkElixir+darkelixirvalue <= avatar.GetResourceCap(darkelixirLocation))
+                {
+                    avatar.SetResourceCount(darkelixirLocation, currentDarkElixir + darkelixirvalue);
+                }
+                else
+                {
+                    avatar.SetResourceCount(darkelixirLocation, avatar.GetResourceCap(darkelixirLocation));
+                }
             }
         } 
     }

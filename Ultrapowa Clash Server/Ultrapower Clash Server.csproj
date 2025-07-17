@@ -277,6 +277,7 @@
     <Compile Include="Packets\Commands\Client\SpeedUpRequestUnitsCommand.cs" />
     <Compile Include="Packets\Commands\Server\ReceivedAllianceUnitCommand.cs" />
     <Compile Include="Packets\Crypto.cs" />
+    <Compile Include="Packets\GameOpCommands\AddGemsOpCommand.cs" />
     <Compile Include="Packets\GameOpCommands\MinRessourcesGameOpCommand.cs" />
     <Compile Include="Packets\GameOpCommands\ToggleBroadcastGameOpCommand.cs" />
     <Compile Include="Packets\Messages\BroadcastManager.cs" />

@@ -207,6 +207,11 @@ namespace UCS.Files.Logic
 
         public int WakeUpSpeed { get; set; }
 
+
+        public string getAbilityAffectsCharacter()
+        {
+            return TID;
+        }
         public override int GetCombatItemType() => 2;
 
         public int GetRequiredTownHallLevel(int level) => RequiredTownHallLevel[level];

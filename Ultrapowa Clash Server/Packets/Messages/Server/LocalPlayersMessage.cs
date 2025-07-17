@@ -31,15 +31,16 @@ namespace UCS.Packets.Messages.Server
                     data.AddString(pl.AvatarName);
                     data.AddInt(i + 1);
                     data.AddInt(pl.GetScore());
+                    // TODO
                     data.AddInt(i + 1);
                     data.AddInt(pl.m_vAvatarLevel);
-                    data.AddInt(100);
+                    data.AddInt(0);
                     data.AddInt(1);
-                    data.AddInt(100);
+                    data.AddInt(0);
                     data.AddInt(1);
                     data.AddInt(pl.m_vLeagueId);
                     data.AddString(pl.Region.ToUpper());
-                    data.AddLong(pl.AllianceId);
+                    data.AddLong(pl.UserId);
                     data.AddInt(1);
                     data.AddInt(1);
                     if (pl.AllianceId > 0)
@@ -52,6 +53,7 @@ namespace UCS.Packets.Messages.Server
                     }
                     else
                         data.Add(0);
+                    //data.AddInt(52);
                     i++;
                 }
                 catch (Exception) { }

@@ -18,7 +18,7 @@ namespace UCS.Packets.GameOpCommands
         }
         public override async void Execute(Level level)
         {
-            if (level.Avatar.AccountPrivileges >= GetRequiredAccountPrivileges())
+            if (GetRequiredAccountPrivileges())
             {
                 if (m_vArgs.Length >= 2)
                 {
@@ -63,6 +63,12 @@ namespace UCS.Packets.GameOpCommands
                                       "\nTown Hall Level : " + (acc.m_vTownHallLevel + 1) +
                                       "\nAlliance Castle Level : " + (acc.GetAllianceCastleLevel() + 1);
 
+                            GlobalChatLineMessage _MSG = new GlobalChatLineMessage(level.Client);
+                            _MSG.PlayerName = "Server";
+                            _MSG.LeagueId = 22;
+                            _MSG.Message = Message;
+                            _MSG.Send();
+                            /*
                             var avatar = level.Avatar;
                             AllianceMailStreamEntry mail = new AllianceMailStreamEntry();
                             mail.SenderId = avatar.UserId;
@@ -75,9 +81,10 @@ namespace UCS.Packets.GameOpCommands
                             mail.m_vSenderLevel = avatar.m_vAvatarLevel;
                             mail.m_vSenderLeagueId = avatar.m_vLeagueId;
 
-                            AvatarStreamEntryMessage p = new AvatarStreamEntryMessage(level.Client);
-                            p.SetAvatarStreamEntry(mail);
-                            Processor.Send(p);
+                            //AvatarStreamEntryMessage p = new AvatarStreamEntryMessage(level.Client);
+                            //p.SetAvatarStreamEntry(mail);
+                            //Processor.Send(p);
+                            */
                         }
                     }
                     catch (Exception)
@@ -88,7 +95,7 @@ namespace UCS.Packets.GameOpCommands
                             HomeId = level.Avatar.UserId,
                             CurrentHomeId = level.Avatar.UserId,
                             LeagueId = 22,
-                            PlayerName = "Ultrapower Clash Server AI"
+                            PlayerName = "Server"
                         };
 
                         Processor.Send(c);
@@ -103,7 +110,7 @@ namespace UCS.Packets.GameOpCommands
                         HomeId = level.Avatar.UserId,
                         CurrentHomeId = level.Avatar.UserId,
                         LeagueId = 22,
-                        PlayerName = "Ultrapower Clash Server AI"
+                        PlayerName = "Server"
                     };
                     Processor.Send(b);
                 }

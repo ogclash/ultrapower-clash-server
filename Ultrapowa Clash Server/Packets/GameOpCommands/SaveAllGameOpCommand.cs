@@ -16,7 +16,7 @@ namespace UCS.Packets.GameOpCommands
 
         public override async void Execute(Level level)
         {
-            if (level.Avatar.AccountPrivileges >= GetRequiredAccountPrivileges())
+            if (GetRequiredAccountPrivileges())
             {
                 /* Starting saving of players */
                 var pm = new GlobalChatLineMessage(level.Client)
@@ -25,7 +25,7 @@ namespace UCS.Packets.GameOpCommands
                     HomeId = 0,
                     CurrentHomeId = 0,
                     LeagueId = 22,
-                    PlayerName = "UCS Bot"
+                    PlayerName = "Server"
                 };
                 Processor.Send(pm);
                 Resources.DatabaseManager.Save(ResourcesManager.m_vInMemoryLevels.Values.ToList());
@@ -35,7 +35,7 @@ namespace UCS.Packets.GameOpCommands
                      HomeId = 0,
                     CurrentHomeId = 0,
                     LeagueId = 22,
-                    PlayerName = "UCS Bot"
+                    PlayerName = "Server"
                 };
                 /* Confirmation */
                 Processor.Send(p);
@@ -46,19 +46,20 @@ namespace UCS.Packets.GameOpCommands
                     HomeId = 0,
                     CurrentHomeId = 0,
                     LeagueId = 22,
-                    PlayerName = "UCS Bot"
+                    PlayerName = "Server"
                 };
                 Processor.Send(pmm);
                 /* Confirmation */
-                //var clans = Resources.DatabaseManager.Save(ResourcesManager.GetInMemoryAlliances());
-                //clans.Wait();
+                var clanlist = ResourcesManager.GetInMemoryAlliances();
+                var clans = Resources.DatabaseManager.Save(ResourcesManager.GetInMemoryAlliances());
+                clans.Wait();
                 var pmp = new GlobalChatLineMessage(level.Client)
                 {
                     Message = "All Clans are saved!",
                     HomeId = 0,
                     CurrentHomeId = 0,
                     LeagueId = 22,
-                    PlayerName = "UCS Bot"
+                    PlayerName = "Server"
                 };
                 Processor.Send(pmp);
             }
@@ -70,7 +71,7 @@ namespace UCS.Packets.GameOpCommands
                     HomeId = 0,
                     CurrentHomeId = 0,
                     LeagueId = 22,
-                    PlayerName = "UCS Bot"
+                    PlayerName = "Server"
                 };
 
                 Processor.Send(p);

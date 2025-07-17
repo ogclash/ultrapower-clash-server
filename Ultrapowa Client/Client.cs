@@ -20,11 +20,20 @@ namespace Ultrapowa_Client
         public void Connect(string _HostName, int _Port)
         {
             IPHostEntry ipHostInfo = Dns.GetHostEntry(_HostName);
-            IPAddress _IpAddress = ipHostInfo.AddressList[0];
+
+            // Prefer IPv4 address
+            IPAddress _IpAddress = ipHostInfo.AddressList.FirstOrDefault(ip => ip.AddressFamily == AddressFamily.InterNetwork);
+
+            if (_IpAddress == null)
+                throw new Exception("No IPv4 address found for host.");
+
             IPEndPoint _IPEndPoint = new IPEndPoint(_IpAddress, _Port);
-            _Socket.Bind(_IPEndPoint);
+
+            // Connect, don't bind
+            _Socket.Connect(_IPEndPoint);
 
             //Crypto...
         }
+
     }
 }

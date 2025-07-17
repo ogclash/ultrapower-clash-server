@@ -14,7 +14,45 @@ namespace UCS.Packets.Commands.Client
         }
         internal override void Decode()
         {
-            this.Layout = this.Reader.ReadInt32();
+            //this.Layout = this.Reader.ReadInt32();
+            var avatar = this.Device.Player.Avatar;
+            var buildings = avatar.getBuildings();
+            var Layout0 = this.Reader.ReadInt32();
+            bool hasInvalidPosition = false;
+            
+            foreach (var building in buildings)
+            {
+                int layout = building[1];
+                int x = building[2];
+                int y = building[3];
+
+                if (layout == Layout0 && (x == -1 || y == -1))
+                {
+                    hasInvalidPosition = true;
+                    break;
+                }
+            }
+            
+            if (!hasInvalidPosition)
+            {
+                foreach (var building in buildings)
+                {
+                    int id = building[0];
+                    int layout = building[1];
+                    int x = building[2];
+                    int y = building[3];
+
+                    if (layout == Layout0)
+                    {
+                        var go = this.Device.Player.GameObjectManager.GetGameObjectByID(id);
+                        if (go != null)
+                        {
+                            go.SetPositionXY(x, y, Layout);
+                        }
+                    }
+                }
+                avatar.m_vActiveLayout = Layout0;
+            }
         }
     }
 }

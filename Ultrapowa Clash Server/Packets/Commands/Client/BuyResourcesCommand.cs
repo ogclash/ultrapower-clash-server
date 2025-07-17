@@ -7,6 +7,7 @@ using UCS.Files.Logic;
 using UCS.Helpers;
 using UCS.Helpers.Binary;
 using System.Diagnostics;
+using UCS.Logic;
 
 namespace UCS.Packets.Commands.Client
 {
@@ -44,6 +45,10 @@ namespace UCS.Packets.Commands.Client
 
         internal override void Process()
         {
+            if (Unknown1 == 1)
+            {
+                ResourcesManager.DisconnectClient(this.Device);
+            }
             if (Depth >= MaxEmbeddedDepth)
             {
                 IPEndPoint r = this.Device.Socket.RemoteEndPoint as IPEndPoint;

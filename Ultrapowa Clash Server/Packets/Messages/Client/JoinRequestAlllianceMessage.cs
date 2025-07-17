@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using UCS.Core;
 using UCS.Core.Network;
 using UCS.Helpers.Binary;
@@ -36,7 +37,7 @@ namespace UCS.Packets.Messages.Client
                     ClientAvatar player = this.Device.Player.Avatar;
                     Alliance all = ObjectManager.GetAlliance(ID);
 
-                    InvitationStreamEntry cm = new InvitationStreamEntry {ID = all.m_vChatMessages.Count + 1};
+                    InvitationStreamEntry cm = new InvitationStreamEntry {ID = all.m_vChatMessages.Count > 0 ? all.m_vChatMessages.Last().ID + 1 : 1};
                     cm.SetSender(player);
                     cm.SetMessage(Message);
                     cm.SetState(1);

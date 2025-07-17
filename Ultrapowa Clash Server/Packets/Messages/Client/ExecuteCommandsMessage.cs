@@ -45,12 +45,13 @@ namespace UCS.Packets.Messages.Client
             {
                 using (Reader Reader = new Reader(this.Commands))
                 {
+                    //Logger.Write(BitConverter.ToString(this.Commands).Replace("-", " "));
                     for (int _Index = 0; _Index < this.Count; _Index++)
                     {
                         int CommandID = Reader.ReadInt32();
                         if (CommandFactory.Commands.ContainsKey(CommandID))
                         {
-                            Logger.Write("Command '" + CommandID + "' is handled");
+                            Logger.Say("Command '" + CommandID + "' is handled");
                             Command Command = Activator.CreateInstance(CommandFactory.Commands[CommandID], Reader, this.Device,CommandID) as Command;
 
                             if (Command != null)
@@ -64,11 +65,23 @@ namespace UCS.Packets.Messages.Client
                         else
                         {
                             Console.ForegroundColor = ConsoleColor.Red;
-                            Logger.Write("Command " + CommandID + " has not been handled.");
                             if (this.LCommands.Any())
-                                Logger.Write("Previous command was " + this.LCommands.Last().Identifier + ". [" + (_Index + 1) + " / " + this.Count + "]");
+                            {
+                                Logger.Say("\nCommand " + CommandID + " has not been handled.\nPrevious command was " + this.LCommands.Last().Identifier + ". [" + (_Index + 1) + " / " + this.Count + "]\n");
+                            }
+                            else
+                            {
+                                Logger.Say("\nCommand " + CommandID + " has not been handled.\nNo previous command was handled\n");
+                            }
                             Console.ResetColor();
-                            break;
+                            Command command = Activator.CreateInstance(CommandFactory.Commands[404], Reader, this.Device,CommandID) as Command;
+                            if (command != null)
+                            {
+                                command.Decode();
+                                command.Process();
+
+                                this.LCommands.Add(command);
+                            }
 
                         }
                     }

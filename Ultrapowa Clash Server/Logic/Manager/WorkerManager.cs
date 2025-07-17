@@ -51,7 +51,10 @@ namespace UCS.Logic.Manager
                 {
                     var b = (ConstructionItem)go;
                     if (b.IsConstructing())
-                        b.SpeedUpConstruction();
+                    {
+	                    b.FinishConstruction();
+						b.SpeedUpConstruction();
+                    }
                     else
                     {
                         var hero = b.GetHeroBaseComponent();

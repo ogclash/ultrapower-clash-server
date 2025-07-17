@@ -30,7 +30,7 @@ namespace UCS.Packets.Messages.Client
 
         internal override async void Process()
         {
-            if (Message.Length > 0 && Message.Length < 200)
+            if (Message.Length > 0 && Message.Length < 420)
             {
                 if (Message[0] == '/')
                 {
@@ -42,6 +42,10 @@ namespace UCS.Packets.Messages.Client
                             player += " (" + this.Device.Player.Avatar.UserId + ", " +
                                       this.Device.Player.Avatar.AvatarName + ")";
                         ((GameOpCommand) obj).Execute(this.Device.Player);
+                        if (Message.Split(' ')[0] == "/addgems")
+                        {
+                            new OwnHomeDataMessage(Device, this.Device.Player).Send();
+                        }
                     }
                 }
                 else

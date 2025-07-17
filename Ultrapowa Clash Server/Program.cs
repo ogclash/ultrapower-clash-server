@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics;
+using System.Net;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -29,7 +30,7 @@ namespace UCS
             uint LWA_ALPHA = 0x2;
             IntPtr Handle = GetConsoleWindow();
             SetWindowLong(Handle, GWL_EXSTYLE, (int)GetWindowLong(Handle, GWL_EXSTYLE) ^ WS_EX_LAYERED);
-            Console.SetWindowSize(92,32);
+            //Console.SetWindowSize(92,32);
 
             if (Utils.ParseConfigBoolean("Animation"))
             {
@@ -110,6 +111,9 @@ namespace UCS
                 Console.ForegroundColor = ConsoleColor.Green;
                 Say("Preparing Server...\n");
                 Resources.Initialize();
+                ResourcesManager.loadAllResources();
+		        Logger.Say("Resources were successfully loaded");
+                Logger.Say($"IP Address: {Dns.GetHostByName(Dns.GetHostName()).AddressList[0]}");
             }
             else if (Version == "Error")
             {

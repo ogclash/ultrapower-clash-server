@@ -76,6 +76,30 @@ namespace UCS.Core
             }
         }
 
+        public static async void loadAllResources()
+        {
+            var allAccounts = await Resources.DatabaseManager.GetAllAccountsFromDb();
+            var allAlliances = await Resources.DatabaseManager.GetAllAlliancesFromDbAsync();
+            foreach(var account in allAccounts)
+            {
+                if (account.Avatar.AvatarName != "NoNameYet")
+                {
+                    LoadLevel(account);
+                }
+            }
+
+            foreach(var alliance in allAlliances)
+            {
+                if (alliance.m_vAllianceMembers.Count() != 0)
+                {
+                    AddAllianceInMemory(alliance);
+                }
+
+            }
+
+            var test = "";
+        }
+
         public static List<long> GetAllPlayerIds() => m_vDatabase.GetAllPlayerIds();
 
         public static Device GetClient(IntPtr socketHandle) => m_vClients.ContainsKey(socketHandle) ? m_vClients[socketHandle] : null;
@@ -133,7 +157,7 @@ namespace UCS.Core
         {
             Resources.DatabaseManager.Save(level);
             m_vOnlinePlayers.Remove(level);
-            m_vInMemoryLevels.TryRemove(level.Avatar.UserId);
+            //m_vInMemoryLevels.TryRemove(level.Avatar.UserId);
             m_vClients.TryRemove(level.Client.SocketHandle);
             Program.TitleD();
         }
@@ -169,7 +193,7 @@ namespace UCS.Core
 
         public static void RemoveAllianceFromMemory(long key)
         {
-            m_vInMemoryAlliances.TryRemove(key);
+           // m_vInMemoryAlliances.TryRemove(key);
         }
 
         public static void SetGameObject(Level level, string json)

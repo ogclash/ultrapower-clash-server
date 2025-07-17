@@ -259,13 +259,13 @@ namespace UCS
 
             l.Avatar.SetName(txtPlayerName.Text);
             l.Avatar.SetScore(Convert.ToInt32(txtPlayerScore.Text));
-            l.Avatar.m_vCurrentGems = Convert.ToInt32(txtPlayerGems.Text);
+            l.Avatar.AddDiamonds(Convert.ToInt32(txtPlayerGems.Text)-l.Avatar.m_vCurrentGems);
             l.Avatar.SetTownHallLevel(Convert.ToInt32(txtTownHallLevel.Text));
             l.Avatar.AllianceId = Convert.ToInt32(txtAllianceID.Text);
             l.Avatar.m_vAvatarLevel = Convert.ToInt32(txtPlayerLevel.Text);
+            
             await Resources.DatabaseManager.Save(l);
-            var title = "Finished!";
-            MessageBox.Show("Player has been saved!", title, MessageBoxButtons.OK, MessageBoxIcon.Information);
+            Logger.Say("Player saved!");
             /* SAVE PLAYER */
         }
 
@@ -370,7 +370,7 @@ namespace UCS
             doc.Save(path);
             var title = "Ultrapower Clash Server Manager GUI";
             var message = "Changes has been saved!";
-            MessageBox.Show(message, title, MessageBoxButtons.OK, MessageBoxIcon.Information);
+            Logger.Say(message);
         }
 
         /* END OF CONFIG EDITOR TAB*/

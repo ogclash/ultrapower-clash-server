@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using UCS.Core.Settings;
 using UCS.Files;
 using UCS.Logic;
 using Timer = System.Threading.Timer;
@@ -51,8 +52,11 @@ namespace UCS.Core
             LoadNpcLevels();
             //LoadRandomBase(); // Useless atm
 
-            TimerReferenceRedis = new Timer(SaveRedis, null, 10000, 40000);
-            TimerReferenceMysql = new Timer(SaveMysql, null, 40000, 27000);
+            if (!Constants.DebugMode)
+            {
+                TimerReferenceRedis = new Timer(SaveRedis, null, 10000, 40000);
+                TimerReferenceMysql = new Timer(SaveMysql, null, 40000, 27000);
+            }
             Say($"UCS Database has been succesfully loaded. ({Convert.ToInt32(MaxAllianceID + MaxPlayerID)} Tables)");
         }
 

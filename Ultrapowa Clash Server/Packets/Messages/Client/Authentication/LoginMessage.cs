@@ -95,11 +95,11 @@ namespace UCS.Packets.Messages.Client
             this.Region = this.Reader.ReadString();
             this.AdvertisingGUID = this.Reader.ReadString();
             this.OSVersion = this.Reader.ReadString();
-            this.Android = this.Reader.ReadBoolean();
+            this.Android = true;
             this.Reader.ReadString();
             this.AndroidDeviceID = this.Reader.ReadString();
             this.FacebookDistributionID = this.Reader.ReadString();
-            this.IsAdvertisingTrackingEnabled = this.Reader.ReadBoolean();
+            this.IsAdvertisingTrackingEnabled = false;
             this.VendorGUID = this.Reader.ReadString();
             this.Seed = this.Reader.ReadUInt32();
             this.Reader.ReadByte();
@@ -185,18 +185,7 @@ namespace UCS.Packets.Messages.Client
                         }.Send();
                         return;
                     }
-
-                    string[] cv2 = ConfigurationManager.AppSettings["ClientVersion"].Split('.');
-                    string[] cv = ClientVersion.Split('.');
-                    if (cv[0] != cv2[0] || cv[1] != cv2[1] || cv[2] != cv2[2])
-                    {
-                        new LoginFailedMessage(Device)
-                        {
-                            ErrorCode = 8,
-                            UpdateUrl = Utils.ParseConfigString("UpdateUrl")
-                        }.Send();
-                        return;
-                    }
+                    
 
                     if (Convert.ToBoolean(ConfigurationManager.AppSettings["useCustomPatch"]) &&
                         MasterHash != ObjectManager.FingerPrint.sha)
@@ -224,12 +213,14 @@ namespace UCS.Packets.Messages.Client
             ResourcesManager.LogPlayerIn(level, Device);
             level.Avatar.Region = Resources.Region.GetIpCountry(level.Avatar.IPAddress = Device.IPAddress);
 
-            new LoginOkMessage(this.Device)
+            var message = new LoginOkMessage(this.Device)
             {
-                ServerMajorVersion = MajorVersion,
-                ServerBuild = MinorVersion,
-                ContentVersion = ContentVersion
-            }.Send();
+                ServerMajorVersion = 8,
+                ServerBuild = 709,
+                ContentVersion = 16
+            };
+            
+            message.Send();
 
             if (level.Avatar.AllianceId > 0)
             {
@@ -250,7 +241,7 @@ namespace UCS.Packets.Messages.Client
             new OwnHomeDataMessage(this.Device, level).Send();
             new BookmarkMessage(this.Device).Send();
 
-            if (ResourcesManager.IsPlayerOnline(level))
+            if (false)
             {
                 AllianceMailStreamEntry mail = new AllianceMailStreamEntry();
                 mail.ID = (int)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;

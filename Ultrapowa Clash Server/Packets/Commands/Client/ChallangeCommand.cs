@@ -25,15 +25,17 @@ namespace UCS.Packets.Commands
         {
             try
             {
+                /*
                 ClientAvatar player = this.Device.Player.Avatar;
                 long allianceID = player.AllianceId;
                 Alliance alliance = ObjectManager.GetAlliance(allianceID);
-
+                
                 ChallengeStreamEntry cm = new ChallengeStreamEntry() { Message = Message };
                 cm.SetSender(player);
-                cm.ID = alliance.m_vChatMessages.Count + 1;
+                cm.ID = alliance.m_vChatMessages.Count > 0 ? alliance.m_vChatMessages.Last().ID + 1 : 1;
                 alliance.AddChatMessage((ChallengeStreamEntry)cm);
-
+                
+                
                 StreamEntry s = alliance.m_vChatMessages.Find(c => c.GetStreamEntryType() == 12);
                 if (s != null)
                 {
@@ -49,6 +51,7 @@ namespace UCS.Packets.Commands
                         }
                     }
                 }
+                */
             }
             catch (Exception)
             {

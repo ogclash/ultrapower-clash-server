@@ -25,11 +25,27 @@ namespace UCS.Packets.Commands.Client
 
         internal override void Process()
         {
-            /*if (Layout != level.Avatar.GetActiveLayout())
+            var avatar = this.Device.Player.Avatar;
+            var buildings = avatar.getBuildings();
+            bool buildingFound = false;
+            for (int i = 0; i < buildings.Count; i++)
             {
-                GameObject go = level.GameObjectManager.GetGameObjectByID(BuildingID);
-                go.SetPositionXY(X, Y, Layout);
-            } */
+                var building = buildings[i];
+                if (building[0] == BuildingID && building[1] == Layout)
+                {
+                    buildings[i][2] = X;
+                    buildings[i][3] = Y;
+                    buildingFound = true;
+                    break;
+                }
+            }
+
+            if (!buildingFound)
+            {
+                buildings.Add(new int[4] { BuildingID, Layout, X, Y });
+            }
+            
+            avatar.setBuidlings(buildings);
         }
 
     }

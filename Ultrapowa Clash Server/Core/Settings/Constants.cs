@@ -16,6 +16,8 @@ namespace UCS.Core.Settings
 
         public const int CleanInterval               = 6000;
         public static int MaxOnlinePlayers           = Utils.ParseConfigInt("MaxOnlinePlayers");
+        
+        public static readonly bool DebugMode              = Utils.ParseConfigBoolean("DebugMode");
 
         internal const int SendBuffer = 2048;
         internal const int ReceiveBuffer = 2048;

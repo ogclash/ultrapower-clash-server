@@ -1,4 +1,5 @@
 ﻿using UCS.Helpers.Binary;
+using UCS.Logic.Enums;
 
 namespace UCS.Packets.Commands.Client
 {
@@ -16,6 +17,11 @@ namespace UCS.Packets.Commands.Client
             this.Y = this.Reader.ReadInt32();
             this.HeroID = this.Reader.ReadInt32();
             this.Tick = this.Reader.ReadInt32();
+            this.Device.PlayerState = State.IN_BATTLE;
+            if (this.Device.AttackInfo == null)
+            {
+                this.Device.AttackInfo = "multiplayer";
+            }
         }
 
         public int X;

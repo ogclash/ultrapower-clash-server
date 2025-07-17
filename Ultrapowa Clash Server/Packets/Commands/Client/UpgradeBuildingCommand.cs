@@ -41,7 +41,7 @@ namespace UCS.Packets.Commands.Client
                         if (this.Device.Player.HasFreeWorkers())
                         {
                             string name = this.Device.Player.GameObjectManager.GetGameObjectByID(BuildingId).GetData().GetName();
-                            Logger.Write("Building To Upgrade : " + name + " (" + BuildingId + ')');
+                            Logger.Say("Building To Upgrade : " + name + " (" + BuildingId + ')');
                             if (string.Equals(name, "Alliance Castle"))
                             {
                                 ca.IncrementAllianceCastleLevel();

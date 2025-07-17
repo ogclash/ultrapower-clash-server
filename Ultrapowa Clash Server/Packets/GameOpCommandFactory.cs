@@ -15,6 +15,7 @@ namespace UCS.Packets
             m_vCommands.Add("/ban", typeof(BanGameOpCommand));
             m_vCommands.Add("/kick", typeof(KickGameOpCommand));
             m_vCommands.Add("/rename", typeof(RenameAvatarGameOpCommand));
+            m_vCommands.Add("/addgems", typeof(AddGemsOpCommand));
             m_vCommands.Add("/setprivileges", typeof(SetPrivilegesGameOpCommand));
             m_vCommands.Add("/shutdown", typeof(ShutdownServerGameOpCommand));
             m_vCommands.Add("/unban", typeof(UnbanGameOpCommand));
@@ -30,6 +31,7 @@ namespace UCS.Packets
             m_vCommands.Add("/status", typeof(ServerStatusGameOpCommand));
             m_vCommands.Add("/help", typeof(HelpGameOpCommand));
             m_vCommands.Add("/accinfo", typeof(AccountInformationGameOpCommand));
+            m_vCommands.Add("/togglebroadcast", typeof(ToggleBroadcastGameOpCommand));
         }
 
         public static object Parse(string command)

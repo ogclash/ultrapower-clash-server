@@ -31,16 +31,17 @@ namespace UCS.Packets.Messages.Client
             this.Reader.ReadInt32();
             this.MessageID = this.Reader.ReadInt32();
             this.BuyTroop = this.Reader.ReadByte();
+            var unkown = "this.Reader.ReadByte()";
         }
 
         internal override async void Process()
         {
             try
             {
-                /*if (this.BuyTroop >= 1)
+                if (this.BuyTroop >= 1)
                 {     
-                    this.Device.Player.Avatar.SetDiamonds(this.Device.Player.Avatar.m_vCurrentGems - Troop.GetHousingSpace());
-                }*/
+                    //this.Device.Player.Avatar.UseDiamonds(this.Device.Player.Avatar.m_vCurrentGems - Troop.GetHousingSpace());
+                }
 
                 Alliance a = ObjectManager.GetAlliance(this.Device.Player.Avatar.AllianceId);
                 StreamEntry _Stream = a.m_vChatMessages.Find(c => c.ID == MessageID);
@@ -83,6 +84,18 @@ namespace UCS.Packets.Messages.Client
                         if (player.Client != null)
                         {
                             new AllianceStreamEntryMessage(player.Client) { StreamEntry = _Stream }.Send();
+                        }
+                    }
+                }
+                if (upcomingspace == _Stream.m_vMaxTroop)
+                {
+                    a.m_vChatMessages.RemoveAll(t => t == _Stream);
+                    foreach (AllianceMemberEntry op in a.GetAllianceMembers())
+                    {
+                        Level aplayer = await ResourcesManager.GetPlayer(op.AvatarId);
+                        if (aplayer.Client != null)
+                        {
+                            new AllianceStreamEntryRemovedMessage(aplayer.Client, _Stream.ID).Send();
                         }
                     }
                 }

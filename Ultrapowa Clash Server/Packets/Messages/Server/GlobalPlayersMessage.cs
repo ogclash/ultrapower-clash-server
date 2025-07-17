@@ -26,7 +26,7 @@ namespace UCS.Packets.Messages.Server
             {
                 try
                 {
-                    if (player.Avatar.m_vAvatarLevel >= 70)
+                    if (player.Avatar.m_vAvatarLevel >= 1)
                     {
                         var pl = player.Avatar;
                         if (i >= 100)
@@ -37,9 +37,11 @@ namespace UCS.Packets.Messages.Server
                         packet1.AddInt(pl.GetScore());
                         packet1.AddInt(i + 1);
                         packet1.AddInt(pl.m_vAvatarLevel);
-                        packet1.AddInt(100);
+                        //Attacks
+                        packet1.AddInt(0);
                         packet1.AddInt(i);
-                        packet1.AddInt(100);
+                        //Defense
+                        packet1.AddInt(0);
                         packet1.AddInt(1);
                         packet1.AddInt(pl.m_vLeagueId);
                         packet1.AddString(pl.Region.ToUpper());

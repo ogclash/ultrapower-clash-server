@@ -30,14 +30,41 @@ namespace UCS.Packets.Commands.Client
 				{
                     List<DataSlot> _PlayerUnits = player.GetUnits();
                     DataSlot _DataSlot = _PlayerUnits.Find(t => t.Data.GetGlobalID() == i.Data.GetGlobalID());
+                    var gameobjects = this.Device.Player.GameObjectManager.GetComponentManager();
+                    var troops = 0;
+                    foreach (var unit in _PlayerUnits)
+                    {
+	                    var unitData = (UCS.Files.Logic.CharacterData) unit.Data;
+	                    var housingSpace = unitData.HousingSpace;
+	                    troops += unit.Value * housingSpace;
+                    }
+
+                    int maxTrainableUnits = i.Value;
                     if (_DataSlot != null)
                     {
-                        _DataSlot.Value = _DataSlot.Value + i.Value;
+	                    var unitData = (UCS.Files.Logic.CharacterData) _DataSlot.Data;
+	                    var housingSpace = unitData.HousingSpace;
+	                    
+	                    int housingLeft = gameobjects.GetTotalMaxHousing() - troops;
+	                    if (i.Value * housingSpace > housingLeft)
+	                    {
+		                    maxTrainableUnits = housingLeft / housingSpace;
+	                    }
+	                    
+	                    troops += maxTrainableUnits * housingSpace;
                     }
-                    else
+
+                    if (troops <= gameobjects.GetTotalMaxHousing())
                     {
-                        DataSlot ds = new DataSlot(i.Data, i.Value);
-                        _PlayerUnits.Add(ds);
+	                    if (_DataSlot != null)
+	                    {
+	                        _DataSlot.Value = _DataSlot.Value + maxTrainableUnits;
+	                    }
+	                    else
+	                    {
+		                    DataSlot ds = new DataSlot(i.Data, maxTrainableUnits);
+		                    _PlayerUnits.Add(ds);
+	                    }
                     }
                 }
             }
@@ -47,16 +74,42 @@ namespace UCS.Packets.Commands.Client
 				{
                     List<DataSlot> _PlayerUnits = player.GetUnits();
                     DataSlot _DataSlot = _PlayerUnits.Find(t => t.Data.GetGlobalID() == i.Data.GetGlobalID());
+                    var gameobjects = this.Device.Player.GameObjectManager.GetComponentManager();
+                    var troops = 0;
+                    foreach (var unit in _PlayerUnits)
+                    {
+	                    var unitData = (UCS.Files.Logic.CharacterData) unit.Data;
+	                    var housingSpace = unitData.HousingSpace;
+	                    troops += unit.Value * housingSpace;
+                    }
+
+                    int maxTrainableUnits = i.Value;
                     if (_DataSlot != null)
                     {
-                        _DataSlot.Value = _DataSlot.Value + i.Value;
+	                    var unitData = (UCS.Files.Logic.CharacterData) _DataSlot.Data;
+	                    var housingSpace = unitData.HousingSpace;
+	                    
+	                    int housingLeft = gameobjects.GetTotalMaxHousing() - troops;
+	                    if (i.Value * housingSpace > housingLeft)
+	                    {
+							maxTrainableUnits = housingLeft / housingSpace;
+	                    }
+	                    troops += maxTrainableUnits * housingSpace;
                     }
-                    else
+
+                    if (troops <= gameobjects.GetTotalMaxHousing())
                     {
-                        DataSlot ds = new DataSlot(i.Data, i.Value);
-                        _PlayerUnits.Add(ds);
+	                    if (_DataSlot != null)
+	                    {
+		                    _DataSlot.Value = _DataSlot.Value + maxTrainableUnits;
+	                    }
+	                    else
+	                    {
+		                    DataSlot ds = new DataSlot(i.Data, maxTrainableUnits);
+		                    _PlayerUnits.Add(ds);
+	                    }
                     }
-                }
+				}
 			}
 			else if (DataSlotID == 3)
 			{
@@ -64,17 +117,45 @@ namespace UCS.Packets.Commands.Client
 				{
                     List<DataSlot> _PlayerUnits = player.GetUnits();
                     DataSlot _DataSlot = _PlayerUnits.Find(t => t.Data.GetGlobalID() == i.Data.GetGlobalID());
+                    var gameobjects = this.Device.Player.GameObjectManager.GetComponentManager();
+                    var troops = 0;
+                    foreach (var unit in _PlayerUnits)
+                    {
+	                    var unitData = (UCS.Files.Logic.CharacterData) unit.Data;
+	                    var housingSpace = unitData.HousingSpace;
+	                    troops += unit.Value * housingSpace;
+                    }
+
+                    int maxTrainableUnits = i.Value;
                     if (_DataSlot != null)
                     {
-                        _DataSlot.Value = _DataSlot.Value + i.Value;
+	                    var unitData = (UCS.Files.Logic.CharacterData) _DataSlot.Data;
+	                    var housingSpace = unitData.HousingSpace;
+	                    
+	                    int housingLeft = gameobjects.GetTotalMaxHousing() - troops;
+	                    if (i.Value * housingSpace > housingLeft)
+	                    {
+		                    maxTrainableUnits = housingLeft / housingSpace;
+	                    }
+	                    
+	                    troops += maxTrainableUnits * housingSpace;
                     }
-                    else
+
+                    if (troops <= gameobjects.GetTotalMaxHousing())
                     {
-                        DataSlot ds = new DataSlot(i.Data, i.Value);
-                        _PlayerUnits.Add(ds);
+	                    if (_DataSlot != null)
+	                    {
+		                    _DataSlot.Value = _DataSlot.Value + maxTrainableUnits;
+	                    }
+	                    else
+	                    {
+		                    DataSlot ds = new DataSlot(i.Data, maxTrainableUnits);
+		                    _PlayerUnits.Add(ds);
+	                    }
                     }
-                }
-			}			
+				}
+			}
 		}
+		
 	}
 }

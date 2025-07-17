@@ -24,7 +24,7 @@ namespace UCS.Packets.Messages.Server
             this.Data.AddInt(m_vHomeAlliance.m_vAllianceLevel); // 1 Alliance Level
 
             this.Data.AddLong(9999); // 2 Alliance ID
-            this.Data.AddString("Ultrapower"); // 2 Alliance Name
+            this.Data.AddString("Bug Stars"); // 2 Alliance Name
             this.Data.AddInt(0); // 2 Alliance Badge
             this.Data.AddInt(1); // 2 Alliance Level
 
@@ -34,8 +34,8 @@ namespace UCS.Packets.Messages.Server
             this.Data.AddInt(0); // 1 Village Destroyed
             this.Data.AddInt(100); // 2 Village Destroyed
 
-            this.Data.AddInt(0); // 1 Unknown
-            this.Data.AddInt(0); // 2 Unknown
+            this.Data.AddInt(50); // 1 Unknown
+            this.Data.AddInt(50); // 2 Unknown
 
             this.Data.AddInt(100); // Attack Used
             this.Data.AddInt(4000); // XP Earned

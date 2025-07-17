@@ -20,7 +20,7 @@ namespace UCS.Packets.GameOpCommands
 
         public override void Execute(Level level)
         {
-            if (level.Avatar.AccountPrivileges >= GetRequiredAccountPrivileges())
+            if (GetRequiredAccountPrivileges())
             {
                 if (m_vArgs.Length >= 1)
                 {

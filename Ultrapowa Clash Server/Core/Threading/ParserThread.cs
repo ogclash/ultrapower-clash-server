@@ -16,6 +16,7 @@ using UCS.Packets.Messages.Server;
 using UCS.Core.Checker;
 using UCS.Core.Web;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace UCS.Helpers
 {
@@ -92,20 +93,28 @@ namespace UCS.Helpers
                             break;
 
                         case "/saveall":
-                            Console.ForegroundColor = ConsoleColor.Yellow;
-                            Console.WriteLine("----------------------------------------------------->");
-                            Say($"Starting saving of all Players... ({ResourcesManager.m_vInMemoryLevels.Count})");
-                            Resources.DatabaseManager.Save(ResourcesManager.m_vInMemoryLevels.Values.ToList()).Wait();
-                            Say("Finished saving of all Players!");
-                            Say($"Starting saving of all Alliances... ({ResourcesManager.GetInMemoryAlliances().Count})");
-                            Resources.DatabaseManager.Save(ResourcesManager.GetInMemoryAlliances()).Wait();
-                            Say("Finished saving of all Alliances!");
-                            Console.ForegroundColor = ConsoleColor.Yellow;
-                            Console.WriteLine("----------------------------------------------------->");
-                            Console.ResetColor();
+                            Task.Run(async () =>
+                            {
+                                while (true)
+                                {
+                                    Console.ForegroundColor = ConsoleColor.Yellow;
+                                    Console.WriteLine("----------------------------------------------------->");
+                                    Say($"Starting saving of all Players... ({ResourcesManager.m_vInMemoryLevels.Count})");
+                                    await Resources.DatabaseManager.Save(ResourcesManager.m_vInMemoryLevels.Values.ToList());
+                                    Say("Finished saving of all Players!");
+                                    Say($"Starting saving of all Alliances... ({ResourcesManager.GetInMemoryAlliances().Count})");
+                                    await Resources.DatabaseManager.Save(ResourcesManager.GetInMemoryAlliances());
+                                    Say("Finished saving of all Alliances!");
+                                    Console.ForegroundColor = ConsoleColor.Yellow;
+                                    Console.WriteLine("----------------------------------------------------->");
+                                    Console.ResetColor();
+
+                                    await Task.Delay(5000); // wait 5 seconds before next run
+                                }
+                            });
+                            Say("Auto-saving every 5 seconds started.");
                             break;
 
-                        
 
                         case "/maintenance":
                             StartMaintenance();

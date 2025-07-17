@@ -49,12 +49,23 @@ namespace UCS.Logic
                     result = GetParent().Avatar.Avatar.m_vTownHallLevel >= requiredThLevel;
                 }
             }
-            return result;
+            return true;
         }
 
         public void FinishUpgrading()
         {
             var ca = GetParent().Avatar.Avatar;
+            var herostate = ca.getHerostate();
+            for (int i = 0; i < herostate.Count; i++)
+            {
+                if (this.m_vHeroData == herostate[i].Data)
+                {
+                    var modifiedHero = herostate[i];
+                    modifiedHero.Value = 3;
+                    herostate[i] = modifiedHero; // Reassign to the list
+                }
+            }
+            ca.setHeroState(herostate);
             var currentLevel = ca.GetUnitUpgradeLevel(m_vHeroData);
             ca.SetUnitUpgradeLevel(m_vHeroData, currentLevel + 1);
             GetParent().Avatar.WorkerManager.DeallocateWorker(GetParent());
@@ -119,6 +130,18 @@ namespace UCS.Logic
 
         public void StartUpgrading()
         {
+            var ca = GetParent().Avatar.Avatar;
+            var herostate = ca.getHerostate();
+            for (int i = 0; i < herostate.Count; i++)
+            {
+                if (this.m_vHeroData == herostate[i].Data)
+                {
+                    var modifiedHero = herostate[i];
+                    modifiedHero.Value = 1;
+                    herostate[i] = modifiedHero; // Reassign to the list
+                }
+            }
+            ca.setHeroState(herostate);
             if (CanStartUpgrading())
             {
                 GetParent().Avatar.WorkerManager.AllocateWorker(GetParent());

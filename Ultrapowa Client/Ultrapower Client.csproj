@@ -8,7 +8,7 @@
     <OutputType>Exe</OutputType>
     <RootNamespace>Ultrapowa_Client</RootNamespace>
     <AssemblyName>Ultrapower Client</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <NuGetPackageImportStamp>

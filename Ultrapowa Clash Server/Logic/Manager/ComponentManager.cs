@@ -15,9 +15,9 @@ namespace UCS.Logic.Manager
             m_vLevel = l;
         }
 
-        readonly List<List<Component>> m_vComponents;
+        internal List<List<Component>> m_vComponents;
 
-        readonly Level m_vLevel;
+        internal Level m_vLevel;
 
         public void AddComponent(Component c) => m_vComponents[c.Type].Add(c);
 

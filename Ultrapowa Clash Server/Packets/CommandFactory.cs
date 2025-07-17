@@ -63,6 +63,7 @@ namespace UCS.Packets
                 {546, typeof(EditVillageLayoutCommand)},
                 {549, typeof(UpgradeMultipleBuildingsCommand)},
                 {550, typeof(RemoveUnitsCommand)},
+                {548, typeof(SaveVillageLayoutCommand)},
                 {552, typeof(SaveVillageLayoutCommand)},
                 {553, typeof(ClientServerTickCommand)},
                 {554, typeof(RotateDefenseCommand)},
@@ -93,8 +94,11 @@ namespace UCS.Packets
             //Commands.Add(3, typeof(ChangeAvatarCommand));
             //Commands.Add(5, typeof());
             //Commands.Add(551, typeof(ContinueBarrackBoostCommand));
-            //Commands.Add(563, typeof(CollectClanResourcesCommand));
+            Commands.Add(563, typeof(CollectClanResourcesCommand));
             //Commands.Add(573, typeof(RemoveShieldToAttackCommand));
+            
+            
+            Commands.Add(404, typeof(UnknownCommand));
         }
     }
 }

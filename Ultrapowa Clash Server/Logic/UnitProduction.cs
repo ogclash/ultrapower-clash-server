@@ -75,14 +75,14 @@ namespace UCS.Logic
             return count;
         }
 
-        /*public int GetMaxTrainCount()
+        public int GetMaxTrainCount()
         {
             return 0;
-        }*/
+        }
 
-        //public bool CanAddUnitToQueue(CombatItemData cd) => GetMaxTrainCount() >= GetTotalCount() + cd.GetHousingSpace();
+        public bool CanAddUnitToQueue(CombatItemData cd) => GetMaxTrainCount() >= GetTotalCount() + cd.GetHousingSpace();
 
-        /*public override void Load(JObject jsonObject)
+        public override void Load(JObject jsonObject)
         {
             JObject unitProdObject = (JObject)jsonObject["unit_prod"];
             m_vIsSpellForge = unitProdObject["unit_type"].ToObject<int>() == 1;

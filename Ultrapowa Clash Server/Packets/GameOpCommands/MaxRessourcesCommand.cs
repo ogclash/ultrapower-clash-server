@@ -14,7 +14,7 @@ namespace UCS.Packets.GameOpCommands
 
         public override void Execute(Level level)
         {
-            if (level.Avatar.AccountPrivileges >= GetRequiredAccountPrivileges())
+            if (GetRequiredAccountPrivileges())
             {
                 var p = level.Avatar;
                 p.SetResourceCount(CSVManager.DataTables.GetResourceByName("Gold"), 999999999);

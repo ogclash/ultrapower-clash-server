@@ -27,19 +27,17 @@ namespace UCS.Packets.Commands.Client
                 var hbc = b.GetHeroBaseComponent();
                 if (hbc != null)
                 {
-                    if (hbc.CanStartUpgrading())
+                    var hd = CSVManager.DataTables.GetHeroByName(b.GetBuildingData().HeroType);
+                    var currentLevel = ca.GetUnitUpgradeLevel(hd);
+                    var rd = hd.GetUpgradeResource(currentLevel);
+                    var cost = hd.GetUpgradeCost(currentLevel);
+                    if (ca.HasEnoughResources(rd, cost))
                     {
-                        var hd = CSVManager.DataTables.GetHeroByName(b.GetBuildingData().HeroType);
-                        var currentLevel = ca.GetUnitUpgradeLevel(hd);
-                        var rd = hd.GetUpgradeResource(currentLevel);
-                        var cost = hd.GetUpgradeCost(currentLevel);
-                        if (ca.HasEnoughResources(rd, cost))
+                        ca.SetResourceCount(rd, ca.GetResourceCount(rd) - cost);
+                        if (this.Device.Player.HasFreeWorkers())
                         {
-                            if (this.Device.Player.HasFreeWorkers())
-                            {
-                                Logger.Write("Hero To Upgrade : " + b.GetData().GetName() + " (" + BuildingId + ')');
-                                hbc.StartUpgrading();
-                            }
+                            Logger.Write("Hero To Upgrade : " + b.GetData().GetName() + " (" + BuildingId + ')');
+                            hbc.StartUpgrading();
                         }
                     }
                 }

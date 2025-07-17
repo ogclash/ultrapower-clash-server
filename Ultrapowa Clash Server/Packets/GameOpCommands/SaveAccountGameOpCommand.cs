@@ -15,7 +15,7 @@ namespace UCS.Packets.GameOpCommands
 
         public override async void Execute(Level level)
         {
-            if (level.Avatar.AccountPrivileges >= GetRequiredAccountPrivileges())
+            if (GetRequiredAccountPrivileges())
             {
                 Resources.DatabaseManager.Save(level);
                 var p = new GlobalChatLineMessage(level.Client)
@@ -24,21 +24,21 @@ namespace UCS.Packets.GameOpCommands
                     HomeId = 0,
                     CurrentHomeId = 0,
                     LeagueId = 22,
-                    PlayerName = "UCS Bot"
+                    PlayerName = "Server"
                 };
                 Processor.Send(p);
             }
             else
             {
+                Resources.DatabaseManager.Save(level);
                 var p = new GlobalChatLineMessage(level.Client)
                 {
-                    Message = "GameOp command failed. Access to Admin GameOP is prohibited.",
+                    Message = "Game Successfuly Saved!",
                     HomeId = 0,
                     CurrentHomeId = 0,
                     LeagueId = 22,
-                    PlayerName = "UCS Bot"
+                    PlayerName = "Server"
                 };
-
                 Processor.Send(p);
             }
         }

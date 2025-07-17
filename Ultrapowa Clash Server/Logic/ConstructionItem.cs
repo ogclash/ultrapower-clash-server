@@ -3,6 +3,7 @@ using Newtonsoft.Json.Linq;
 using UCS.Core;
 using UCS.Files.Logic;
 using UCS.Helpers;
+using UCS.Packets;
 
 namespace UCS.Logic
 {
@@ -82,9 +83,9 @@ namespace UCS.Logic
 
         public void FinishConstruction()
         {
+            SetUpgradeLevel(GetUpgradeLevel() + 1);
             m_vIsConstructing = false;
             m_vLevel.WorkerManager.DeallocateWorker(this);
-            SetUpgradeLevel(GetUpgradeLevel() + 1);
             if (GetResourceProductionComponent() != null)
             {
                 GetResourceProductionComponent().Reset();
@@ -287,6 +288,8 @@ namespace UCS.Logic
         public void SetUpgradeLevel(int level)
         {
             UpgradeLevel = level;
+            var ConstData = GetResourceProductionComponent();
+            //Logger.Say("Upgrade performed\n");
             if (GetConstructionItemData().IsTownHall())
             {
                 Avatar.Avatar.SetTownHallLevel(level);
@@ -295,6 +298,7 @@ namespace UCS.Logic
             {
                 if (GetUnitStorageComponent(true) != null)
                 {
+                    //Avatar.GetComponentManager().reloadComponents(Avatar);
                     var data = (BuildingData) GetData();
                     if (data.GetUnitStorageCapacity(level) > 0)
                     {
@@ -316,17 +320,11 @@ namespace UCS.Logic
 
         public void SpeedUpConstruction()
         {
-            if (IsConstructing())
-            {
-                ClientAvatar ca      = Avatar.Avatar;
-                int remainingSeconds = m_vTimer.GetRemainingSeconds(m_vLevel.Avatar.LastTickSaved);
-                int cost             = GamePlayUtil.GetSpeedUpCost(remainingSeconds);
-                if (ca.HasEnoughDiamonds(cost))
-                {
-                    ca.UseDiamonds(cost);
-                    FinishConstruction();
-                }
-            }
+            //FinishConstruction();
+            ClientAvatar ca      = Avatar.Avatar;
+            int remainingSeconds = m_vTimer.GetRemainingSeconds(m_vLevel.Avatar.LastTickSaved);
+            int cost             = GamePlayUtil.GetSpeedUpCost(remainingSeconds);
+            ca.UseDiamonds(cost);
         }
 
         public void StartConstructing(int newX, int newY)

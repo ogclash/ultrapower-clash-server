@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
 using UCS.Helpers;
 using UCS.Helpers.List;
+using UCS.Packets.Messages.Client;
 
 namespace UCS.Logic.StreamEntry
 {
@@ -18,6 +19,16 @@ namespace UCS.Logic.StreamEntry
         }
 
         public override int GetStreamEntryType() => 2;
+
+        public string getMessage()
+        {
+            return Message;
+        }
+
+        public void setMessage(string input)
+        {
+            Message = input;
+        }
 
         public override void Load(JObject jsonObject)
         {

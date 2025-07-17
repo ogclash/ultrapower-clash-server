@@ -46,6 +46,7 @@ namespace UCS.Packets
         internal string AdvertiseID;
         internal string VendorID;
         internal string IPAddress;
+        internal string AttackInfo;
 
         internal uint ClientSeed;
 
@@ -112,10 +113,10 @@ namespace UCS.Packets
                         {
                             this.Process(Reader.ReadBytes((Buffer.Length - 7) - _Header[1]));
                         }
-                        // else
-                        //{
-                        //   this.Token.Reset();
-                        //}
+                        else
+                        {
+                           this.Token.Reset();
+                        }
                     }
                 }
             }

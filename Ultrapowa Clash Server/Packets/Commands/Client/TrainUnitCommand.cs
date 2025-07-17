@@ -34,14 +34,31 @@ namespace UCS.Packets.Commands.Client
         internal override void Process()
         {
             ClientAvatar _Player = this.Device.Player.Avatar;
-
+            
             if (UnitType.ToString().StartsWith("400"))
             {
                 CombatItemData _TroopData = (CombatItemData)CSVManager.DataTables.GetDataById(UnitType);
                 List<DataSlot> _PlayerUnits = this.Device.Player.Avatar.GetUnits();
                 ResourceData _TrainingResource = _TroopData.GetTrainingResource();
 
+                var gameobjects = this.Device.Player.GameObjectManager.GetComponentManager();
+                var troops = 0;
+                foreach (var unit in _PlayerUnits)
+                {
+                    var unitData = (UCS.Files.Logic.CharacterData) unit.Data;
+                    var housingSpace = unitData.HousingSpace;
+                    troops += unit.Value * housingSpace;
+                }
+
                 if (_TroopData != null)
+                {
+                    var unitData = (UCS.Files.Logic.CharacterData)_TroopData;
+                    var housingSpace = unitData.HousingSpace;
+                    troops += Count * housingSpace;
+                }
+                else
+                    return;
+                if (troops <= gameobjects.GetTotalMaxHousing())
                 {
                     DataSlot _DataSlot = _PlayerUnits.Find(t => t.Data.GetGlobalID() == _TroopData.GetGlobalID());
                     if (_DataSlot != null)
@@ -63,7 +80,16 @@ namespace UCS.Packets.Commands.Client
                 List<DataSlot> _PlayerSpells = this.Device.Player.Avatar.GetSpells();
                 ResourceData _CastResource = _SpellData.GetTrainingResource();
 
-                if (_SpellData != null)
+                var gameobjects = this.Device.Player.GameObjectManager.GetComponentManager();
+                var spells = 0;
+                foreach (var unit in _PlayerSpells)
+                {
+                    var unitData = (UCS.Files.Logic.SpellData) unit.Data;
+                    var housingSpace = unitData.HousingSpace;
+                    spells += unit.Value * housingSpace;
+                }
+                
+                if (_SpellData != null && spells < gameobjects.GetTotalMaxHousing(true))
                 {
                     DataSlot _DataSlot = _PlayerSpells.Find(t => t.Data.GetGlobalID() == _SpellData.GetGlobalID());
                     if (_DataSlot != null)

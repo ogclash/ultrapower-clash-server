@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Linq;
 using UCS.Core;
 using UCS.Core.Network;
 using UCS.Helpers.Binary;
@@ -47,7 +48,7 @@ namespace UCS.Packets.Messages.Client
                         c.Tick(this.Device.Player);
 
                         AllianceEventStreamEntry eventStreamEntry = new AllianceEventStreamEntry();
-                        eventStreamEntry.ID = alliance.m_vChatMessages.Count + 1;
+                        eventStreamEntry.ID = alliance.m_vChatMessages.Count > 0 ? alliance.m_vChatMessages.Last().ID + 1 : 1;
                         eventStreamEntry.SetSender(this.Device.Player.Avatar);
                         eventStreamEntry.EventType = 3;
                         alliance.AddChatMessage(eventStreamEntry);

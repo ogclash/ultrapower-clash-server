@@ -1,4 +1,6 @@
 ﻿using UCS.Helpers.Binary;
+using UCS.Logic;
+using UCS.Logic.Manager;
 
 namespace UCS.Packets.Commands.Client
 {
@@ -7,12 +9,17 @@ namespace UCS.Packets.Commands.Client
     {
         public ToggleAttackModeCommand(Reader reader, Device client, int id) : base(reader, client, id)
         {
-            /*
-            BuildingId = br.ReadUInt32WithEndian(); //buildingId - 0x1DCD6500;
-            Unknown1 = br.ReadByte();
-            Unknown2 = br.ReadUInt32WithEndian();
-            Unknown3 = br.ReadUInt32WithEndian();
-            */
+            
+            BuildingId = reader.ReadUInt32(); //buildingId - 0x1DCD6500;
+            Unknown1 = reader.ReadByte();
+            Unknown2 = reader.ReadUInt32();
+            Unknown3 = reader.ReadUInt32();
+            var go = this.Device.Player.GameObjectManager.GetGameObjectByID((int)BuildingId);
+            if (go?.GetComponent(1, true) != null)
+                ((CombatComponent) go.GetComponent(1, true)).toggleMode();
+            /*var go = this.Device.Player.GameObjectManager.GetGameObjectByID((int)BuildingId);
+            var test = "test";*/
+
         }
 
         public uint BuildingId { get; set; }

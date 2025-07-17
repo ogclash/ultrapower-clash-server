@@ -11,6 +11,7 @@ using static System.Convert;
 using static System.Configuration.ConfigurationManager;
 using UCS.Logic.DataSlots;
 using System.Threading.Tasks;
+using Facebook;
 using UCS.Helpers.List;
 
 namespace UCS.Logic
@@ -18,7 +19,7 @@ namespace UCS.Logic
     internal class ClientAvatar : Avatar
     {
         // Long
-        internal long AllianceId            = 0;
+        internal long AllianceId = 0;
         internal long CurrentHomeId;
         internal long UserId;
 
@@ -27,28 +28,30 @@ namespace UCS.Logic
         internal int LowID;
         internal int m_vAvatarLevel;
         internal int m_vCurrentGems;
-        internal int m_vExperience          = 0;
+        internal int m_vExperience = 0;
         internal int m_vLeagueId;
         internal int m_vScore;
         internal int m_vDonatedUnits;
         internal int m_vRecievedUnits;
         internal int m_vActiveLayout;
-        internal int m_vAlliance_Gold       = 2800000;
-        internal int m_vAlliance_Elixir     = 2800000;
-        internal int m_vAlliance_DarkElixir = 14400;
+        internal int m_vAlliance_Gold = 0;
+        internal int m_vAlliance_Elixir = 0;
+        internal int m_vAlliance_DarkElixir = 0;
         internal int m_vShieldTime;
         internal int m_vProtectionTime;
-        internal int ReportedTimes          = 0;
+        internal int ReportedTimes = 0;
         internal int m_vDonated;
         internal int m_vReceived;
 
         // UInt
-        internal uint TutorialStepsCount    = 0x0A;
+        internal uint TutorialStepsCount = 0x0A;
 
         // Byte
-        internal byte m_vNameChangingLeft   = 0x02;
-        internal byte m_vnameChosenByUser   = 0x00;
-        internal byte AccountPrivileges     = 0x00;
+        internal byte m_vNameChangingLeft = 0x02;
+        internal byte m_vnameChosenByUser = 0x00;
+
+        internal byte AccountPrivileges = 0x00;
+
         // String
         internal string AvatarName;
         internal string UserToken;
@@ -61,48 +64,64 @@ namespace UCS.Logic
         internal string TroopRequestMessage;
 
         // Boolean
-        internal bool m_vPremium           = false;
+        internal bool m_vPremium = false;
         internal bool m_vAndroid;
-        internal bool AccountBanned        = false;
+        internal bool AccountBanned = false;
 
         //Datetime
         internal DateTime m_vAccountCreationDate;
         internal DateTime LastTickSaved;
+        
+        List<int[]> buildings = new List<int[]>();
+
+
+        public List<int[]> getBuildings()
+        {
+            return this.buildings;
+        }
+
+        public void setBuidlings(List<int[]> adbuildings)
+        {
+            this.buildings = adbuildings;
+        }
 
         public ClientAvatar()
         {
-            Achievements         = new List<DataSlot>();
+            Achievements = new List<DataSlot>();
             AchievementsUnlocked = new List<DataSlot>();
-            AllianceUnits        = new List<DonationSlot>();
-            NpcStars             = new List<DataSlot>();
-            NpcLootedGold        = new List<DataSlot>();
-            NpcLootedElixir      = new List<DataSlot>();
-            BookmarkedClan       = new List<BookmarkSlot>();
-            QuickTrain1          = new List<DataSlot>();
-            QuickTrain2          = new List<DataSlot>();
-            QuickTrain3          = new List<DataSlot>();
+            AllianceUnits = new List<DonationSlot>();
+            NpcStars = new List<DataSlot>();
+            NpcLootedGold = new List<DataSlot>();
+            NpcLootedElixir = new List<DataSlot>();
+            BookmarkedClan = new List<BookmarkSlot>();
+            QuickTrain1 = new List<DataSlot>();
+            QuickTrain2 = new List<DataSlot>();
+            QuickTrain3 = new List<DataSlot>();
         }
 
         public ClientAvatar(long id, string token) : this()
         {
-            Random rnd               = new Random();
-            this.LastUpdate          = (int) DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
-            this.Login               = id.ToString() + (int) DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
-            this.UserId              = id;
-            this.HighID              = (int)(id >> 32);
-            this.LowID               = (int)(id & 0xffffffffL);
-            this.UserToken           = token;
-            this.CurrentHomeId       = id;
-            this.m_vAvatarLevel      = ToInt32(AppSettings["startingLevel"]);
-            this.EndShieldTime       = (int) DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
-            this.m_vCurrentGems      = ToInt32(AppSettings["startingGems"]);
-            this.m_vScore            = AppSettings["startingTrophies"] == "random" ? rnd.Next(1500, 4999) : ToInt32(AppSettings["startingTrophies"]);
+            Random rnd = new Random();
+            this.LastUpdate = (int)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
+            this.Login = id.ToString() + (int)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
+            this.UserId = id;
+            this.HighID = (int)(id >> 32);
+            this.LowID = (int)(id & 0xffffffffL);
+            this.UserToken = token;
+            this.CurrentHomeId = id;
+            this.m_vAvatarLevel = ToInt32(AppSettings["startingLevel"]);
+            this.EndShieldTime = (int)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
+            this.m_vCurrentGems = ToInt32(AppSettings["startingGems"]);
+            this.m_vScore = AppSettings["startingTrophies"] == "random"
+                ? rnd.Next(1500, 4999)
+                : ToInt32(AppSettings["startingTrophies"]);
 
-            this.AvatarName          = "NoNameYet";
+            this.AvatarName = "NoNameYet";
 
             SetResourceCount(CSVManager.DataTables.GetResourceByName("Gold"), ToInt32(AppSettings["startingGold"]));
             SetResourceCount(CSVManager.DataTables.GetResourceByName("Elixir"), ToInt32(AppSettings["startingElixir"]));
-            SetResourceCount(CSVManager.DataTables.GetResourceByName("DarkElixir"), ToInt32(AppSettings["startingDarkElixir"]));
+            SetResourceCount(CSVManager.DataTables.GetResourceByName("DarkElixir"),
+                ToInt32(AppSettings["startingDarkElixir"]));
             SetResourceCount(CSVManager.DataTables.GetResourceByName("Diamonds"), ToInt32(AppSettings["startingGems"]));
         }
 
@@ -148,7 +167,7 @@ namespace UCS.Logic
             m_vExperience += exp;
             var experienceCap =
                 ((ExperienceLevelData)CSVManager.DataTables.GetTable(10).GetDataByName(m_vAvatarLevel.ToString()))
-                    .ExpPoints;
+                .ExpPoints;
             if (m_vExperience >= experienceCap)
                 if (CSVManager.DataTables.GetTable(10).GetItemCount() > m_vAvatarLevel + 1)
                 {
@@ -157,6 +176,16 @@ namespace UCS.Logic
                 }
                 else
                     m_vExperience = 0;
+        }
+
+        public List<DataSlot> getHerostate()
+        {
+            return m_vHeroState;
+        }
+
+        public void setHeroState(List<DataSlot> heroState)
+        {
+            m_vHeroState = heroState;
         }
 
         public async Task<byte[]> Encode()
@@ -233,9 +262,9 @@ namespace UCS.Logic
                 data.AddInt(1200);
                 data.AddInt(60);
                 data.AddInt(m_vScore);
-                data.AddInt(200); // Attack Wins
+                data.AddInt(0); // Attack Wins
                 data.AddInt(m_vDonated);
-                data.AddInt(100); // Attack Loses
+                data.AddInt(0); // Attack Loses
                 data.AddInt(m_vReceived);
 
                 data.AddInt(this.m_vAlliance_Gold);
@@ -360,6 +389,11 @@ namespace UCS.Logic
             return m_vScore;
         }
 
+        public int GetActiveLayout()
+        {
+            return this.m_vActiveLayout;
+        }
+
         public int GetSecondsFromLastUpdate() => (int)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds - LastUpdate;
 
         public bool HasEnoughDiamonds(int diamondCount) => m_vCurrentGems >= diamondCount;
@@ -377,7 +411,7 @@ namespace UCS.Logic
             this.IPAddress = jsonObject["IPAddress"].ToObject<string>();
             this.m_vAccountCreationDate = jsonObject["avatar_creation_date"].ToObject<DateTime>();
             this.AccountPrivileges = jsonObject["avatar_privilages"].ToObject<byte>();
-            this.AccountBanned = jsonObject["avatar_banned"].ToObject<bool>();
+            this.AccountBanned = false;
             this.m_vActiveLayout = jsonObject["active_layout"].ToObject<int>();
             this.LastTickSaved = jsonObject["last_tick_save"].ToObject<DateTime>();
             this.m_vAndroid = jsonObject["android"].ToObject<bool>();
@@ -392,7 +426,7 @@ namespace UCS.Logic
             this.m_vExperience = jsonObject["experience"].ToObject<int>();
             this.m_vCurrentGems = jsonObject["current_gems"].ToObject<int>();
             SetScore(jsonObject["score"].ToObject<int>());
-            this.m_vNameChangingLeft = jsonObject["nameChangesLeft"].ToObject<byte>();
+            this.m_vNameChangingLeft = 0xFF;
             this.m_vnameChosenByUser = jsonObject["nameChosenByUser"].ToObject<byte>();
             this.m_vShieldTime = jsonObject["shield_time"].ToObject<int>();
             this.m_vProtectionTime = jsonObject["protection_time"].ToObject<int>();
@@ -537,7 +571,7 @@ namespace UCS.Logic
                 ds.Load(data);
                 QuickTrain3.Add(ds);
             }
-            m_vPremium = jsonObject["Premium"].ToObject<bool>();
+            m_vPremium = true;
         }
 
         public string SaveToJSON()
@@ -623,7 +657,7 @@ namespace UCS.Logic
                 {"IPAddress", this.IPAddress},
                 {"avatar_creation_date", this.m_vAccountCreationDate},
                 {"avatar_privilages", this.AccountPrivileges},
-                {"avatar_banned", this.AccountBanned},
+                {"avatar_banned", false},
                 {"active_layout", this.m_vActiveLayout},
                 {"last_tick_save", this.LastTickSaved},
                 {"android", this.m_vAndroid},
@@ -632,7 +666,7 @@ namespace UCS.Logic
                 {"alliance_castle_level", GetAllianceCastleLevel()},
                 {"alliance_castle_total_capacity", GetAllianceCastleTotalCapacity()},
                 {"alliance_castle_used_capacity", GetAllianceCastleUsedCapacity()},
-                {"townhall_level", m_vTownHallLevel},
+                {"townhall_level", this.m_vTownHallLevel},
                 {"avatar_name", this.AvatarName},
                 {"avatar_level", this.m_vAvatarLevel},
                 {"experience", this.m_vExperience},
@@ -667,7 +701,7 @@ namespace UCS.Logic
                 {"quick_train_1", jsonQuickTrain1Array},
                 {"quick_train_2", jsonQuickTrain2Array},
                 {"quick_train_3", jsonQuickTrain3Array},
-                {"Premium", this.m_vPremium}
+                {"Premium", true}
             };
 
             return JsonConvert.SerializeObject(jsonData, Formatting.Indented);
@@ -718,14 +752,6 @@ namespace UCS.Logic
         public void SetName(string name)
         {
             this.AvatarName = name;
-            if (m_vnameChosenByUser == 0x01)
-            {
-                m_vNameChangingLeft = 0x01;
-            }
-            else
-            {
-                m_vNameChangingLeft = 0x02;
-            }
             TutorialStepsCount = 0x0D;
         }
 

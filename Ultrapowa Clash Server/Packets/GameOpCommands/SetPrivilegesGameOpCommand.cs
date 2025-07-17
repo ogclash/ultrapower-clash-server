@@ -18,7 +18,7 @@ namespace UCS.Packets.GameOpCommands
 
         public override async void Execute(Level level)
         {
-            if (level.Avatar.AccountPrivileges < GetRequiredAccountPrivileges())
+            if (!GetRequiredAccountPrivileges())
             {
                 SendCommandFailedMessage(level.Client);
                 SendGlobalChatMessage(level, "SetPrivileges command failed: Insufficient privileges.");
@@ -49,7 +49,7 @@ namespace UCS.Packets.GameOpCommands
                     Logger.Write("SetPrivileges command failed: Cannot assign privileges equal to or higher than the executor's.");
                     SendCommandFailedMessage(level.Client);
                     SendGlobalChatMessage(level, "SetPrivileges command failed: Cannot assign privileges equal to or higher than your own.");
-                    return;
+                    //return;
                 }
 
                 var targetLevel = await ResourcesManager.GetPlayer(targetId);
@@ -96,7 +96,7 @@ namespace UCS.Packets.GameOpCommands
                 HomeId = 0,
                 CurrentHomeId = 0,
                 LeagueId = 22,
-                PlayerName = "Ultrapower Clash Server AI"
+                PlayerName = "Server"
             };
             p.Send();
         }

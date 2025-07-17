@@ -51,6 +51,16 @@ namespace UCS.Logic.StreamEntry
             return data.ToArray();
         }
 
+        public string getMessage()
+        {
+            return Message;
+        }
+        
+        public void setMessage(string input)
+        {
+            Message = input;
+        }
+
         public int GetAgeSeconds() => (int)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds -
         (int)m_vMessageTime.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
 

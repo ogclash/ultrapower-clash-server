@@ -7,8 +7,7 @@ namespace UCS.Packets.Commands.Client
     {
         public UnknownCommand(Reader reader, Device client, int id) : base(reader, client, id)
         {
-            //Unknown1 = br.ReadInt32();
-            //Tick = br.ReadInt32();
+
         }
 
         public static int Tick;

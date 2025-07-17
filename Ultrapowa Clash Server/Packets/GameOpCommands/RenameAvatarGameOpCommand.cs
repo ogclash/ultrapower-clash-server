@@ -18,7 +18,7 @@ namespace UCS.Packets.GameOpCommands
 
         public override async void Execute(Level level)
         {
-            if (level.Avatar.AccountPrivileges >= GetRequiredAccountPrivileges())
+            if (GetRequiredAccountPrivileges())
             {
                 if (m_vArgs.Length >= 3)
                 {
@@ -28,7 +28,7 @@ namespace UCS.Packets.GameOpCommands
                         var l = await ResourcesManager.GetPlayer(id);
                         if (l != null)
                         {
-                            l.Avatar.SetName(m_vArgs[2]);
+                            l.Avatar.SetName(Convert.ToString(m_vArgs[2]));
                             if (ResourcesManager.IsPlayerOnline(l))
                             {
                                 var p = new AvatarNameChangeOkMessage(l.Client) {AvatarName = m_vArgs[2]};

@@ -164,7 +164,7 @@ public static class BroadcastManager
                 HomeId = 0,
                 CurrentHomeId = 0,
                 LeagueId = 22,
-                PlayerName = "Ultrapower Clash Server AI"
+                PlayerName = "Server"
             };
             p.Send();
         }

@@ -40,15 +40,19 @@
         }
         internal string GetIpCountry(string ipAddress)
         {
-            if (ipAddress == null || this.Reader == null)
-                return "UCS Land";
             try
             {
-                return this.Reader.City(ipAddress).Country.Name;
+                var city = this.Reader.City(ipAddress);
+                return city?.Country?.Name ?? "Unknown";
             }
             catch (AddressNotFoundException)
             {
-                return "UCS Land";
+                return "Localhost";
+            }
+            catch (Exception ex)
+            {
+                Logger.Write($"[GeoIP] Error: {ex.Message}");
+                return "Unknown";
             }
         }
 

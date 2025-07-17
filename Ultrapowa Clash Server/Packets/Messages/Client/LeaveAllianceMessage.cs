@@ -92,7 +92,7 @@ namespace UCS.Packets.Messages.Client
                 if (alliance.GetAllianceMembers().Count > 0)
                 {
                     AllianceEventStreamEntry eventStreamEntry = new AllianceEventStreamEntry();
-                    eventStreamEntry.ID = alliance.m_vChatMessages.Count + 1;
+                    eventStreamEntry.ID = alliance.m_vChatMessages.Count > 0 ? alliance.m_vChatMessages.Last().ID + 1 : 1;
                     eventStreamEntry.SetSender(avatar);
                     eventStreamEntry.EventType = 4;
                     alliance.AddChatMessage(eventStreamEntry);

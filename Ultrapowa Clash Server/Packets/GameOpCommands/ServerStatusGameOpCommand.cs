@@ -28,7 +28,7 @@ namespace UCS.Packets.GameOpCommands
 
         public override void Execute(Level level)
         {
-            if (level.Avatar.AccountPrivileges >= GetRequiredAccountPrivileges())
+            if (GetRequiredAccountPrivileges())
             {
                 if (m_vArgs.Length >= 1)
                 {
@@ -51,6 +51,18 @@ namespace UCS.Packets.GameOpCommands
                     TotalDiskSize = DiskSpace.TotalSize / 1073741824;
                     DiskspaceUsed = TotalDiskSize - TotalFreeSpace;
                     ClientAvatar avatar = level.Avatar;
+                    GlobalChatLineMessage _MSG = new GlobalChatLineMessage(level.Client);
+                    _MSG.PlayerName = "Server";
+                    _MSG.LeagueId = 22;
+                    _MSG.Message = @"Online Players: " + ResourcesManager.m_vOnlinePlayers.Count +
+                                   "\nIn Memory Players: " + ResourcesManager.m_vInMemoryLevels.Count +
+                                   "\nConnected Players: " + ResourcesManager.GetConnectedClients().Count +
+                                   "\nTotal System CPU Usage: " + CPUParcentage + "%" +
+                                   "\nServer RAM: " + Performances.GetUsedMemory() + "% / " + Performances.GetTotalMemory() + "MB" +
+                                   "\nTotal Server Ram Usage: " + RAMUsage + "MB / " + Performances.GetTotalMemory() + "MB" +
+                                   "\nServer Disk Space Used: " + Math.Round(DiskspaceUsed, 2) + "GB / " + Math.Round(TotalDiskSize, 2) + "GB";
+                    _MSG.Send();
+                    /*
                     var mail = new AllianceMailStreamEntry();
                     mail.ID = (int)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
                     mail.SetSender(avatar);
@@ -58,17 +70,11 @@ namespace UCS.Packets.GameOpCommands
                     mail.AllianceId = 0;
                     mail.AllianceBadgeData = 1526735450;
                     mail.AllianceName = "UCS Server Information";
-                    mail.Message = @"Online Players: " + ResourcesManager.m_vOnlinePlayers.Count +
-                        "\nIn Memory Players: " + ResourcesManager.m_vInMemoryLevels.Count +
-                        "\nConnected Players: " + ResourcesManager.GetConnectedClients().Count +
-                        "\nTotal System CPU Usage: " + CPUParcentage + "%" +
-                        "\nServer RAM: " + Performances.GetUsedMemory() + "% / " + Performances.GetTotalMemory() + "MB" +
-                        "\nTotal Server Ram Usage: " + RAMUsage + "MB / " + Performances.GetTotalMemory() + "MB" +
-                        "\nServer Disk Space Used: " + Math.Round(DiskspaceUsed, 2) + "GB / " + Math.Round(TotalDiskSize, 2) + "GB";
 
-                    var p = new AvatarStreamEntryMessage(level.Client);
-                    p.SetAvatarStreamEntry(mail);
-                    Processor.Send(p);
+                    //var p = new AvatarStreamEntryMessage(level.Client);
+                    //p.SetAvatarStreamEntry(mail);
+                    //Processor.Send(p);
+                    */
                 }
             }
             else

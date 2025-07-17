@@ -16,7 +16,7 @@ namespace UCS.Packets.Commands.Client
         internal override void Decode()
         {
             this.BuildingId = this.Reader.ReadInt32();
-            this.Reader.ReadInt32();
+            var unknown = this.Reader.ReadInt32();
             this.UnitType = this.Reader.ReadInt32();
             this.Count = this.Reader.ReadInt32();
 

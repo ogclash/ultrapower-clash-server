@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using UCS.Core;
 using UCS.Core.Network;
 using UCS.Helpers.Binary;
@@ -33,31 +34,26 @@ namespace UCS.Packets.Commands.Client
                 TroopRequestStreamEntry cm = new TroopRequestStreamEntry();
                 cm.SetSender(player);
                 cm.Message = this.Message;
-                cm.ID = all.m_vChatMessages.Count + 1;
+                cm.ID = all.m_vChatMessages.Count > 0 ? all.m_vChatMessages.Last().ID + 1 : 1;
+                cm.SetType(1);
                 cm.SetMaxTroop(player.GetAllianceCastleTotalCapacity());
                 cm.m_vDonatedTroop = player.GetAllianceCastleUsedCapacity();
-
-                StreamEntry s = all.m_vChatMessages.Find(c => c.SenderID == this.Device.Player.Avatar.UserId && c.GetStreamEntryType() == 1);
-                if (s != null)
+                
+                if (player.GetAllianceCastleTotalCapacity() > player.GetAllianceCastleUsedCapacity())
                 {
-                    all.m_vChatMessages.RemoveAll(t => t == s);
+                    StreamEntry oldmessage = all.m_vChatMessages.Find(c => c.SenderID == this.Device.Player.Avatar.UserId && c.m_vType == 1);
+                    all.m_vChatMessages.Remove(oldmessage);
                     all.AddChatMessage(cm);
-                }
-                else
-                {
-                    all.AddChatMessage(cm);
-                }
-
-                foreach (AllianceMemberEntry op in all.GetAllianceMembers())
-                {
-                    Level aplayer = await ResourcesManager.GetPlayer(op.AvatarId);
-                    if (aplayer.Client != null)
+                    foreach (AllianceMemberEntry op in all.GetAllianceMembers())
                     {
-                        new AllianceStreamEntryMessage(aplayer.Client) { StreamEntry = cm }.Send();
-
-                        if (s != null)
+                        Level aplayer = await ResourcesManager.GetPlayer(op.AvatarId);
+                        if (aplayer.Client != null)
                         {
-                            new AllianceStreamEntryRemovedMessage(aplayer.Client, s.ID).Send();
+                            if (oldmessage != null && oldmessage.m_vSenderName == player.AvatarName)
+                            {
+                                new AllianceStreamEntryRemovedMessage(aplayer.Client, oldmessage.ID).Send();
+                            }
+                            new AllianceStreamEntryMessage(aplayer.Client) { StreamEntry = cm }.Send();
                         }
                     }
                 }

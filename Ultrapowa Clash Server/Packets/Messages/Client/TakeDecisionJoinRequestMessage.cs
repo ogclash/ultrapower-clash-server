@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using UCS.Core;
 using UCS.Core.Network;
 using UCS.Helpers;
@@ -28,7 +29,7 @@ namespace UCS.Packets.Messages.Client
             this.Choice    = this.Reader.ReadByte();
         }
 
-        internal async void Process()
+        internal async override void Process()
         {
             try
             {
@@ -50,10 +51,11 @@ namespace UCS.Packets.Messages.Client
                         e.SetState(2);
 
                         AllianceEventStreamEntry eventStreamEntry = new AllianceEventStreamEntry();
-                        eventStreamEntry.ID = a.m_vChatMessages.Count + 1;
+                        eventStreamEntry.ID = a.m_vChatMessages.Count > 0 ? a.m_vChatMessages.Last().ID + 1 : 1;
                         eventStreamEntry.SetSender(requester.Avatar);
                         eventStreamEntry.EventType = 2;
-
+                        eventStreamEntry.m_vAvatarName = "Clan Member";
+                        eventStreamEntry.m_vAvatarId = eventStreamEntry.SenderID;
                         a.AddChatMessage(eventStreamEntry);
 
                         foreach (AllianceMemberEntry op in a.GetAllianceMembers())

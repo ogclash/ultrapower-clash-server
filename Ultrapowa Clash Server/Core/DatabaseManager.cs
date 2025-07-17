@@ -101,8 +101,7 @@ namespace UCS.Core
                                 account = new Level();
                                 account.Avatar.LoadFromJSON(p.Avatar);
                                 account.LoadFromJSON(p.GameObjects);
-                                Redis.Players.StringSet(playerId.ToString(), p.Avatar + "#:#:#:#" + p.GameObjects,
-                                    TimeSpan.FromHours(4));
+                                Redis.Players.StringSet(playerId.ToString(), p.Avatar + "#:#:#:#" + p.GameObjects, TimeSpan.FromHours(4));
                             }
                         }
                         ;
@@ -129,6 +128,35 @@ namespace UCS.Core
                 return null;
             }
         }
+        public async Task<List<Level>> GetAllAccountsFromDb()
+        {
+            List<Level> accounts = new List<Level>();
+            using (Mysql db = new Mysql())
+            {
+                var players = await db.Player.ToListAsync();  // Make sure ToListAsync is available
+
+                foreach (var p in players)
+                {
+                    Level account = new Level();
+                    account.Avatar.LoadFromJSON(p.Avatar);
+                    if (account.Avatar.AvatarName != "NoNameYet")
+                    {
+                        try
+                        {
+                            account.LoadFromJSON(p.GameObjects);
+                            accounts.Add(account);
+                        }
+                        catch (Exception)
+                        {
+                            Logger.Say("User with id: "+account.Avatar.UserId+" failed to load");
+                        }
+                    }
+                }
+            }
+
+            return accounts;
+        }
+
 
         public Alliance GetAlliance(long allianceId)
         {
@@ -178,6 +206,59 @@ namespace UCS.Core
                 return null;
             }
         }
+        
+        public List<Alliance> GetAllAlliancesFromDb()
+        {
+            try
+            {
+                List<Alliance> alliances = new List<Alliance>();
+
+                using (Mysql db = new Mysql())
+                {
+                    var clans = db.Clan.ToList();
+
+                    foreach (var c in clans)
+                    {
+                        Alliance alliance = new Alliance();
+                        alliance.LoadFromJSON(c.Data);
+                        alliances.Add(alliance);
+                    }
+                }
+
+                return alliances;
+            }
+            catch (Exception)
+            {
+                return new List<Alliance>();
+            }
+        }
+        public async Task<List<Alliance>> GetAllAlliancesFromDbAsync()
+        {
+            try
+            {
+                List<Alliance> alliances = new List<Alliance>();
+
+                using (Mysql db = new Mysql())
+                {
+                    var clans = await db.Clan.ToListAsync();
+
+                    foreach (var c in clans)
+                    {
+                        Alliance alliance = new Alliance();
+                        alliance.LoadFromJSON(c.Data);
+                        alliances.Add(alliance);
+                    }
+                }
+
+                return alliances;
+            }
+            catch (Exception)
+            {
+                return new List<Alliance>();
+            }
+        }
+
+
 
         public List<long> GetAllPlayerIds()
         {
@@ -396,7 +477,7 @@ namespace UCS.Core
 
                                 }
                                 await context.SaveChangesAsync();
-                                context.SaveChanges();
+                                //context.SaveChanges();
                             }
                             break;
                         }
@@ -415,25 +496,31 @@ namespace UCS.Core
 
         public async Task Save(List<Alliance> alliances, Save Save = Logic.Enums.Save.Mysql)
         {
-            try
+            switch (Save)
             {
-                switch (Save)
-                {
 
-                    case Save.Redis:
+                case Save.Redis:
+                    {
+                        foreach (Alliance alliance in alliances)
                         {
-                            foreach (Alliance alliance in alliances)
+                            try
                             {
                                 Redis.Clans.StringSet(alliance.m_vAllianceId.ToString(), alliance.SaveToJSON(),
                                     TimeSpan.FromHours(4));
                             }
-                            break;
-                        }
-                    case Save.Mysql:
-                        {
-                            using (Mysql context = new Mysql())
+                            catch (Exception)
                             {
-                                foreach (Alliance alliance in alliances)
+                            }
+                        }
+                        break;
+                    }
+                case Save.Mysql:
+                    {
+                        using (Mysql context = new Mysql())
+                        {
+                            foreach (Alliance alliance in alliances)
+                            {
+                                try
                                 {
                                     Clan c = context.Clan.Find((int)alliance.m_vAllianceId);
                                     if (c != null)
@@ -441,23 +528,24 @@ namespace UCS.Core
                                         c.LastUpdateTime = DateTime.Now;
                                         c.Data = alliance.SaveToJSON();
                                     }
-
                                 }
-                                await context.SaveChangesAsync();
-                                context.SaveChanges();
+                                catch (Exception)
+                                {
+                                    var test = "Fail";
+                                }
+
                             }
-                            break;
+                            await context.SaveChangesAsync();
+                            context.SaveChanges();
                         }
-                    case Save.Both:
-                        {
-                            await this.Save(alliances, Save.Redis);
-                            await this.Save(alliances, Save.Mysql);
-                            break;
-                        }
-                }
-            }
-            catch (Exception)
-            {
+                        break;
+                    }
+                case Save.Both:
+                    {
+                        await this.Save(alliances, Save.Redis);
+                        await this.Save(alliances, Save.Mysql);
+                        break;
+                    }
             }
         }
     }

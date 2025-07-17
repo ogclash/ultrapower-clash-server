@@ -26,16 +26,20 @@ namespace UCS.Packets.Commands.Client
 
         internal override void Process()
         {
-            if (this.Device.PlayerState == State.IN_BATTLE)
+            this.Device.PlayerState = State.IN_BATTLE;
+            if (this.Device.AttackInfo == null)
             {
-                List<DataSlot> _PlayerUnits = this.Device.Player.Avatar.GetUnits();
-
-                DataSlot _DataSlot = _PlayerUnits.Find(t => t.Data.GetGlobalID() == Unit.GetGlobalID());
-                if (_DataSlot != null)
-                {
-                    _DataSlot.Value = _DataSlot.Value - 1;
-                }
+                this.Device.AttackInfo = "multiplayer";
             }
+            
+            List<DataSlot> _PlayerUnits = this.Device.Player.Avatar.GetUnits();
+
+            DataSlot _DataSlot = _PlayerUnits.Find(t => t.Data.GetGlobalID() == Unit.GetGlobalID());
+            if (_DataSlot != null)
+            {
+                _DataSlot.Value = _DataSlot.Value - 1;
+            }
+            
         }
 
         public CombatItemData Unit;

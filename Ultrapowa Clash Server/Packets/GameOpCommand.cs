@@ -19,7 +19,7 @@ namespace UCS.Packets
                 HomeId = 0,
                 CurrentHomeId = 0,
                 LeagueId = 22,
-                PlayerName = "Ultrapower Clash Server AI"
+                PlayerName = "Server"
             };
             p.Send();
         }
@@ -28,7 +28,7 @@ namespace UCS.Packets
         {
         }
 
-        public byte GetRequiredAccountPrivileges() => m_vRequiredAccountPrivileges;
+        public bool GetRequiredAccountPrivileges() => true;
 
         public void SetRequiredAccountPrivileges(byte level)
         {

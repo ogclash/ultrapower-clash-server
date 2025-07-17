@@ -22,6 +22,10 @@ namespace UCS.Packets.Commands
 
         internal override void Process()
         {
+            if (this.Device.AttackInfo == null)
+            {
+                this.Device.AttackInfo = "multiplayer";
+            }
             List<DataSlot> _PlayerSpells = this.Device.Player.Avatar.GetSpells();
 
             DataSlot _DataSlot = _PlayerSpells.Find(t => t.Data.GetGlobalID() == Spell.GetGlobalID());

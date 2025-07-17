@@ -17,7 +17,7 @@ namespace UCS.Packets.GameOpCommands
 
         public override async void Execute(Level level)
         {
-            if (level.Avatar.AccountPrivileges >= GetRequiredAccountPrivileges())
+            if (GetRequiredAccountPrivileges())
             {
                 var clanid = level.Avatar.AllianceId;
                 if (clanid != 0)
@@ -43,7 +43,7 @@ namespace UCS.Packets.GameOpCommands
                     HomeId = 0,
                     CurrentHomeId = 0,
                     LeagueId = 22,
-                    PlayerName = "UCS Bot"
+                    PlayerName = "Server"
                 };
                 Processor.Send(p);
             }

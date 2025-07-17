@@ -30,40 +30,35 @@ namespace UCS.Packets.Messages.Client
 
         internal override void Decode()
         {
+            m_vSearchString = Reader.ReadString();
             this.m_vWarFrequency = this.Reader.ReadInt32();
             this.m_vAllianceOrigin = this.Reader.ReadInt32();
             this.m_vMinimumAllianceMembers = this.Reader.ReadInt32();
             this.m_vMaximumAllianceMembers = this.Reader.ReadInt32();
             this.m_vAllianceScore = this.Reader.ReadInt32();
             this.m_vShowOnlyJoinableAlliances = this.Reader.ReadByte();
-            this.Reader.ReadInt32();
+            var unknown = this.Reader.ReadInt32();
             this.m_vMinimumAllianceLevel = this.Reader.ReadInt32();
-
         }
 
         internal override void Process()
         {
-            if (m_vSearchString.Length < 15)
-            {
-                ResourcesManager.DisconnectClient(Device);
-            }
-            else
-            {
-                List<Alliance> joinableAlliances = new List<Alliance>();
+            List<Alliance> joinableAlliances = new List<Alliance>();
 
-                foreach (Alliance _Alliance in ResourcesManager.m_vInMemoryAlliances.Values)
+            foreach (Alliance _Alliance in ResourcesManager.m_vInMemoryAlliances.Values)
+            {
+                if (_Alliance.m_vAllianceName.Contains(m_vSearchString, StringComparison.OrdinalIgnoreCase))
                 {
-                    if (_Alliance.m_vAllianceName.Contains(m_vSearchString, StringComparison.OrdinalIgnoreCase))
-                    {
-                        joinableAlliances.Add(_Alliance);
-                    }
+                    if (_Alliance.m_vAllianceMembers.Count() == 0)
+                        continue;
+                    joinableAlliances.Add(_Alliance);
                 }
-
-                AllianceListMessage p = new AllianceListMessage(Device);
-                p.m_vAlliances = joinableAlliances;
-                p.m_vSearchString = m_vSearchString;
-                p.Send();
             }
+
+            AllianceListMessage p = new AllianceListMessage(Device);
+            p.m_vAlliances = joinableAlliances;
+            p.m_vSearchString = m_vSearchString;
+            p.Send();
         }
     }
 }

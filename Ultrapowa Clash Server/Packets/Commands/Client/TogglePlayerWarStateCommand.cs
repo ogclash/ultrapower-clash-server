@@ -26,6 +26,10 @@ namespace UCS.Packets.Commands.Client
             {
                 AllianceMemberEntry _AllianceMemberEntry = a.m_vAllianceMembers[this.Device.Player.Avatar.UserId];
                 _AllianceMemberEntry.ToggleStatus();
+                
+                // Save the alliance after changing member status
+                await Resources.DatabaseManager.Save(a);
+                
                 PlayerWarStatusMessage _PlayerWarStatusMessage = new PlayerWarStatusMessage(this.Device)
                 {
                     Status = _AllianceMemberEntry.WarOptInStatus

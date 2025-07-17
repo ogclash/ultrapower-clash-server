@@ -27,10 +27,12 @@ namespace UCS.Packets.Messages.Client
         {
             if (this.Device.PlayerState == State.IN_BATTLE)
             {
+                this.Device.AttackInfo = "npc";
                 ResourcesManager.DisconnectClient(Device);
             }
             else
             {
+                this.Device.AttackInfo = "npc";
                 if (LevelId > 0 || LevelId < 1000000)
                 {
                     /*if (level.Avatar.GetUnits().Count < 10)

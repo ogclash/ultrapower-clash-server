@@ -19,7 +19,7 @@ namespace UCS.Packets.GameOpCommands
 
         public override void Execute(Level level)
         {
-            if (level.Avatar.AccountPrivileges >= GetRequiredAccountPrivileges())
+            if (GetRequiredAccountPrivileges())
             {
                 ClientAvatar p = level.Avatar;
                 p.SetResourceCount(CSVManager.DataTables.GetResourceByName("Gold"), 1000);

@@ -12,6 +12,7 @@ namespace UCS.Logic
         internal WorkerManager WorkerManager;
         internal Device Client;
         internal ClientAvatar Avatar;
+        public bool IsBuildingPending;
 
 
         public Level()
