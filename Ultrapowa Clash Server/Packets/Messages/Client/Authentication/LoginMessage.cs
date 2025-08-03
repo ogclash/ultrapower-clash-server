@@ -114,17 +114,14 @@ namespace UCS.Packets.Messages.Client
             {
                 if (this.Device.PlayerState == State.LOGIN)
                 {
-                    if (Constants.LicensePlanID == 3)
+                    if (ResourcesManager.m_vOnlinePlayers.Count >= Constants.MaxOnlinePlayers)
                     {
-                        if (ResourcesManager.m_vOnlinePlayers.Count >= Constants.MaxOnlinePlayers)
+                        new LoginFailedMessage(Device)
                         {
-                            new LoginFailedMessage(Device)
-                            {
-                                ErrorCode = 12,
-                                Reason = "Sorry the Server is currently full! \n\nPlease try again in a few Minutes.\n"
-                            }.Send();
-                            return;
-                        }
+                            ErrorCode = 12,
+                            Reason = "Sorry the Server is currently full! \n\nPlease try again in a few Minutes.\n"
+                        }.Send();
+                        return;
                     }
 
                     if (ParserThread.GetMaintenanceMode())
@@ -136,32 +133,6 @@ namespace UCS.Packets.Messages.Client
                             Version = 8
                         }.Send();
                         return;
-                    }
-
-                    if (Constants.LicensePlanID < 1)
-                    {
-                        if (ResourcesManager.m_vOnlinePlayers.Count >= 350)
-                        {
-                            new LoginFailedMessage(Device)
-                            {
-                                ErrorCode = 11,
-                                Reason = "This is a Free Version of UCS. Please Upgrade to Pro or Ultra Using Ultrapower Keygen"
-                            }.Send();
-                            return;
-                        }
-                    }
-                    else if (Constants.LicensePlanID < 2)
-                    {
-                        if (ResourcesManager.m_vOnlinePlayers.Count >= 700)
-                        {
-                            new LoginFailedMessage(Device)
-                            {
-                                ErrorCode = 11,
-                                Reason =
-                                    "This is a Pro Version of UCS. Please Upgrade to Ultra using Ultrapower Keygen"
-                            }.Send();
-                            return;
-                        }
                     }
 
                     int time = Convert.ToInt32(ConfigurationManager.AppSettings["maintenanceTimeleft"]);
@@ -211,7 +182,7 @@ namespace UCS.Packets.Messages.Client
         private async void LogUser()
         {
             ResourcesManager.LogPlayerIn(level, Device);
-            level.Avatar.Region = Resources.Region.GetIpCountry(level.Avatar.IPAddress = Device.IPAddress);
+            level.Avatar.Region = this.Region;
 
             var message = new LoginOkMessage(this.Device)
             {
@@ -280,26 +251,14 @@ namespace UCS.Packets.Messages.Client
                         new LoginFailedMessage(Device) {ErrorCode = 11}.Send();
                         return;
                     }
-                    if (string.Equals(level.Avatar.UserToken, UserToken, StringComparison.Ordinal))
-                    {
-                        LogUser();
-                    }
-                    else
-                    {
-                        new LoginFailedMessage(Device)
-                        {
-                            ErrorCode = 11,
-                            Reason = "We have some Problems with your Account. Please clean your App Data."
-                        }.Send();
-                        return;
-                    }
+                    LogUser();
                 }
                 else
                 {
                     new LoginFailedMessage(Device)
                     {
-                        ErrorCode = 11,
-                        Reason = "We have some Problems with your Account. Please clean your App Data."
+                        ErrorCode = 12,
+                        Reason = "We have some Problems with your Account. Please contact Server Support."
                     }.Send();
                     return;
                 }
@@ -319,6 +278,7 @@ namespace UCS.Packets.Messages.Client
             }
             
             level.Avatar.InitializeAccountCreationDate();
+            level.Avatar.Region = this.Region;
             level.Avatar.m_vAndroid = this.Android;
 
             Resources.DatabaseManager.Save(level);

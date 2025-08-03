@@ -38,7 +38,9 @@ namespace UCS.Logic
         internal int m_vAlliance_Elixir = 0;
         internal int m_vAlliance_DarkElixir = 0;
         internal int m_vShieldTime;
+        internal long mv_ShieldTimeStamp;
         internal int m_vProtectionTime;
+        internal long m_vProtectionTimeStamp;
         internal int ReportedTimes = 0;
         internal int m_vDonated;
         internal int m_vReceived;
@@ -409,34 +411,64 @@ namespace UCS.Logic
             this.UserToken = jsonObject["token"].ToObject<string>();
             this.Region = jsonObject["region"].ToObject<string>();
             this.IPAddress = jsonObject["IPAddress"].ToObject<string>();
+            
             this.m_vAccountCreationDate = jsonObject["avatar_creation_date"].ToObject<DateTime>();
             this.AccountPrivileges = jsonObject["avatar_privilages"].ToObject<byte>();
             this.AccountBanned = false;
+            
             this.m_vActiveLayout = jsonObject["active_layout"].ToObject<int>();
             this.LastTickSaved = jsonObject["last_tick_save"].ToObject<DateTime>();
             this.m_vAndroid = jsonObject["android"].ToObject<bool>();
             this.CurrentHomeId = jsonObject["current_home_id"].ToObject<long>();
+            
             this.AllianceId = jsonObject["alliance_id"].ToObject<long>();
             SetAllianceCastleLevel(jsonObject["alliance_castle_level"].ToObject<int>());
             SetAllianceCastleTotalCapacity(jsonObject["alliance_castle_total_capacity"].ToObject<int>());
             SetAllianceCastleUsedCapacity(jsonObject["alliance_castle_used_capacity"].ToObject<int>());
+            
             SetTownHallLevel(jsonObject["townhall_level"].ToObject<int>());
+            
             this.AvatarName = jsonObject["avatar_name"].ToObject<string>();
             this.m_vAvatarLevel = jsonObject["avatar_level"].ToObject<int>();
+            
             this.m_vExperience = jsonObject["experience"].ToObject<int>();
             this.m_vCurrentGems = jsonObject["current_gems"].ToObject<int>();
             SetScore(jsonObject["score"].ToObject<int>());
+            
             this.m_vNameChangingLeft = 0xFF;
             this.m_vnameChosenByUser = jsonObject["nameChosenByUser"].ToObject<byte>();
+            
+            long now = DateTimeOffset.UtcNow.ToUnixTimeSeconds(); // current timestamp
+            long shieldStart = jsonObject["shield_timestamp"]?.ToObject<long?>() ?? now;
+            int shieldDuration = this.m_vShieldTime;
+            int elapsed = (int)(now - shieldStart);
+            int shieldTimeRemaining = Math.Max(0, shieldDuration - elapsed);
+            if (shieldTimeRemaining == 0)
+            {
+                this.m_vShieldTime = 0;
+                this.mv_ShieldTimeStamp = 0;
+            }
+            shieldStart = jsonObject["protection_timestamp"]?.ToObject<long?>() ?? now; 
+            shieldDuration = this.m_vProtectionTime;
+            elapsed = (int)(now - shieldStart);
+            shieldTimeRemaining = Math.Max(0, shieldDuration - elapsed);
+            if (shieldTimeRemaining == 0)
+            {
+                this.m_vProtectionTime = 0;
+                this.m_vProtectionTimeStamp = 0;
+            }
             this.m_vShieldTime = jsonObject["shield_time"].ToObject<int>();
             this.m_vProtectionTime = jsonObject["protection_time"].ToObject<int>();
+            
             this.FacebookId = jsonObject["fb_id"].ToObject<string>();
             this.FacebookToken = jsonObject["fb_token"].ToObject<string>();
             this.GoogleId = jsonObject["gg_id"].ToObject<string>();
+            this.GoogleToken = jsonObject["gg_token"].ToObject<string>();
+            
             this.m_vReceived = jsonObject["troops_received"].ToObject<int>();
             this.m_vDonated = jsonObject["troops_donated"].ToObject<int>();
-            this.GoogleToken = jsonObject["gg_token"].ToObject<string>();
             this.TroopRequestMessage = jsonObject["rq_message"].ToObject<string>();
+            
             JArray jsonBookmarkedClan = (JArray)jsonObject["bookmark"];
             foreach (JObject jobject in jsonBookmarkedClan)
             {
@@ -675,7 +707,9 @@ namespace UCS.Logic
                 {"nameChangesLeft", this.m_vNameChangingLeft},
                 {"nameChosenByUser", (ushort) m_vnameChosenByUser},
                 {"shield_time", this.m_vShieldTime},
+                {"shield_timestamp", this.mv_ShieldTimeStamp},
                 {"protection_time", this.m_vProtectionTime},
+                {"protection_timestamp", this.m_vProtectionTimeStamp},
                 {"fb_id", this.FacebookId},
                 {"fb_token", this.FacebookToken},
                 {"gg_id", this.GoogleId},
@@ -757,6 +791,10 @@ namespace UCS.Logic
 
         public void SetScore(int newScore)
         {
+            if (newScore < 0)
+            {
+                newScore = 0;
+            }
             m_vScore = newScore;
             updateLeague();
         }

@@ -38,6 +38,10 @@ namespace UCS.Packets.Messages.Client
                 Level requester = await ResourcesManager.GetPlayer(message.SenderID);
                 if (Choice == 1)
                 {
+                    if (requester.Avatar.AllianceId != 0)
+                    {
+                        return;
+                    }
                     if (!a.IsAllianceFull())
                     {
                         requester.Avatar.AllianceId = a.m_vAllianceId;

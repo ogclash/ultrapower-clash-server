@@ -22,16 +22,18 @@ namespace UCS.Packets.Commands.Client
         internal override void Process()
         {
             ClientAvatar player = this.Device.Player.Avatar;
-            /*if (ShieldId == 20000000)
+            if (ShieldId == 20000000)
             {
-                player.SetProtectionTime(Convert.ToInt32(TimeSpan.FromHours(((ShieldData)CSVManager.DataTables.GetDataById(ShieldId)).TimeH).TotalSeconds));
+                player.m_vProtectionTime = 7200;
+                player.m_vProtectionTimeStamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
                 player.UseDiamonds(((ShieldData)CSVManager.DataTables.GetDataById(ShieldId)).Diamonds);
             }
             else
-            {*/
+            {
                 player.m_vShieldTime = player.m_vShieldTime + Convert.ToInt32(TimeSpan.FromHours(((ShieldData)CSVManager.DataTables.GetDataById(ShieldId)).TimeH).TotalSeconds);
+                player.mv_ShieldTimeStamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
                 player.UseDiamonds(((ShieldData)CSVManager.DataTables.GetDataById(ShieldId)).Diamonds);
-            //}
+            }
         }
 
         public int ShieldId;

@@ -264,12 +264,14 @@
     <Compile Include="Helpers\List\Writter.cs" />
     <Compile Include="Logic\API\FacebookApi.cs" />
     <Compile Include="Logic\ClanWars.cs" />
+    <Compile Include="Logic\Component\ObstacleComponent.cs" />
     <Compile Include="Logic\Enums\Database.cs" />
     <Compile Include="Logic\Enums\Exits.cs" />
     <Compile Include="Logic\Enums\Save.cs" />
     <Compile Include="Logic\Enums\State.cs" />
     <Compile Include="Logic\StreamEntry\ChallengeStreamEntry.cs" />
     <Compile Include="Packets\Commands\Client\CastSpellCommand.cs" />
+    <Compile Include="Packets\Commands\Client\DecreaseShieldTimeInfo.cs" />
     <Compile Include="Packets\Commands\Client\PlaceAllianceTroopsCommand.cs" />
     <Compile Include="Packets\Commands\Client\PlayerWarStatusCommand.cs" />
     <Compile Include="Packets\Commands\Client\RemoveShieldToAttackCommand.cs" />

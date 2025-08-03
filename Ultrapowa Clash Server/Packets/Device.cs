@@ -47,6 +47,8 @@ namespace UCS.Packets
         internal string VendorID;
         internal string IPAddress;
         internal string AttackInfo;
+        internal Level AttackVictim;
+        internal bool ShieldInfo = false;
 
         internal uint ClientSeed;
 

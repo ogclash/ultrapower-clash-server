@@ -75,6 +75,7 @@ namespace UCS.Packets
                 {570, typeof(TogglePlayerWarStateCommand)},
                 {571, typeof(FilterChatCommand)},
                 {572, typeof(ToggleHeroAttackModeCommand)},
+                {573, typeof(DecreaseShieldTimeInfo)},
                 {574, typeof(ChallangeCommand)},
                 {577, typeof(MoveBuildingsCommand)},
                 {584, typeof(BoostBarracksCommand)},

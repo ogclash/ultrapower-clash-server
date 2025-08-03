@@ -18,19 +18,13 @@ namespace UCS.Packets.Commands.Client
         public int Tick;
 
         internal override void Process()
-        {
+        { 
             ClientAvatar player = this.Device.Player.Avatar;
-
-            //if (player.GetShieldTime > 0)
-            //{
-                  player.m_vShieldTime = 0;
-                //player.SetProtectionTime(1800);
-            //}
-            /*else 
-            {
-                player.SetShieldTime(0);
-                player.SetProtectionTime(0);
-            }*/
+            if (player.m_vShieldTime == 0)
+            { 
+                player.m_vProtectionTime = 0;
+            }
+            player.m_vShieldTime = 0;
         }
     }      
 }

@@ -19,8 +19,26 @@ namespace UCS.Packets.Messages.Server
         {
             List<byte> data = new List<byte>();
             var i = 0;
+            
+            List<Level> localPlayers = new List<Level>();
+            localPlayers.Add(this.Device.Player);
 
-            foreach (Level player in ResourcesManager.m_vInMemoryLevels.Values.ToList().OrderByDescending(t => t.Avatar.GetScore()))
+            string playerRegion = this.Device.Player.Avatar.Region;  // Get current player's region
+
+            foreach (Level player in ResourcesManager.m_vInMemoryLevels.Values)
+            {
+                if (player == null || player.Avatar == null)
+                    continue;
+
+                ClientAvatar pl = player.Avatar;
+
+                if (pl.Region == playerRegion && player != this.Device.Player)
+                {
+                    localPlayers.Add(player);
+                }
+            }
+
+            foreach (Level player in localPlayers.OrderByDescending(t => t.Avatar.GetScore()))
             {
                 try
                 {

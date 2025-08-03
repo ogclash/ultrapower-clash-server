@@ -122,34 +122,35 @@ namespace UCS.Packets.Messages.Client
             int elexirvalue = 0;
             int darkelixirvalue = random.Next(500, 4200);
             int chance = random.Next(100); // 0-99
+            int score = 30;
 
             if (chance < 50) // 50%
             {
                 darkelixirvalue = random.Next(500, 1000);
                 goldvalue = random.Next(10000, 420000);
                 elexirvalue = random.Next(10000, 420000);
-                avatar.SetScore(avatar.GetScore() + random.Next(10, 30));
+                score = random.Next(10, 30);
             }
             else if (chance < 80) // 30% (50-79)
             {
                 darkelixirvalue = random.Next(500, 4200);
                 goldvalue = random.Next(10000, 750000);
                 elexirvalue = random.Next(10000, 750000);
-                avatar.SetScore(avatar.GetScore() + random.Next(10, 20));
+                score = random.Next(10, 20);
             }
             else if (chance < 95) // 15% (80-94)
             {
                 darkelixirvalue = random.Next(1000, 4200);
                 goldvalue = random.Next(10000, 800000);
                 elexirvalue = random.Next(10000, 800000);
-                avatar.SetScore(avatar.GetScore() + random.Next(2, 30));
+                score = random.Next(2, 30);
             }
             else // 5% (95-99)
             {
                 darkelixirvalue = random.Next(1500, 4200);
                 goldvalue = random.Next(10000, 1000000);
                 elexirvalue = random.Next(10000, 1000000);
-                avatar.SetScore(avatar.GetScore() + random.Next(2, 10));
+                score = random.Next(2, 10);
             }
 
             if (currentGold+goldvalue <= avatar.GetResourceCap(goldLocation))
@@ -180,6 +181,12 @@ namespace UCS.Packets.Messages.Client
                 {
                     avatar.SetResourceCount(darkelixirLocation, avatar.GetResourceCap(darkelixirLocation));
                 }
+            }
+            avatar.SetScore(avatar.GetScore() + score);
+            Device.AttackVictim.Avatar.SetScore(Device.AttackVictim.Avatar.GetScore() - score);
+            if (ResourcesManager.IsPlayerOnline(Device.AttackVictim))
+            {
+                new OwnHomeDataMessage(Device.AttackVictim.Client, Device.AttackVictim).Send();
             }
         } 
     }

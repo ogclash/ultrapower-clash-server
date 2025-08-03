@@ -30,24 +30,17 @@ namespace UCS.Packets.GameOpCommands
                     _MSG.LeagueId = 22;
                     _MSG.Message = "Your ID: " + level.Avatar.UserId;
                     _MSG.Message = @"/help" +
-                                   "\n/ban" +
                                    "\n/kick" +
                                    "\n/rename " +
-                                   "\n/setprivileges" +
-                                   "\n/shutdown" +
-                                   "\n/unban" +
                                    "\n/visit" +
                                    "\n/sysmsg" +
                                    "\n/id" +
                                    "\n/min" +
                                    "\n/max" +
-                                   "\n/saveacc" +
-                                   "\n/saveall" +
-                                   "\n/becomeleader" +
                                    "\n/status" +
                                    "\n/help" +
                                    "\n/accinfo" +
-                                   "\n/togglebroadcast";
+                                   "\n/addgems <amount>";
 
                     _MSG.Send();
                     var mail = new AllianceMailStreamEntry();

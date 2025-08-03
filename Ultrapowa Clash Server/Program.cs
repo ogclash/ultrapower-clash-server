@@ -73,6 +73,8 @@ namespace UCS
             Say();
 
             Console.ForegroundColor = ConsoleColor.Blue;
+            Logger.WriteCenter("+-------------------------------------------------------+");
+            Logger.WriteCenter("            ");
             Logger.WriteCenter(" _   _ _ _                                         ");
             Logger.WriteCenter(" | | | | | |_ _ __ __ _ _ __   _____      _____ _ __ ");
             Logger.WriteCenter(" | | | | | __| '__/ _` | '_ \\ / _ \\ \\ /\\ / / _ \\ '__|");
@@ -80,19 +82,6 @@ namespace UCS
             Logger.WriteCenter("  \\___/|_|\\__|_|  \\__,_| .__/ \\___/ \\_/\\_/ \\___|_|   ");
             Logger.WriteCenter("                       |_|                           ");
             Logger.WriteCenter("            ");
-
-            Console.ResetColor();
-
-            Console.ForegroundColor = ConsoleColor.Blue;
-            Logger.WriteCenter("+-------------------------------------------------------+");
-            Console.ResetColor();
-            Console.ForegroundColor = ConsoleColor.Green;
-            Logger.WriteCenter("|This program is made by the Ultrapowa Development Team.|");
-            Logger.WriteCenter("|    Ultrapowa is not affiliated to \"Supercell, Oy\".    |");
-            Logger.WriteCenter("|         Nor is Naix affiliated to \"Supercell, Oy\".    |");
-            Logger.WriteCenter("|        This program is copyrighted worldwide.         |");
-            Logger.WriteCenter("|         Modified by Naix to Ensure Functionality      |");
-            Console.ForegroundColor = ConsoleColor.Blue;
             Logger.WriteCenter("+-------------------------------------------------------+");
             Console.ResetColor();
 

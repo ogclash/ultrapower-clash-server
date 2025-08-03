@@ -17,9 +17,9 @@ namespace UCS.Packets.Commands.Client
 
         internal override void Decode()
         {
-            this.Reader.ReadInt32();
-            this.Reader.ReadInt32();
-            this.Reader.ReadInt32();
+            var unknown1 = this.Reader.ReadUInt32();
+            var unknown2 = this.Reader.ReadInt32();
+            var unknown3 = this.Reader.ReadInt32();
         }
 
         internal override async void Process()
@@ -59,16 +59,14 @@ namespace UCS.Packets.Commands.Client
 
                     // New Method
                     this.Device.PlayerState = State.SEARCH_BATTLE;
-                    Level Defender = ObjectManager.GetRandomOnlinePlayer();
-                    if (Defender != null)
+                    Level Defender = ObjectManager.GetRandomOfflinePlayer();
+                    while (Device.Player == Defender || Defender.Avatar.GetScore()+1000 < Device.Player.Avatar.GetScore())
                     {
-                        Defender.Tick();
-                        new EnemyHomeDataMessage(this.Device, Defender, this.Device.Player).Send();
+                        Defender = ObjectManager.GetRandomOfflinePlayer();
                     }
-                    else
-                    {
-                        new OutOfSyncMessage(this.Device).Send();
-                    }
+                    this.Device.AttackVictim = Defender;
+                    Defender.Tick();
+                    new EnemyHomeDataMessage(this.Device, Defender, this.Device.Player).Send();
                 }
             }
             catch (Exception)

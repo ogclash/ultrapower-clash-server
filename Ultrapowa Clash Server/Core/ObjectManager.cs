@@ -129,6 +129,18 @@ namespace UCS.Core
             int index = new Random().Next(0, ResourcesManager.m_vInMemoryLevels.Count);
             return ResourcesManager.m_vInMemoryLevels.Values.ToList().ElementAt(index);
         }
+        
+        public static Level GetRandomOfflinePlayer()
+        {
+            int index = new Random().Next(0, ResourcesManager.m_vInMemoryLevels.Count);
+            Level defender = ResourcesManager.m_vInMemoryLevels.Values.ToList().ElementAt(index);
+            while (ResourcesManager.IsPlayerOnline(defender))
+            {
+                index = new Random().Next(0, ResourcesManager.m_vInMemoryLevels.Count);
+                defender = ResourcesManager.m_vInMemoryLevels.Values.ToList().ElementAt(index);
+            }
+            return defender;
+        }
 
         public static void LoadNpcLevels()
         {
