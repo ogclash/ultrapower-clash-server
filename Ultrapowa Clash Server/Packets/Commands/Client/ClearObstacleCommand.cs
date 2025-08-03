@@ -1,4 +1,6 @@
+using UCS.Files.Logic;
 using UCS.Helpers.Binary;
+using UCS.Logic;
 
 namespace UCS.Packets.Commands.Client
 {
@@ -12,20 +14,19 @@ namespace UCS.Packets.Commands.Client
         internal override void Decode()
         {
             this.ObstacleId = this.Reader.ReadInt32();
-            this.Tick = this.Reader.ReadUInt32();
         }
 
         internal override void Process()
         {
-            /*ClientAvatar playerAvatar = level.Avatar;
-            Obstacle gameObjectByID = (Obstacle)level.GameObjectManager.GetGameObjectByID(ObstacleId);
+            ClientAvatar playerAvatar = this.Device.Player.Avatar;
+            Obstacle gameObjectByID = (Obstacle)this.Device.Player.GameObjectManager.GetGameObjectByID(ObstacleId);
             ObstacleData obstacleData = gameObjectByID.GetObstacleData();
-            if (playerAvatar.HasEnoughResources(obstacleData.GetClearingResource(), obstacleData.ClearCost) && level.HasFreeWorkers())
+            if (playerAvatar.HasEnoughResources(obstacleData.GetClearingResource(), obstacleData.ClearCost) &&  this.Device.Player.HasFreeWorkers())
             {
+                gameObjectByID.StartClearing();
                 ResourceData clearingResource = obstacleData.GetClearingResource();
                 playerAvatar.SetResourceCount(clearingResource, playerAvatar.GetResourceCount(clearingResource) - obstacleData.ClearCost);
-                gameObjectByID.StartClearing();
-            }*/
+            }
         }
 
         public int ObstacleId;

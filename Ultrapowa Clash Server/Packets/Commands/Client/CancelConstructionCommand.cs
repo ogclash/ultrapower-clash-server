@@ -2,6 +2,7 @@ using UCS.Core;
 using UCS.Files.Logic;
 using UCS.Helpers.Binary;
 using UCS.Logic;
+using UCS.Logic.Manager;
 
 namespace UCS.Packets.Commands.Client
 {
@@ -46,6 +47,13 @@ namespace UCS.Packets.Commands.Client
                 }
                 else if (go.ClassId == 3)
                 {
+                    GameObject go2 = Device.Player.GameObjectManager.GetGameObjectByID(BuildingId);
+                    var obstacle = (Obstacle) go2;
+                    if (Device.Player.GameObjectManager.removedObstacles.Contains(go2))
+                    {
+                        Device.Player.GameObjectManager.removedObstacles.Remove(go2);
+                        obstacle.CancelClearing();
+                    }
                 }
             }
         }

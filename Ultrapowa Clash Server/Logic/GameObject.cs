@@ -15,7 +15,7 @@ namespace UCS.Logic
             m_vLevel      = level;
             m_vData       = data;
             m_vComponents = new List<Component>();
-            for (var i = 0; i < 11; i++)
+            for (var i = 0; i <= 11; i++)
             {
                 m_vComponents.Add(new Component());
             }

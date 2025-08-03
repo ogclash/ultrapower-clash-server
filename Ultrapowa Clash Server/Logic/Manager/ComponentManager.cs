@@ -10,7 +10,7 @@ namespace UCS.Logic.Manager
         public ComponentManager(Level l)
         {
             m_vComponents = new List<List<Component>>();
-            for (var i = 0; i <= 10; i++)
+            for (var i = 0; i <= 11; i++)
                 m_vComponents.Add(new List<Component>());
             m_vLevel = l;
         }
@@ -124,6 +124,15 @@ namespace UCS.Logic.Manager
 
         public void RemoveGameObjectReferences(GameObject go)
         {
+            for (int i = 0; i <  m_vComponents[11].Count; i++)
+            {
+                var parentId = m_vComponents[11][i].GetParent().GlobalId;
+                if (m_vComponents[11][i].GetParent().GlobalId == go.GlobalId)
+                {
+                    m_vComponents[11].Remove(m_vComponents[11][i]);
+                    Logger.Say("Cleared Obstacle");
+                }
+            }
             foreach (var components in m_vComponents)
             {
                 var markedForRemoval = new List<Component>();

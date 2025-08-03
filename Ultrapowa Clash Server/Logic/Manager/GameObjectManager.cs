@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using Newtonsoft.Json.Linq;
 using UCS.Core;
 using UCS.Files.Logic;
@@ -19,15 +21,30 @@ namespace UCS.Logic.Manager
                 m_vGameObjectsIndex.Add(0);
             }
             m_vComponentManager     = new ComponentManager(m_vLevel);
-			//m_vObstacleManager      = new ObstacleManager(m_vLevel);
+			m_vObstacleManager      = new ObstacleManager(m_vLevel);
 		}
 
         readonly ComponentManager m_vComponentManager;
         readonly List<GameObject> m_vGameObjectRemoveList;
         readonly List<List<GameObject>> m_vGameObjects;
+        internal IList<GameObject>removedObstacles;
         readonly List<int> m_vGameObjectsIndex;
         readonly Level m_vLevel;
-	    //readonly ObstacleManager m_vObstacleManager;
+	    readonly ObstacleManager m_vObstacleManager;
+        public void RemoveObstacle(GameObject go)
+        
+        {
+            if (removedObstacles == null)
+            {
+                removedObstacles = new List<GameObject> { go };
+            }
+            if (go.ClassId == 3 && !removedObstacles.Contains(go))
+            {
+                var test = "";
+                removedObstacles.Add(go);
+                test = "";
+            }
+        }
 
 		public void AddGameObject(GameObject go)
         {
@@ -46,7 +63,7 @@ namespace UCS.Logic.Manager
 
         public ComponentManager GetComponentManager() => m_vComponentManager;
 
-		//public ObstacleManager GetObstacleManager() => m_vObstacleManager;
+		public ObstacleManager GetObstacleManager() => m_vObstacleManager;
 
 		public GameObject GetGameObjectByID(int id)
         {
@@ -88,17 +105,20 @@ namespace UCS.Logic.Manager
                 d.Load(jsonDeco);
             }
 
-			/*var jsonObstacles = (JArray)jsonObject["obstacles"];
-			foreach (JObject jsonObstacle in jsonObstacles)
-			{
-				var dd = (ObstacleData)CSVManager.DataTables.GetDataById(jsonObstacle["data"].ToObject<int>());
-				var d = new Obstacle(dd, m_vLevel);
-				AddGameObject(d);
-				d.Load(jsonObstacle);
-			}
-
-			m_vObstacleManager.Load(jsonObject); */
+            if (jsonObject["obstacles"] != null)
+            {
+                var jsonObstacles = (JArray)jsonObject["obstacles"];
+			    foreach (JObject jsonObstacle in jsonObstacles)
+			    {
+				    var od = (ObstacleData)CSVManager.DataTables.GetDataById(jsonObstacle["data"].ToObject<int>());
+				    var o = new Obstacle(od, m_vLevel);
+				    AddGameObject(o);
+				    o.Load(jsonObstacle);
+			    }
+            }
+			m_vObstacleManager.Load(jsonObject);
 		}
+        
 
         public void RemoveGameObject(GameObject go)
         {
@@ -113,6 +133,7 @@ namespace UCS.Logic.Manager
                 }
             }
             RemoveGameObjectReferences(go);
+           // RemoveGameObjectTotally(go);
         }
 
         public void RemoveGameObjectReferences(GameObject go)
@@ -124,11 +145,35 @@ namespace UCS.Logic.Manager
         {
             ClientAvatar pl = m_vLevel.Avatar;
             var jsonData = new JObject();
+            jsonData = m_vObstacleManager.Save(jsonData); 
             jsonData.Add("exp_ver", 1);
             jsonData.Add("android_client", pl.m_vAndroid);
             jsonData.Add("active_layout", pl.m_vActiveLayout);
             jsonData.Add("war_layout", pl.m_vActiveLayout);
             jsonData.Add("layout_state", new JArray { 0, 0, 0, 0, 0, 0 });
+            
+            JArray JObstacles = new JArray();
+            int o = 0;
+            foreach (GameObject go in new List<GameObject>(m_vGameObjects[3]))
+            {
+                Obstacle d = (Obstacle)go;
+                JObject j = new JObject();
+                j.Add("data", d.GetObstacleData().GetGlobalID());
+                if (d.IsClearingOnGoing())
+                    j.Add("const_t", d.m_vTimer.GetRemainingSeconds(m_vLevel.Avatar.LastTickSaved));
+                j.Add("id", 503000000 + o);
+                d.Save(j);
+                o++;
+                if (removedObstacles != null)
+                {
+                    if (removedObstacles.Contains(go))
+                    {
+                        continue;
+                    }
+                }
+                JObstacles.Add(j);
+            }
+            jsonData.Add("obstacles", JObstacles);
 
             JArray JBuildings = new JArray();
             int c = 0;
@@ -171,22 +216,6 @@ namespace UCS.Logic.Manager
                 e++;
             }
             jsonData.Add("decos", JDecos);
-
-            /*JArray JObstacles = new JArray();
-            int o = 0;
-            foreach (GameObject go in new List<GameObject>(m_vGameObjects[3]))
-            {
-                Obstacle d = (Obstacle)go;
-                JObject j = new JObject();
-                j.Add("data", d.GetObstacleData().GetGlobalID());
-                j.Add("id", 503000000 + o);
-                d.Save(j);
-                JObstacles.Add(j);
-                o++;
-            }
-            jsonData.Add("obstacles", JObstacles);
-
-            m_vObstacleManager.Save(jsonData); */
 
 			var cooldowns = new JArray();
             jsonData.Add("cooldowns", cooldowns);
@@ -287,6 +316,7 @@ namespace UCS.Logic.Manager
         public void Tick()
         {
             m_vComponentManager.Tick();
+            m_vObstacleManager.Tick();
             foreach (var l in m_vGameObjects)
             {
                 foreach (var go in l)

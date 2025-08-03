@@ -2,14 +2,13 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using UCS.Core;
 using UCS.Files.Logic;
 
 namespace UCS.Logic
 {
-	/*public static class ThreadSafeRandom
+	public static class ThreadSafeRandom
 	{
 		[ThreadStatic] private static Random Local;
 
@@ -37,11 +36,11 @@ namespace UCS.Logic
 				list[n] = value;
 			}
 		}
-	} */
+	}
 
 	internal class ObstacleManager
 	{
-		/*private static readonly List<ObstacleData> m_vGemBoxes = new List<ObstacleData>();
+		private static readonly List<ObstacleData> m_vGemBoxes = new List<ObstacleData>();
 
 		private static readonly List<ObstacleData> m_vSpawnAbleObstacles = new List<ObstacleData>();
 
@@ -98,16 +97,27 @@ namespace UCS.Logic
 			m_vNormalTimer = new Timer();
 			m_vGemBoxTimer = new Timer();
 			m_vSpecialTimer = new Timer();
-			m_vNormalTimer.StartTimer(m_vObstacleRespawnSeconds, level.Avatar.LastTickSaved);
-			m_vGemBoxTimer.StartTimer(m_vObstacleRespawnSeconds * 2, level.Avatar.LastTickSaved);
-			m_vSpecialTimer.StartTimer(m_vObstacleRespawnSeconds, level.Avatar.LastTickSaved);
+			if (level.Avatar != null)
+			{
+				m_vNormalTimer.StartTimer(m_vObstacleRespawnSeconds, level.Avatar.LastTickSaved);
+				m_vGemBoxTimer.StartTimer(m_vObstacleRespawnSeconds * 2, level.Avatar.LastTickSaved);
+				m_vSpecialTimer.StartTimer(m_vObstacleRespawnSeconds, level.Avatar.LastTickSaved);
+			}
+			else
+			{
+				//Logger.Say("Level.Avatar is null in ObstacleManager constructor.");
+				var fallbackTime = DateTime.Now;
+				m_vNormalTimer.StartTimer(m_vObstacleRespawnSeconds, fallbackTime);
+				m_vGemBoxTimer.StartTimer(m_vObstacleRespawnSeconds * 2, fallbackTime);
+				m_vSpecialTimer.StartTimer(m_vObstacleRespawnSeconds, fallbackTime);
+			}
 			m_vObstacleClearCount = 0;
 			m_vRespawnSeed = new Random().Next();
 		}
 
 		public void IncreaseObstacleClearCount()
 		{
-			m_vObstacleClearCount++;
+			m_vObstacleClearCount =  m_vObstacleClearCount+1;
 			m_vObstacleClearCount = Math.Min(m_vObstacleClearCount, 40);
 		}
 
@@ -330,6 +340,6 @@ namespace UCS.Logic
 			var o = new Obstacle(data, m_vLevel);
 			o.SetPositionXY(position[0], position[1], m_vLevel.Avatar.GetActiveLayout());
 			m_vLevel.GameObjectManager.AddGameObject(o);
-		}*/
+		}
 	}
 }

@@ -44,7 +44,7 @@ namespace UCS.Core
             m_vAvatarSeed          = MaxPlayerID;
             m_vAllianceSeed        = MaxAllianceID;
 
-            using (StreamReader sr = new StreamReader(@"Gamefiles/starting_home.json"))
+            using (StreamReader sr = new StreamReader(@"Gamefiles/starting_home_with_obstacles.json"))
             {
                 m_vHomeDefault     = sr.ReadToEnd();
             }
