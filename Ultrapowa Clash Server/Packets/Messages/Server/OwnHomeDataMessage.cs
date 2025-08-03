@@ -24,7 +24,7 @@ namespace UCS.Packets.Messages.Server
                 long now = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
                 
                 int elapsed = (int)(now - this.Player.Avatar.mv_ShieldTimeStamp);
-                int shieldTimeRemaining = Math.Max(0, this.Player.Avatar.m_vShieldTime - elapsed);
+                int shieldTimeRemaining = Math.Max(0, this.Player.Avatar.m_vShieldTimeValue - elapsed);
                 this.Device.Player.Avatar.m_vShieldTime = shieldTimeRemaining;
                 
                 elapsed = (int)(now - this.Player.Avatar.m_vProtectionTimeStamp);

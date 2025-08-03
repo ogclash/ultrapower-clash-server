@@ -263,6 +263,8 @@
     <Compile Include="Helpers\Binary\Reader.cs" />
     <Compile Include="Helpers\List\Writter.cs" />
     <Compile Include="Logic\API\FacebookApi.cs" />
+    <Compile Include="Logic\AvatarStreamEntry\AllianceDeclineStreamEntry.cs" />
+    <Compile Include="Logic\AvatarStreamEntry\AllianceInviteStreamEntry.cs" />
     <Compile Include="Logic\ClanWars.cs" />
     <Compile Include="Logic\Component\ObstacleComponent.cs" />
     <Compile Include="Logic\Enums\Database.cs" />
@@ -283,9 +285,11 @@
     <Compile Include="Packets\GameOpCommands\MinRessourcesGameOpCommand.cs" />
     <Compile Include="Packets\GameOpCommands\ToggleBroadcastGameOpCommand.cs" />
     <Compile Include="Packets\Messages\BroadcastManager.cs" />
+    <Compile Include="Packets\Messages\Client\AcceptInviteMessage.cs" />
     <Compile Include="Packets\Messages\Client\AccountSwitchMessage.cs" />
     <Compile Include="Packets\Messages\Client\Api\Bind_Google_Message.cs" />
     <Compile Include="Packets\Messages\Client\RetributionAttackerMessage.cs" />
+    <Compile Include="Packets\Messages\Client\DeclineInviteMessage.cs" />
     <Compile Include="Packets\Messages\Server\Api\Facebook_Connect_OK.cs" />
     <Compile Include="Packets\Messages\Server\ClanBattleLiveNotificationMessage.cs" />
     <Compile Include="Packets\Messages\Server\Clash_Friend_Request_Sent_Message.cs" />

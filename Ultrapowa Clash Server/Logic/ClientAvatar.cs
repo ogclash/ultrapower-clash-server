@@ -38,8 +38,10 @@ namespace UCS.Logic
         internal int m_vAlliance_Elixir = 0;
         internal int m_vAlliance_DarkElixir = 0;
         internal int m_vShieldTime;
+        internal int m_vShieldTimeValue;
         internal long mv_ShieldTimeStamp;
         internal int m_vProtectionTime;
+        internal int m_vProtectionTimeValue;
         internal long m_vProtectionTimeStamp;
         internal int ReportedTimes = 0;
         internal int m_vDonated;
@@ -457,8 +459,10 @@ namespace UCS.Logic
                 this.m_vProtectionTime = 0;
                 this.m_vProtectionTimeStamp = 0;
             }
+            this.m_vShieldTimeValue = jsonObject["shield_timevalue"]?.ToObject<int>() ?? m_vShieldTime;
             this.m_vShieldTime = jsonObject["shield_time"].ToObject<int>();
             this.m_vProtectionTime = jsonObject["protection_time"].ToObject<int>();
+            this.m_vProtectionTimeValue = jsonObject["protection_timevalue"]?.ToObject<int>() ?? m_vProtectionTime;
             
             this.FacebookId = jsonObject["fb_id"].ToObject<string>();
             this.FacebookToken = jsonObject["fb_token"].ToObject<string>();
@@ -707,8 +711,10 @@ namespace UCS.Logic
                 {"nameChangesLeft", this.m_vNameChangingLeft},
                 {"nameChosenByUser", (ushort) m_vnameChosenByUser},
                 {"shield_time", this.m_vShieldTime},
+                {"shield_timevalue", this.m_vShieldTimeValue},
                 {"shield_timestamp", this.mv_ShieldTimeStamp},
                 {"protection_time", this.m_vProtectionTime},
+                {"protection_timevalue", this.m_vProtectionTimeValue},
                 {"protection_timestamp", this.m_vProtectionTimeStamp},
                 {"fb_id", this.FacebookId},
                 {"fb_token", this.FacebookToken},

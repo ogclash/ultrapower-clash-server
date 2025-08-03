@@ -25,6 +25,7 @@ namespace UCS.Packets.Commands.Client
                 player.m_vProtectionTime = 0;
             }
             player.m_vShieldTime = 0;
+            player.m_vShieldTimeValue = 0;
         }
     }      
 }

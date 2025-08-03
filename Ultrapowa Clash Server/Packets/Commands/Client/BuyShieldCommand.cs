@@ -22,17 +22,34 @@ namespace UCS.Packets.Commands.Client
         internal override void Process()
         {
             ClientAvatar player = this.Device.Player.Avatar;
+            long now = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
             if (ShieldId == 20000000)
             {
-                player.m_vProtectionTime = 7200;
+                long shieldEnd = player.m_vProtectionTimeStamp + player.m_vProtectionTime;
+                long remaining = Math.Max(0, shieldEnd - now);
+                var shieldData = (ShieldData)CSVManager.DataTables.GetDataById(ShieldId);
+                if (remaining == 0)
+                {
+                    player.m_vProtectionTimeStamp = now;
+                }
+                player.m_vProtectionTime += 7200;
+                player.m_vProtectionTimeValue += 7200;
                 player.m_vProtectionTimeStamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
-                player.UseDiamonds(((ShieldData)CSVManager.DataTables.GetDataById(ShieldId)).Diamonds);
+                player.UseDiamonds(shieldData.Diamonds);
             }
             else
             {
-                player.m_vShieldTime = player.m_vShieldTime + Convert.ToInt32(TimeSpan.FromHours(((ShieldData)CSVManager.DataTables.GetDataById(ShieldId)).TimeH).TotalSeconds);
-                player.mv_ShieldTimeStamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
-                player.UseDiamonds(((ShieldData)CSVManager.DataTables.GetDataById(ShieldId)).Diamonds);
+                long shieldEnd = player.mv_ShieldTimeStamp + player.m_vShieldTime;
+                long remaining = Math.Max(0, shieldEnd - now);
+                var shieldData = (ShieldData)CSVManager.DataTables.GetDataById(ShieldId);
+                if (remaining == 0)
+                {
+                    player.mv_ShieldTimeStamp = now;
+                }
+
+                player.m_vShieldTime += Convert.ToInt32(TimeSpan.FromHours((shieldData).TimeH).TotalSeconds);
+                player.m_vShieldTimeValue += Convert.ToInt32(TimeSpan.FromHours((shieldData).TimeH).TotalSeconds);
+                player.UseDiamonds(shieldData.Diamonds);
             }
         }
 

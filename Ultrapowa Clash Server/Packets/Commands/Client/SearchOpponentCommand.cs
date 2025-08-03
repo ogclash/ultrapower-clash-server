@@ -26,6 +26,18 @@ namespace UCS.Packets.Commands.Client
         {
             try
             {
+                if (this.Device.ShieldInfo)
+                {
+                    this.Device.ShieldInfo = false;
+                    int shieldReduction = 3 * 60 * 60;
+                    if (Device.Player.Avatar.m_vShieldTime > 0 && Device.Player.Avatar.mv_ShieldTimeStamp > 0)
+                    {
+                        Device.Player.Avatar.mv_ShieldTimeStamp -= shieldReduction;
+                        
+                        if (Device.Player.Avatar.mv_ShieldTimeStamp < 0)
+                            Device.Player.Avatar.mv_ShieldTimeStamp = 0;
+                    }
+                }
                 if (this.Device.PlayerState == State.IN_BATTLE)
                 {
                     ResourcesManager.DisconnectClient(this.Device);
