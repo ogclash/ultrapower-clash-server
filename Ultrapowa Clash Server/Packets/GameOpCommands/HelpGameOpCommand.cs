@@ -30,16 +30,13 @@ namespace UCS.Packets.GameOpCommands
                     _MSG.LeagueId = 22;
                     _MSG.Message = "Your ID: " + level.Avatar.UserId;
                     _MSG.Message = @"/help" +
-                                   "\n/kick" +
-                                   "\n/rename " +
+                                   "\n/status" +
                                    "\n/visit" +
-                                   "\n/sysmsg" +
-                                   "\n/id" +
                                    "\n/min" +
                                    "\n/max" +
-                                   "\n/status" +
-                                   "\n/reload" +
                                    "\n/accinfo" +
+                                   "\n/rename " +
+                                   "\n/reload" +
                                    "\n/resetacc" +
                                    "\n/setpassword <password>" +
                                    "\n/switchacc <id> <password>" +

@@ -30,7 +30,7 @@ namespace UCS.Core.Web
         {
             try
             {
-                string Version = "0.7.3.2";
+                string Version = "1.0.0.0";
                 return (Version);
             }
             catch (Exception)
@@ -39,10 +39,9 @@ namespace UCS.Core.Web
             }
         }
 
-        public static string LatestCoCVersion()
+        public static string LatestSupportedVersion()
         {
-
-                return "8.709.16";
+            return "8.709.16";
         }
     }
 }

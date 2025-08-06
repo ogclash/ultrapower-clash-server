@@ -57,18 +57,7 @@ namespace UCS
                 SetLayeredWindowAttributes(Handle, 0, 227, LWA_ALPHA);
             }
 
-            if (Constants.LicensePlanID == 3)
-            {
-                Console.Title = Title + OP;
-            }
-            else if(Constants.LicensePlanID == 2)
-            {
-                Console.Title = Title + OP + "/700";
-            }
-            else if (Constants.LicensePlanID == 1)
-            {
-                Console.Title = Title + OP + "/350";
-            }
+            Console.Title = Title + 0;
 
             Say();
 
@@ -88,7 +77,7 @@ namespace UCS
             Say();
 
             Console.ForegroundColor = ConsoleColor.Blue;
-            Console.Write("[UCS]    ");
+            Console.Write("[UCS]  ");
             Version = VersionChecker.GetVersionString();
 
             _Stopwatch.Start();
@@ -101,8 +90,8 @@ namespace UCS
                 Say("Preparing Server...\n");
                 Resources.Initialize();
                 ResourcesManager.loadAllResources();
-		        Logger.Say("Resources were successfully loaded");
-                Logger.Say($"IP Address: {Dns.GetHostByName(Dns.GetHostName()).AddressList[0]}");
+		        Say("Resources were successfully loaded");
+                Say($"IP Address: {Dns.GetHostByName(Dns.GetHostName()).AddressList[0]}");
             }
             else if (Version == "Error")
             {
@@ -121,53 +110,16 @@ namespace UCS
                 Environment.Exit(0);
             }
         }
-
-        public static void UpdateTitle()
-        {
-            if (Constants.LicensePlanID == 3)
-            {
-                Console.Title = Title + OP;
-            }
-            else if (Constants.LicensePlanID == 2)
-            {
-                Console.Title = Title + OP + "/700";
-            }
-            else if (Constants.LicensePlanID == 1)
-            {
-                Console.Title = Title + OP + "/350";
-            }
-        }
+        
 
         public static void TitleU()
         {
-            if (Constants.LicensePlanID == 3)
-            {
-                Console.Title = Title + ++OP;
-            }
-            else if(Constants.LicensePlanID == 2)
-            {
-                Console.Title = Title + ++OP + "/700";
-            }
-            else if (Constants.LicensePlanID == 1)
-            {
-                Console.Title = Title + ++OP + "/350";
-            }
+            Console.Title = Title + Convert.ToString(ResourcesManager.m_vOnlinePlayers.Count);
         }
 
         public static void TitleD()
         {
-            if (Constants.LicensePlanID == 3)
-            {
-                Console.Title = Title + --OP;
-            }
-            else if(Constants.LicensePlanID == 2)
-            {
-                Console.Title = Title + --OP + "/700";
-            }
-            else if(Constants.LicensePlanID == 1)
-            {
-                Console.Title = Title + --OP + "/350";
-            }
+            Console.Title = Title + Convert.ToString(ResourcesManager.m_vOnlinePlayers.Count);
         }
 
         [DllImport("user32.dll")]

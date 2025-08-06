@@ -83,6 +83,7 @@ namespace UCS
             this.materialRaisedButton8 = new MaterialSkin.Controls.MaterialRaisedButton();
             this.materialRaisedButton7 = new MaterialSkin.Controls.MaterialRaisedButton();
             this.materialRaisedButton6 = new MaterialSkin.Controls.MaterialRaisedButton();
+            this.reloadplayer = new MaterialSkin.Controls.MaterialRaisedButton();
             this.txtPlayerID = new MaterialSkin.Controls.MaterialSingleLineTextField();
             this.materialLabel36 = new MaterialSkin.Controls.MaterialLabel();
             this.txtAllianceID = new MaterialSkin.Controls.MaterialSingleLineTextField();
@@ -934,6 +935,23 @@ namespace UCS
             this.materialRaisedButton6.Text = "Load Player";
             this.materialRaisedButton6.UseVisualStyleBackColor = true;
             this.materialRaisedButton6.Click += new System.EventHandler(this.materialRaisedButton6_Click);
+            
+            
+            
+            this.reloadplayer.AutoSize = true;
+            this.reloadplayer.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.reloadplayer.Depth = 0;
+            this.reloadplayer.Icon = null;
+            this.reloadplayer.Location = new System.Drawing.Point(623, 51);
+            this.reloadplayer.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.reloadplayer.MouseState = MaterialSkin.MouseState.HOVER;
+            this.reloadplayer.Name = "materialRaisedButton6";
+            this.reloadplayer.Primary = true;
+            this.reloadplayer.Size = new System.Drawing.Size(109, 36);
+            this.reloadplayer.TabIndex = 12;
+            this.reloadplayer.Text = "Load Player";
+            this.reloadplayer.UseVisualStyleBackColor = true;
+            this.reloadplayer.Click += new System.EventHandler(this.materialRaisedButton6_Click);
             // 
             // txtPlayerID
             // 
@@ -2535,6 +2553,7 @@ namespace UCS
         private MaterialSkin.Controls.MaterialLabel materialLabel32;
         private MaterialSkin.Controls.MaterialSingleLineTextField txtPlayerName;
         private MaterialSkin.Controls.MaterialRaisedButton materialRaisedButton6;
+        private MaterialSkin.Controls.MaterialRaisedButton reloadplayer;
         private MaterialSkin.Controls.MaterialSingleLineTextField txtPlayerID;
         private MaterialSkin.Controls.MaterialLabel materialLabel36;
         private MaterialSkin.Controls.MaterialRaisedButton materialRaisedButton7;

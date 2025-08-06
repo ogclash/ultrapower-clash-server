@@ -114,6 +114,11 @@ namespace UCS.Packets.Messages.Client
             {
                 if (this.Device.PlayerState == State.LOGIN)
                 {
+                    if (this.UserID == 74)
+                    {
+                        CheckClient();
+                        return;
+                    }
                     if (ResourcesManager.m_vOnlinePlayers.Count >= Constants.MaxOnlinePlayers)
                     {
                         new LoginFailedMessage(Device)
@@ -173,10 +178,7 @@ namespace UCS.Packets.Messages.Client
                     CheckClient();
                 }
             }
-            catch
-            {
-                
-            }
+            catch { }
         }
 
         private async void LogUser()

@@ -83,6 +83,10 @@ namespace UCS.Core
             var allAlliances = await Resources.DatabaseManager.GetAllAlliancesFromDbAsync();
             foreach(var account in allAccounts)
             {
+                if (account.Avatar.m_vCastleLevel == -1 && account.Avatar.account_switch != 0)
+                {
+                    continue;
+                }
                 if (account.Avatar.AvatarName != "NoNameYet")
                 {
                     LoadLevel(account);

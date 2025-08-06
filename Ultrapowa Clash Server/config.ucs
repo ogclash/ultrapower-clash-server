@@ -18,7 +18,7 @@
   <!-- Don't forget the trailing slash -->
   <add key="maintenanceTimeleft" value="0" />
   <!-- Please set the time in seconds like 1200 seconds for 20 minutes -->
-  <add key="AdminMessage" value="Welcome to Ultrapower Clash Server v0.7.3.2 Modded By Naix" />
+  <add key="AdminMessage" value="Welcome to Ultrapower Clash Server" />
   <!-- The AdminMessage will be shown in the Inbox of the Players-->
   <add key="CustomMaintenance" value="" />
   <!-- Custom Maintenance Message -->

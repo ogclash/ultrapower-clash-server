@@ -31,7 +31,6 @@ namespace UCS.Packets.Messages.Server
                 elapsed = (int)(now - this.Player.Avatar.m_vProtectionTimeStamp);
                 shieldTimeRemaining = Math.Max(0, this.Player.Avatar.m_vProtectionTimeValue - elapsed);
                 this.Device.Player.Avatar.m_vProtectionTime = shieldTimeRemaining;
-                var buildings = this.Device.Player.Avatar.getBuildings();
                 this.Player.Avatar.setBuidlings(new List<int[]>());
                 
                 var _Home =
@@ -57,6 +56,7 @@ namespace UCS.Packets.Messages.Server
             catch (Exception)
             {
             }
+            
         }
     }
 }

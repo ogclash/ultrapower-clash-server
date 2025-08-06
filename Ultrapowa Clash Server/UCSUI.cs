@@ -53,20 +53,6 @@ namespace UCS
             Version.Text = $"Version: {Constants.Version}";
             Build.Text = $"Build: {Constants.Version}";
 
-            if (Core.Settings.Constants.LicensePlanID < 2)
-            {
-                var message = MessageBox.Show("The User Interface is not available for unpaid Users. Please upgrade to ultra using the Ultrapower keygen", "Not available for unpaid Users.", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-                if (message == DialogResult.OK)
-                {
-                    Close();
-                }
-                else
-                {
-                    Close();
-                }
-            }
-
 			// CONFIG EDITOR
 			txtStartingGems.Text = ConfigurationManager.AppSettings["startingGems"];
             txtStartingGold.Text = ConfigurationManager.AppSettings["startingGold"];
@@ -236,6 +222,35 @@ namespace UCS
             }
             /* LOAD PLAYER */
         }
+        
+        private async void reloadplayer_Click(object sender, EventArgs e)
+        {
+            /* LOAD PLAYER */
+            try
+            {
+                Level l = await ResourcesManager.GetPlayer(long.Parse(txtPlayerID.Text));
+                ResourcesManager.reloadPlayer(l);
+            }
+            catch (NullReferenceException)
+            {
+                var title = "Error";
+                MessageBox.Show("Player with ID " + txtPlayerID.Text + " not found!", title, MessageBoxButtons.RetryCancel, MessageBoxIcon.Information);
+                txtPlayerName.Enabled = false;
+                txtPlayerScore.Enabled = false;
+                txtPlayerGems.Enabled = false;
+                txtTownHallLevel.Enabled = false;
+                txtAllianceID.Enabled = false;
+                txtPlayerLevel.Enabled = false;
+
+                txtPlayerName.Clear();
+                txtPlayerScore.Clear();
+                txtPlayerGems.Clear();
+                txtTownHallLevel.Clear();
+                txtAllianceID.Clear();
+                txtPlayerLevel.Clear();
+            }
+            /* LOAD PLAYER */
+        }
 
         //Clear Button
         private void materialRaisedButton8_Click(object sender, EventArgs e)
@@ -290,7 +305,7 @@ namespace UCS
             txtMintenance.Text = "0";
             txtDatabaseType.Text = "";
             txtPort.Text = "9339";
-            txtAdminMessage.Text = "Welcome to Ultrapower Clash Server v0.7.3.2 Modded By Naix";
+            txtAdminMessage.Text = "Welcome to Ultrapower Clash Server";
             txtLogLevel.Text = "0";
             txtClientVersion.Text = "8.709.16";
         }
