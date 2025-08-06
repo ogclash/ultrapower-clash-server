@@ -212,25 +212,42 @@ namespace UCS.Packets.Messages.Client
             new OwnHomeDataMessage(this.Device, level).Send();
             new BookmarkMessage(this.Device).Send();
 
-            if (false)
+            foreach (AvatarStreamEntry amessage in Device.Player.Avatar.messages)
             {
-                AllianceMailStreamEntry mail = new AllianceMailStreamEntry();
-                mail.ID = (int)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
-                mail.SenderId = 0;
-                //mail.SetSenderName("Clash Of Heroes Team");
-                mail.m_vSenderName = "Server Manager";
-                mail.IsNew = 2;
-                mail.AllianceId = 0;
-                mail.m_vSenderLeagueId = 22;
-                mail.AllianceBadgeData = 1526735450;
-                //mail.SetAllianceName("COH-TEAM");
-                mail.AllianceName = "Server Admin";
-                mail.Message = ConfigurationManager.AppSettings["AdminMessage"];
-                mail.m_vSenderLevel = 500;
-                AvatarStreamEntryMessage p = new AvatarStreamEntryMessage(level.Client);
-                p.SetAvatarStreamEntry(mail);
-                p.Send();
+                var type = amessage.GetStreamEntryType();
+                if (type == 3)
+                {
+                    AllianceDeclineStreamEntry ai = (AllianceDeclineStreamEntry) amessage;
+                    AvatarStreamEntryMessage p = new AvatarStreamEntryMessage(level.Client);
+                    p.SetAvatarStreamEntry(ai, false);
+                    p.Send();
+                }
+                else if (type == 4)
+                {
+                    AllianceInviteStreamEntry ai = (AllianceInviteStreamEntry) amessage;
+                    AvatarStreamEntryMessage p = new AvatarStreamEntryMessage(level.Client);
+                    p.SetAvatarStreamEntry(ai, false);
+                    p.Send();
+                }
+                else if (type == 6)
+                {
+                    AllianceMailStreamEntry ai = (AllianceMailStreamEntry) amessage;
+                    AvatarStreamEntryMessage p = new AvatarStreamEntryMessage(level.Client);
+                    p.SetAvatarStreamEntry(ai, false);
+                    p.Send();
+                }
             }
+            AllianceMailStreamEntry server_update = new AllianceMailStreamEntry();
+            Level admin = await ResourcesManager.GetPlayer(74);
+            var admin_alliance = ObjectManager.GetAlliance(admin.Avatar.AllianceId);
+            server_update.SetSender(admin.Avatar);
+            server_update.AllianceId = admin_alliance.m_vAllianceId;
+            server_update.AllianceBadgeData = admin_alliance.m_vAllianceBadgeData;
+            server_update.AllianceName = admin_alliance.m_vAllianceName;
+            server_update.Message = "New Server Update!\n - Added Friendly Battles\n - Fixed some bugs\n - Added Account Restoring! \n - Added Clan Progression: 10 TroopHousing-Space filled = 1 Clan-XP";
+            AvatarStreamEntryMessage sys_message = new AvatarStreamEntryMessage(level.Client);
+            sys_message.SetAvatarStreamEntry(server_update, false);
+            sys_message.Send();
         }
 
         private async void CheckClient()
@@ -244,12 +261,26 @@ namespace UCS.Packets.Messages.Client
                 }
 
                 level = await ResourcesManager.GetPlayer(UserID);
+                if (level.Avatar.account_switch != 0)
+                {
+                    level = await ResourcesManager.GetPlayer(level.Avatar.account_switch);
+                    level.Avatar.old_account = (int)UserID;
+                }
                 if (level != null)
                 {
                     if (level.Avatar.AccountBanned)
                     {
                         new LoginFailedMessage(Device) {ErrorCode = 11}.Send();
                         return;
+                    }
+                    if (ResourcesManager.IsPlayerOnline(level))
+                    {
+                        new LoginFailedMessage(Device) {ErrorCode = 12}.Send();
+                        return;
+                        /*
+                         if (ResourcesManager.IsPlayerOnline(level) && level.Client != null)
+                         { ResourcesManager.DisconnectClient(level.Client); }
+                        */
                     }
                     LogUser();
                 }

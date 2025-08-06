@@ -71,7 +71,7 @@ namespace UCS.Logic
 				m_vObstacleRespawnSeconds =
 					CSVManager.DataTables.GetGlobals().GetGlobalData("OBSTACLE_RESPAWN_SECONDS").NumberValue;
 			}
-			if (m_vSpawnAbleObstacles.Count() == 0)
+			if (!m_vSpawnAbleObstacles.Any())
 			{
 				var dt = CSVManager.DataTables.GetTable(7);
 				for (var i = 0; i < dt.GetItemCount(); i++)
@@ -105,10 +105,9 @@ namespace UCS.Logic
 			}
 			else
 			{
-				//Logger.Say("Level.Avatar is null in ObstacleManager constructor.");
 				var fallbackTime = DateTime.Now;
 				m_vNormalTimer.StartTimer(m_vObstacleRespawnSeconds, fallbackTime);
-				m_vGemBoxTimer.StartTimer(m_vObstacleRespawnSeconds * 2, fallbackTime);
+				m_vGemBoxTimer.StartTimer(m_vObstacleRespawnSeconds * 10, fallbackTime);
 				m_vSpecialTimer.StartTimer(m_vObstacleRespawnSeconds, fallbackTime);
 			}
 			m_vObstacleClearCount = 0;
@@ -172,31 +171,19 @@ namespace UCS.Logic
 
 		public void Tick()
 		{
-			while (m_vObstacleClearCount > 0 && m_vNormalTimer.GetRemainingSeconds(m_vLevel.Avatar.LastTickSaved) <= 0)
+			while (m_vNormalTimer.GetRemainingSeconds(m_vLevel.Avatar.LastTickSaved) <= 0)
 			{
 				var ob = GetRandomObstacle();
 				var pos = GetFreePlace(ob);
 				if (pos != null)
 				{
 					SpawnObstacle(pos, ob);
-					m_vObstacleClearCount--;
-					if (m_vObstacleClearCount > 0)
-					{
-						m_vNormalTimer.StartTimer(m_vObstacleRespawnSeconds,
-							m_vNormalTimer.GetStartTime().AddSeconds(m_vObstacleRespawnSeconds));
-					}
-					else
-					{
-						m_vNormalTimer.StartTimer(m_vObstacleRespawnSeconds, m_vLevel.Avatar.LastTickSaved);
-					}
 				}
-				else
-				{
-					m_vNormalTimer.StartTimer(m_vObstacleRespawnSeconds, m_vLevel.Avatar.LastTickSaved);
-					break;
-				}
+				m_vNormalTimer.StartTimer(m_vObstacleRespawnSeconds,
+					m_vNormalTimer.GetStartTime().AddSeconds(m_vObstacleRespawnSeconds));
 			}
-			if (m_vGemBoxTimer.GetRemainingSeconds(m_vLevel.Avatar.LastTickSaved) <= 0)
+
+			if (m_vGemBoxTimer.GetRemainingSeconds(m_vLevel.Avatar.LastTickSaved) > 0) return;
 			{
 				if (new Random().Next(0, 4) == 0)
 				{
@@ -215,7 +202,7 @@ namespace UCS.Logic
 			}
 		}
 
-		private int[] GetFreePlace(ObstacleData od)
+		public int[] GetFreePlace(ObstacleData od)
 		{
 			try
 			{
@@ -290,7 +277,7 @@ namespace UCS.Logic
 				pos = null;
 				while (z < freePositions.Count && pos == null)
 				{
-					if (obstacleHasSpace(od, freePositions[z][0], freePositions[z][1], field))
+					if (ObstacleHasSpace(od, freePositions[z][0], freePositions[z][1], field))
 					{
 						pos = freePositions[z];
 					}
@@ -318,7 +305,7 @@ namespace UCS.Logic
 			return m_vSpawnAbleObstacles[0];
 		}
 
-		private bool obstacleHasSpace(ObstacleData od, int x, int y, int[,] field)
+		private bool ObstacleHasSpace(ObstacleData od, int x, int y, int[,] field)
 		{
 			int w = od.Width, h = od.Height;
 			for (var i = 0; i < w; i++)

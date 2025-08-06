@@ -28,7 +28,6 @@ namespace UCS.Packets.Messages.Client
             try
             {
                 Alliance alliance = ObjectManager.GetAlliance(m_vAllianceId);
-                if (alliance != null)
                     new AllianceDataMessage(Device, alliance).Send();
             }
             catch (Exception)

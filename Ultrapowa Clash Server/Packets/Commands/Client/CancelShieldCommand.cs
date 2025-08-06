@@ -23,9 +23,12 @@ namespace UCS.Packets.Commands.Client
             if (player.m_vShieldTime == 0)
             { 
                 player.m_vProtectionTime = 0;
+                player.m_vProtectionTimeValue = 0;
+                player.m_vProtectionTimeStamp = 0;
             }
             player.m_vShieldTime = 0;
             player.m_vShieldTimeValue = 0;
+            player.mv_ShieldTimeStamp = 0;
         }
     }      
 }

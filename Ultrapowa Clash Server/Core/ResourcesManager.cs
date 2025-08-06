@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Sockets;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using UCS.Core.Network;
@@ -125,6 +126,12 @@ namespace UCS.Core
             Processor.Send(new OutOfSyncMessage(_Client));
             DropClient(_Client.SocketHandle);
         }
+        
+        public static void DisconnectClientD(Device _Client)
+        {
+            Processor.Send(new DisconnectedMessage(_Client));
+            DropClient(_Client.SocketHandle);
+        }
 
         public static bool IsClientConnected(IntPtr socketHandle) => m_vClients[socketHandle] != null && m_vClients[socketHandle].IsClientSocketConnected();
 
@@ -158,6 +165,15 @@ namespace UCS.Core
             Resources.DatabaseManager.Save(level);
             m_vOnlinePlayers.Remove(level);
             //m_vInMemoryLevels.TryRemove(level.Avatar.UserId);
+            m_vClients.TryRemove(level.Client.SocketHandle);
+            Program.TitleD();
+        }
+        
+        public static void reloadPlayer(Level level)
+        {
+            Resources.DatabaseManager.Save(level);
+            m_vOnlinePlayers.Remove(level);
+            m_vInMemoryLevels.TryRemove(level.Avatar.UserId);
             m_vClients.TryRemove(level.Client.SocketHandle);
             Program.TitleD();
         }

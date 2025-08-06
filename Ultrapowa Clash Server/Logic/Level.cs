@@ -40,6 +40,7 @@ namespace UCS.Logic
         }
 
         public string SaveToJSON() => JsonConvert.SerializeObject(GameObjectManager.Save(), Formatting.Indented);
+        public string SaveToJSONforChallange() => JsonConvert.SerializeObject(GameObjectManager.Save(true), Formatting.Indented);
 
         public void SetHome(string jsonHome) => GameObjectManager.Load(JObject.Parse(jsonHome));
 

@@ -8,8 +8,8 @@ namespace UCP
 {
     internal class Proxy
     {
-        public const string hostname = "gamea.clashofclans.com";
-        public const int port = 9339;
+        public const string hostname = "192.168.56.1";
+        public const int port = 9338;
         public static Stopwatch _Stopwatch = new Stopwatch();
 
         private static void Main()

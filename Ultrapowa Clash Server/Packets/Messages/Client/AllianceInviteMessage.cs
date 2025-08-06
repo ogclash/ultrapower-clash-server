@@ -27,6 +27,22 @@ namespace UCS.Packets.Messages.Client
         internal override async void Process()
         {
             Level targetAccount = await ResourcesManager.GetPlayer(invited_userid);
+            if (targetAccount.Avatar.GetAllianceCastleLevel() == 0)
+            {
+                return;
+            }
+            foreach (AvatarStreamEntry message in targetAccount.Avatar.messages)
+            {
+                if (message.GetStreamEntryType() == 4)
+                {
+                    AllianceInviteStreamEntry ai = (AllianceInviteStreamEntry) message;
+                    if (ai.m_vSenderId == Device.Player.Avatar.UserId &&
+                        ai.AllianceId == Device.Player.Avatar.AllianceId)
+                    {
+                        return;
+                    }
+                }
+            }
             var alliance = ObjectManager.GetAlliance(this.Device.Player.Avatar.AllianceId);
             var allianceInviteMessage = new AllianceInviteStreamEntry();
             allianceInviteMessage.SetSender(Device.Player.Avatar);
@@ -37,6 +53,7 @@ namespace UCS.Packets.Messages.Client
             allianceInviteMessage.AllianceBadgeData = (alliance.m_vAllianceBadgeData);
             allianceInviteMessage.AllianceName = (alliance.m_vAllianceName);
             var p = new AvatarStreamEntryMessage(targetAccount.Client);
+            p.SetTargetAcc(targetAccount);
             p.SetAvatarStreamEntry(allianceInviteMessage);
             p.Send();
         }

@@ -15,7 +15,7 @@ namespace UCS.Packets
             Console.WriteLine("GameOp command failed. Insufficient privileges. Requster ID -> " + c.Player.Avatar.UserId);
             var p = new GlobalChatLineMessage(c)
             {
-                Message = "GameOp command failed. Insufficient privileges.",
+                Message = "GameOp command failed.",
                 HomeId = 0,
                 CurrentHomeId = 0,
                 LeagueId = 22,

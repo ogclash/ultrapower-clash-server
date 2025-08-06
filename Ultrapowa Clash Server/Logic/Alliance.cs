@@ -7,9 +7,11 @@ using Newtonsoft.Json.Linq;
 using UCS.Core;
 using UCS.Logic.StreamEntry;
 using System.Threading.Tasks;
+using UCS.Core.Network;
 using UCS.Helpers.List;
 using UCS.Logic.DataSlots;
 using UCS.Packets;
+using UCS.Packets.Messages.Server;
 
 namespace UCS.Logic
 {
@@ -22,6 +24,7 @@ namespace UCS.Logic
         internal int m_vAllianceBadgeData;
         internal string m_vAllianceDescription;
         internal int m_vAllianceExperience;
+        internal int m_vAllianceExperienceInternal;
         internal long m_vAllianceId;
         internal int m_vAllianceLevel;
         internal string m_vAllianceName;
@@ -128,6 +131,7 @@ namespace UCS.Logic
                 m_vRequiredScore = jsonObject["required_score"].ToObject<int>();
                 m_vAllianceDescription = jsonObject["description"].ToObject<string>();
                 m_vAllianceExperience = jsonObject["alliance_experience"].ToObject<int>();
+                m_vAllianceExperienceInternal = jsonObject["alliance_experience_internal"]?.ToObject<int>() ?? m_vAllianceExperience;
                 m_vAllianceLevel = jsonObject["alliance_level"].ToObject<int>();
                 m_vWarLogPublic = jsonObject["war_log_public"].ToObject<byte>();
                 m_vFriendlyWar = jsonObject["friendly_war"].ToObject<byte>();
@@ -247,6 +251,7 @@ namespace UCS.Logic
             jsonData.Add("required_score", m_vRequiredScore);
             jsonData.Add("description", m_vAllianceDescription);
             jsonData.Add("alliance_experience", m_vAllianceExperience);
+            jsonData.Add("alliance_experience_internal", m_vAllianceExperienceInternal);
             jsonData.Add("alliance_level", m_vAllianceLevel);
             jsonData.Add("war_log_public", m_vWarLogPublic);
             jsonData.Add("friendly_war", m_vFriendlyWar);
@@ -359,8 +364,6 @@ namespace UCS.Logic
                 case 0:
                     m_vWarLogPublic = 0;
                     m_vFriendlyWar = 0;
-                    break;
-                default:
                     break;
             }
         }

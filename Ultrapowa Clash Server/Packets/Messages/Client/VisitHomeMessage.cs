@@ -29,8 +29,8 @@ namespace UCS.Packets.Messages.Client
                 Level targetLevel = await ResourcesManager.GetPlayer(AvatarId);
                 targetLevel.Tick();
                 new VisitedHomeDataMessage(Device, targetLevel, this.Device.Player).Send();
-
-
+                
+                Logger.Say(AvatarId.ToString() + " is visited");
                 if (this.Device.Player.Avatar.AllianceId > 0)
                 {
                     Alliance alliance = ObjectManager.GetAlliance(this.Device.Player.Avatar.AllianceId);

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
+using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using UCS.Core;
@@ -13,6 +14,7 @@ using UCS.Logic.DataSlots;
 using System.Threading.Tasks;
 using Facebook;
 using UCS.Helpers.List;
+using UCS.Logic.AvatarStreamEntry;
 
 namespace UCS.Logic
 {
@@ -46,6 +48,9 @@ namespace UCS.Logic
         internal int ReportedTimes = 0;
         internal int m_vDonated;
         internal int m_vReceived;
+        
+        internal int account_switch = 0;
+        internal int old_account = 0;
 
         // UInt
         internal uint TutorialStepsCount = 0x0A;
@@ -66,6 +71,8 @@ namespace UCS.Logic
         internal string GoogleToken;
         internal string IPAddress;
         internal string TroopRequestMessage;
+        
+        internal string account_password = "";
 
         // Boolean
         internal bool m_vPremium = false;
@@ -77,6 +84,7 @@ namespace UCS.Logic
         internal DateTime LastTickSaved;
         
         List<int[]> buildings = new List<int[]>();
+        public List<AvatarStreamEntry.AvatarStreamEntry> messages = new List<AvatarStreamEntry.AvatarStreamEntry>();
 
 
         public List<int[]> getBuildings()
@@ -200,6 +208,7 @@ namespace UCS.Logic
                 List<byte> data = new List<byte>();
                 data.AddLong(this.UserId);
                 data.AddLong(this.CurrentHomeId);
+                var war_optin = 1;
                 if (this.AllianceId != 0)
                 {
                     data.Add(1);
@@ -209,6 +218,7 @@ namespace UCS.Logic
                     data.AddInt(alliance.m_vAllianceBadgeData);
                     data.AddInt(alliance.m_vAllianceMembers[this.UserId].Role);
                     data.AddInt(alliance.m_vAllianceLevel);
+                    war_optin = alliance.m_vAllianceMembers[this.UserId].WarOptInStatus;
                 }
                 data.Add(0);
 
@@ -283,7 +293,7 @@ namespace UCS.Logic
                 data.AddInt(0);
                 data.AddInt(0);
                 data.AddInt(0);
-                data.AddInt(1);
+                data.AddInt(war_optin);
 
                 data.AddInt(0);
                 data.AddInt(0);
@@ -407,6 +417,8 @@ namespace UCS.Logic
         public void LoadFromJSON(string jsonString)
         {
             var jsonObject = JObject.Parse(jsonString);
+            this.account_switch = jsonObject["acc_switch"]?.ToObject<int>() ?? 0;
+            this.account_password = jsonObject["acc_password"]?.ToObject<string>() ?? "";
             this.UserId = jsonObject["avatar_id"].ToObject<long>();
             this.HighID = jsonObject["id_high_int"].ToObject<int>();
             this.LowID = jsonObject["id_low_int"].ToObject<int>();
@@ -423,8 +435,11 @@ namespace UCS.Logic
             this.m_vAndroid = jsonObject["android"].ToObject<bool>();
             this.CurrentHomeId = jsonObject["current_home_id"].ToObject<long>();
             
-            this.AllianceId = jsonObject["alliance_id"].ToObject<long>();
             SetAllianceCastleLevel(jsonObject["alliance_castle_level"].ToObject<int>());
+            if (jsonObject["alliance_castle_level"].ToObject<int>() == -1)
+                this.AllianceId = 0;
+            else
+                this.AllianceId = jsonObject["alliance_id"].ToObject<long>();
             SetAllianceCastleTotalCapacity(jsonObject["alliance_castle_total_capacity"].ToObject<int>());
             SetAllianceCastleUsedCapacity(jsonObject["alliance_castle_used_capacity"].ToObject<int>());
             
@@ -441,26 +456,23 @@ namespace UCS.Logic
             this.m_vnameChosenByUser = jsonObject["nameChosenByUser"].ToObject<byte>();
             
             long now = DateTimeOffset.UtcNow.ToUnixTimeSeconds(); // current timestamp
+            
             long shieldStart = jsonObject["shield_timestamp"]?.ToObject<long?>() ?? now;
-            int shieldDuration = this.m_vShieldTime;
-            int elapsed = (int)(now - shieldStart);
-            int shieldTimeRemaining = Math.Max(0, shieldDuration - elapsed);
+            int shieldTimeRemaining = Math.Max(0, this.m_vShieldTimeValue - (int)(now - shieldStart));
             if (shieldTimeRemaining == 0)
             {
                 this.m_vShieldTime = 0;
                 this.mv_ShieldTimeStamp = 0;
             }
             shieldStart = jsonObject["protection_timestamp"]?.ToObject<long?>() ?? now; 
-            shieldDuration = this.m_vProtectionTime;
-            elapsed = (int)(now - shieldStart);
-            shieldTimeRemaining = Math.Max(0, shieldDuration - elapsed);
+            shieldTimeRemaining = Math.Max(0, this.m_vProtectionTimeValue - (int)(now - shieldStart));
             if (shieldTimeRemaining == 0)
             {
                 this.m_vProtectionTime = 0;
                 this.m_vProtectionTimeStamp = 0;
             }
-            this.m_vShieldTimeValue = jsonObject["shield_timevalue"]?.ToObject<int>() ?? m_vShieldTime;
             this.m_vShieldTime = jsonObject["shield_time"].ToObject<int>();
+            this.m_vShieldTimeValue = jsonObject["shield_timevalue"]?.ToObject<int>() ?? m_vShieldTime;
             this.m_vProtectionTime = jsonObject["protection_time"].ToObject<int>();
             this.m_vProtectionTimeValue = jsonObject["protection_timevalue"]?.ToObject<int>() ?? m_vProtectionTime;
             
@@ -468,10 +480,80 @@ namespace UCS.Logic
             this.FacebookToken = jsonObject["fb_token"].ToObject<string>();
             this.GoogleId = jsonObject["gg_id"].ToObject<string>();
             this.GoogleToken = jsonObject["gg_token"].ToObject<string>();
+            if (this.AllianceId != 0)
+            {
+                this.m_vReceived = jsonObject["troops_received"].ToObject<int>();
+                this.m_vDonated = jsonObject["troops_donated"].ToObject<int>();
+            }
+            else
+            {
+                this.m_vReceived = 0;
+                this.m_vDonated = 0;
+            }
+            if (jsonObject["rq_message"] != null && jsonObject["rq_message"].Type != JTokenType.Null)
+            {
+                string rawMessage = jsonObject["rq_message"].ToString();
+                this.TroopRequestMessage = Regex.Replace(rawMessage, @"[^a-zA-Z0-9 ]", "");
+            }
+            else
+            {
+                this.TroopRequestMessage = null;
+            }
             
-            this.m_vReceived = jsonObject["troops_received"].ToObject<int>();
-            this.m_vDonated = jsonObject["troops_donated"].ToObject<int>();
-            this.TroopRequestMessage = jsonObject["rq_message"].ToObject<string>();
+            JArray jmessages = (JArray)jsonObject["messages"] ?? new JArray();
+            foreach (JObject jobject in jmessages)
+            {
+                var type = jobject["type"].ToObject<int>();
+                if (type == 3)
+                {
+                    AllianceDeclineStreamEntry ai = new AllianceDeclineStreamEntry();
+                    ai.AllianceBadgeData = jobject["AllianceBadgeData"].ToObject<int>();
+                    ai.AllianceId = jobject["AllianceId"].ToObject<int>();
+                    ai.AllianceName = jobject["AllianceName"].ToObject<string>();
+                    ai.m_vSenderLeagueId = jobject["SenderLeague"]?.ToObject<int>() ?? 0;
+                    ai.ID = jobject["ID"].ToObject<int>();
+                    ai.IsNew = jobject["isNew"].ToObject<byte>();
+                    ai.SenderId = jobject["SenderId"].ToObject<int>();
+                    ai.m_vSenderId = jobject["SenderId"].ToObject<int>();
+                    ai.m_vSenderLevel = jobject["SenderLevel"].ToObject<int>();
+                    ai.m_vSenderName = jobject["SenderName"].ToObject<string>();
+                    ai.m_vCreationTime = jobject["CreationTime"].ToObject<DateTime>();
+                    messages.Add(ai);
+                }
+                else if (type == 4)
+                {
+                    AllianceInviteStreamEntry ai = new AllianceInviteStreamEntry();
+                    ai.AllianceBadgeData = jobject["AllianceBadgeData"].ToObject<int>();
+                    ai.AllianceId = jobject["AllianceId"].ToObject<int>();
+                    ai.AllianceName = jobject["AllianceName"].ToObject<string>();
+                    ai.m_vSenderLeagueId = jobject["SenderLeague"]?.ToObject<int>() ?? 0;
+                    ai.ID = jobject["ID"].ToObject<int>();
+                    ai.IsNew = jobject["isNew"].ToObject<byte>();
+                    ai.SenderId = jobject["SenderId"].ToObject<int>();
+                    ai.m_vSenderId = jobject["SenderId"].ToObject<int>();
+                    ai.m_vSenderLevel = jobject["SenderLevel"].ToObject<int>();
+                    ai.m_vSenderName = jobject["SenderName"].ToObject<string>();
+                    ai.m_vCreationTime = jobject["CreationTime"].ToObject<DateTime>();
+                    messages.Add(ai);
+                }
+                else if (type == 6)
+                {
+                    AllianceMailStreamEntry ai = new AllianceMailStreamEntry();
+                    ai.AllianceBadgeData = jobject["AllianceBadgeData"].ToObject<int>();
+                    ai.AllianceId = jobject["AllianceId"].ToObject<int>();
+                    ai.AllianceName = jobject["AllianceName"].ToObject<string>();
+                    ai.m_vSenderLeagueId = jobject["SenderLeague"]?.ToObject<int>() ?? 0;
+                    ai.ID = jobject["ID"].ToObject<int>();
+                    ai.IsNew = jobject["isNew"].ToObject<byte>();
+                    ai.SenderId = jobject["SenderId"].ToObject<int>();
+                    ai.Message = jobject["Message"].ToObject<string>();
+                    ai.m_vSenderId = jobject["SenderId"].ToObject<int>();
+                    ai.m_vSenderLevel = jobject["SenderLevel"].ToObject<int>();
+                    ai.m_vSenderName = jobject["SenderName"].ToObject<string>();
+                    ai.m_vCreationTime = jobject["CreationTime"].ToObject<DateTime>();
+                    messages.Add(ai);
+                }
+            }
             
             JArray jsonBookmarkedClan = (JArray)jsonObject["bookmark"];
             foreach (JObject jobject in jsonBookmarkedClan)
@@ -610,6 +692,82 @@ namespace UCS.Logic
             m_vPremium = true;
         }
 
+        public void testload(string jsonString)
+        {
+            messages = new List<AvatarStreamEntry.AvatarStreamEntry>();
+            var jsonObject = JObject.Parse(jsonString);
+            JArray jmessages = (JArray)jsonObject["messages"] ?? new JArray();
+            foreach (JObject jobject in jmessages)
+            {
+               
+            }
+        }
+
+        public string testSave()
+        {
+            JArray jmessages = new JArray();
+            foreach (AvatarStreamEntry.AvatarStreamEntry message in messages)
+            {
+                message.IsNew = 0;
+                var type = message.GetStreamEntryType();
+                if (type == 3)
+                {
+                    AllianceDeclineStreamEntry ai = (AllianceDeclineStreamEntry) message;
+                    JObject jO = new JObject();
+                    jO.Add("AllianceBadgeData", ai.AllianceBadgeData);
+                    jO.Add("AllianceId", ai.AllianceId);
+                    jO.Add("AllianceName", ai.AllianceName);
+                    jO.Add("ID", ai.ID);
+                    jO.Add("isNew", ai.IsNew);
+                    jO.Add("SenderId", ai.m_vSenderId);
+                    jO.Add("CreationTime", ai.m_vCreationTime);
+                    jO.Add("SenderLevel", ai.m_vSenderLevel);
+                    jO.Add("SenderName", ai.m_vSenderName);
+                    jO.Add("type", type);
+                    jmessages.Add(jO);
+                }
+                else if (type == 4)
+                {
+                    AllianceInviteStreamEntry ai = (AllianceInviteStreamEntry) message;
+                    JObject jO = new JObject();
+                    jO.Add("AllianceBadgeData", ai.AllianceBadgeData);
+                    jO.Add("AllianceId", ai.AllianceId);
+                    jO.Add("AllianceName", ai.AllianceName);
+                    jO.Add("ID", ai.ID);
+                    jO.Add("isNew", ai.IsNew);
+                    jO.Add("SenderId", ai.m_vSenderId);
+                    jO.Add("CreationTime", ai.m_vCreationTime);
+                    jO.Add("SenderLevel", ai.m_vSenderLevel);
+                    jO.Add("SenderName", ai.m_vSenderName);
+                    jO.Add("type", type);
+                    jmessages.Add(jO);
+                }
+                else if (type == 6)
+                {
+                    AllianceMailStreamEntry am = (AllianceMailStreamEntry) message;
+                    JObject jO = new JObject();
+                    jO.Add("AllianceBadgeData", am.AllianceBadgeData);
+                    jO.Add("AllianceId", am.AllianceId);
+                    jO.Add("AllianceName", am.AllianceName);
+                    jO.Add("ID", am.ID);
+                    jO.Add("isNew", am.IsNew);
+                    jO.Add("Message", am.Message);
+                    jO.Add("SenderId", am.m_vSenderId);
+                    jO.Add("CreationTime", am.m_vCreationTime);
+                    jO.Add("SenderLevel", am.m_vSenderLevel);
+                    jO.Add("SenderName", am.m_vSenderName);
+                    jO.Add("type", type);
+                    jmessages.Add(jO);
+                }
+            }
+            JObject jsonData = new JObject
+            {
+                {"messages", jmessages}
+            };
+
+            return JsonConvert.SerializeObject(jsonData, Formatting.Indented);
+        }
+
         public string SaveToJSON()
         {
             #region Foreach Stuff
@@ -681,10 +839,77 @@ namespace UCS.Logic
             JArray jsonQuickTrain3Array = new JArray();
             foreach (DataSlot quicktrain3 in QuickTrain3)
                 jsonQuickTrain3Array.Add(quicktrain3.Save(new JObject()));
-        #endregion
+            
+            JArray jmessages = new JArray();
+            foreach (AvatarStreamEntry.AvatarStreamEntry message in messages)
+            {
+                message.IsNew = 0;
+                var type = message.GetStreamEntryType();
+                if (type == 3)
+                {
+                    AllianceDeclineStreamEntry ai = (AllianceDeclineStreamEntry) message;
+                    JObject jO = new JObject();
+                    jO.Add("AllianceBadgeData", ai.AllianceBadgeData);
+                    jO.Add("AllianceId", ai.AllianceId);
+                    jO.Add("AllianceName", ai.AllianceName);
+                    jO.Add("SenderLeague", ai.m_vSenderLeagueId);
+                    jO.Add("ID", ai.ID);
+                    jO.Add("isNew", ai.IsNew);
+                    jO.Add("SenderId", ai.m_vSenderId);
+                    jO.Add("CreationTime", ai.m_vCreationTime);
+                    jO.Add("SenderLevel", ai.m_vSenderLevel);
+                    jO.Add("SenderName", ai.m_vSenderName);
+                    jO.Add("type", type);
+                    jmessages.Add(jO);
+                }
+                else if (type == 4)
+                {
+                    AllianceInviteStreamEntry ai = (AllianceInviteStreamEntry) message;
+                    JObject jO = new JObject();
+                    jO.Add("AllianceBadgeData", ai.AllianceBadgeData);
+                    jO.Add("AllianceId", ai.AllianceId);
+                    jO.Add("AllianceName", ai.AllianceName);
+                    jO.Add("SenderLeague", ai.m_vSenderLeagueId);
+                    jO.Add("ID", ai.ID);
+                    jO.Add("isNew", ai.IsNew);
+                    jO.Add("SenderId", ai.m_vSenderId);
+                    jO.Add("CreationTime", ai.m_vCreationTime);
+                    jO.Add("SenderLevel", ai.m_vSenderLevel);
+                    jO.Add("SenderName", ai.m_vSenderName);
+                    jO.Add("type", type);
+                    jmessages.Add(jO);
+                }
+                else if (type == 6)
+                {
+                    AllianceMailStreamEntry am = (AllianceMailStreamEntry) message;
+                    JObject jO = new JObject();
+                    jO.Add("AllianceBadgeData", am.AllianceBadgeData);
+                    jO.Add("AllianceId", am.AllianceId);
+                    jO.Add("AllianceName", am.AllianceName);
+                    jO.Add("SenderLeague", am.m_vSenderLeagueId);
+                    jO.Add("ID", am.ID);
+                    jO.Add("isNew", am.IsNew);
+                    jO.Add("Message", am.Message);
+                    jO.Add("SenderId", am.m_vSenderId);
+                    jO.Add("CreationTime", am.m_vCreationTime);
+                    jO.Add("SenderLevel", am.m_vSenderLevel);
+                    jO.Add("SenderName", am.m_vSenderName);
+                    jO.Add("type", type);
+                    jmessages.Add(jO);
+                }
+            }
+            #endregion
+            
+            if (this.AllianceId == 0)
+            {
+                this.m_vReceived = 0;
+                this.m_vDonated = 0;
+            }
 
             JObject jsonData = new JObject
             {
+                {"acc_switch", this.account_switch},
+                {"acc_password", this.account_password},
                 {"avatar_id", this.UserId},
                 {"id_high_int", this.HighID},
                 {"id_low_int", this.LowID},
@@ -741,6 +966,7 @@ namespace UCS.Logic
                 {"quick_train_1", jsonQuickTrain1Array},
                 {"quick_train_2", jsonQuickTrain2Array},
                 {"quick_train_3", jsonQuickTrain3Array},
+                {"messages", jmessages},
                 {"Premium", true}
             };
 

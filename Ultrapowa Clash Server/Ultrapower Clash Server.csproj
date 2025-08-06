@@ -283,6 +283,9 @@
     <Compile Include="Packets\Crypto.cs" />
     <Compile Include="Packets\GameOpCommands\AddGemsOpCommand.cs" />
     <Compile Include="Packets\GameOpCommands\MinRessourcesGameOpCommand.cs" />
+    <Compile Include="Packets\GameOpCommands\ResetAccGameOpCommand.cs" />
+    <Compile Include="Packets\GameOpCommands\SetPasswordGameOpCommand.cs" />
+    <Compile Include="Packets\GameOpCommands\SwitchAccGameOpCommand.cs" />
     <Compile Include="Packets\GameOpCommands\ToggleBroadcastGameOpCommand.cs" />
     <Compile Include="Packets\Messages\BroadcastManager.cs" />
     <Compile Include="Packets\Messages\Client\AcceptInviteMessage.cs" />

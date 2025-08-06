@@ -21,7 +21,7 @@ namespace UCP
             {
                 IPHostEntry ipHostInfo    = Dns.GetHostEntry(UCP.Proxy.hostname);
                 IPAddress ipAddress       = ipHostInfo.AddressList[0];
-                IPEndPoint remoteEndPoint = new IPEndPoint(ipAddress, UCP.Proxy.port);
+                IPEndPoint remoteEndPoint = new IPEndPoint(ipAddress, 9339);
 
                 Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
                 state.socket  = socket;

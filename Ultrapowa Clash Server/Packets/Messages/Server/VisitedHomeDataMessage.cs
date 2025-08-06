@@ -7,24 +7,31 @@ namespace UCS.Packets.Messages.Server
     // Packet 24113
     internal class VisitedHomeDataMessage : Message
     {
-        public VisitedHomeDataMessage(Device client, Level ownerLevel, Level visitorLevel) : base(client)
+        private bool challenge;
+        public VisitedHomeDataMessage(Device client, Level ownerLevel, Level visitorLevel, bool challenge = false) : base(client)
         {
             this.Identifier = 24113;
             m_vOwnerLevel = ownerLevel;
             m_vVisitorLevel = visitorLevel;
             this.Device.PlayerState = Logic.Enums.State.VISIT;
+            this.challenge = challenge;
         }
 
         internal override async void Encode()
         {
             try
             {
+                string village;
+                if (this.challenge)
+                     village = m_vOwnerLevel.SaveToJSONforChallange();
+                else
+                     village = m_vOwnerLevel.SaveToJSON();
                 ClientHome ownerHome = new ClientHome
                 {
                     Id = m_vOwnerLevel.Avatar.UserId,
                     ShieldTime = m_vOwnerLevel.Avatar.m_vShieldTime,
                     ProtectionTime = m_vOwnerLevel.Avatar.m_vProtectionTime,
-                    Village = m_vOwnerLevel.SaveToJSON()
+                    Village = village
                 };
 
                 this.Data.AddInt(-1);

@@ -32,7 +32,7 @@ namespace UCS.Packets.Messages.Server
 
                 ClientAvatar pl = player.Avatar;
 
-                if (pl.Region == playerRegion && player != this.Device.Player)
+                if (pl.Region == playerRegion && player != this.Device.Player  && player.Avatar.AvatarName != "NoNameYet")
                 {
                     localPlayers.Add(player);
                 }

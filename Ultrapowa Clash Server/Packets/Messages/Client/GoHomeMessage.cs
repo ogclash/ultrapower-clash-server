@@ -77,32 +77,23 @@ namespace UCS.Packets.Messages.Client
                         Resources(Device.Player);
                     }
                 }
-                if (State == 1)
+                else if (State == 1)
                 {
                     this.Device.PlayerState = Logic.Enums.State.WAR_EMODE;
-                    this.Device.Player.Tick();
-                    new OwnHomeDataMessage(this.Device, this.Device.Player).Send();
-                }
-                else if (this.Device.PlayerState == Logic.Enums.State.LOGGED)
-                {
-                    ResourcesManager.DisconnectClient(Device);
-                }
-                else
-                {
-                    this.Device.AttackInfo = null;
-                    this.Device.PlayerState = Logic.Enums.State.LOGGED;
-                    this.Device.Player.Tick();
-                    Alliance alliance = ObjectManager.GetAlliance(this.Device.Player.Avatar.AllianceId);
-                    new OwnHomeDataMessage(Device, this.Device.Player).Send();
-                    if (alliance != null)
-                    {
-                        new AllianceStreamMessage(Device, alliance).Send();
-                    }
                 }
             }
             catch (Exception)
             {
                 
+            }
+            this.Device.AttackInfo = null;
+            this.Device.PlayerState = Logic.Enums.State.LOGGED;
+            this.Device.Player.Tick();
+            Alliance alliance = ObjectManager.GetAlliance(this.Device.Player.Avatar.AllianceId);
+            new OwnHomeDataMessage(Device, this.Device.Player).Send();
+            if (alliance != null)
+            {
+                new AllianceStreamMessage(Device, alliance).Send();
             }
         }
 

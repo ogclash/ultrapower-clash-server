@@ -1,4 +1,5 @@
-﻿using UCS.Logic.AvatarStreamEntry;
+﻿using UCS.Logic;
+using UCS.Logic.AvatarStreamEntry;
 
 namespace UCS.Packets.Messages.Server
 {
@@ -6,6 +7,7 @@ namespace UCS.Packets.Messages.Server
     internal class AvatarStreamEntryMessage : Message
     {
         AvatarStreamEntry m_vAvatarStreamEntry;
+        Level targetAccount;
 
         public AvatarStreamEntryMessage(Device client) : base(client)
         {
@@ -17,8 +19,27 @@ namespace UCS.Packets.Messages.Server
             this.Data.AddRange(m_vAvatarStreamEntry.Encode());
         }
 
-        public void SetAvatarStreamEntry(AvatarStreamEntry entry)
+        public void SetTargetAcc(Level acc)
         {
+            targetAccount = acc;
+        }
+
+        public void SetAvatarStreamEntry(AvatarStreamEntry entry, bool save = true)
+        {
+            if (save)
+            {
+                if (this.Device == null)
+                {
+                    if (targetAccount != null)
+                    {
+                        targetAccount.Avatar.messages.Add(entry);
+                    }
+                }
+                else
+                {
+                    this.Device.Player.Avatar.messages.Add(entry);
+                }
+            }
             m_vAvatarStreamEntry = entry;
         }
     }

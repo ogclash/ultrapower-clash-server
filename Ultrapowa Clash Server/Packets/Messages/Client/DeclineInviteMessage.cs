@@ -21,7 +21,17 @@ namespace UCS.Packets.Messages.Client
         }
         internal override void Decode()
         {
-            
+            var MessageID = this.Reader.ReadInt64();
+            var userId    = this.Reader.ReadInt64();
+            foreach (AvatarStreamEntry message in Device.Player.Avatar.messages)
+            {
+                if (message.ID == MessageID)
+                {
+                    Device.Player.Avatar.messages.Remove(message);
+                    ResourcesManager.DisconnectClient(Device);
+                    break;
+                }
+            }
         }
     }
 }

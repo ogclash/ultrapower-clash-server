@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using UCS.Core;
 using UCS.Core.Network;
 using UCS.Helpers.Binary;
@@ -43,15 +44,14 @@ namespace UCS.Packets.Commands.Client
                         mail.AllianceBadgeData = alliance.m_vAllianceBadgeData;
                         mail.AllianceName = alliance.m_vAllianceName;
                         mail.Message = m_vMailContent;
-
-                        foreach (var onlinePlayer in ResourcesManager.m_vOnlinePlayers)
+                        var allianceMembers =  ObjectManager.GetAlliance(allianceId).GetAllianceMembers();
+                        foreach (var member in allianceMembers)
                         {
-                            if (onlinePlayer.Avatar.AllianceId == allianceId)
-                            {
-                                var p = new AvatarStreamEntryMessage(onlinePlayer.Client);
-                                p.SetAvatarStreamEntry(mail);
-                                p.Send();
-                            }
+                            var player = await ResourcesManager.GetPlayer(member.AvatarId);
+                            var p = new AvatarStreamEntryMessage(player.Client);
+                            p.SetTargetAcc(player);
+                            p.SetAvatarStreamEntry(mail);
+                            p.Send();
                         }
                     }
                 }

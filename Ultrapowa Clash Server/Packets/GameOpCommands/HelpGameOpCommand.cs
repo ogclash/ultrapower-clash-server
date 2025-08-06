@@ -38,8 +38,11 @@ namespace UCS.Packets.GameOpCommands
                                    "\n/min" +
                                    "\n/max" +
                                    "\n/status" +
-                                   "\n/help" +
+                                   "\n/reload" +
                                    "\n/accinfo" +
+                                   "\n/resetacc" +
+                                   "\n/setpassword <password>" +
+                                   "\n/switchacc <id> <password>" +
                                    "\n/addgems <amount>";
 
                     _MSG.Send();

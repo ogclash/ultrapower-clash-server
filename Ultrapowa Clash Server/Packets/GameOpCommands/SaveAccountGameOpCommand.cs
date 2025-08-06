@@ -17,29 +17,13 @@ namespace UCS.Packets.GameOpCommands
         {
             if (GetRequiredAccountPrivileges())
             {
-                Resources.DatabaseManager.Save(level);
-                var p = new GlobalChatLineMessage(level.Client)
-                {
-                    Message = "Game Successfuly Saved!",
-                    HomeId = 0,
-                    CurrentHomeId = 0,
-                    LeagueId = 22,
-                    PlayerName = "Server"
-                };
-                Processor.Send(p);
+                ResourcesManager.DisconnectClient(level.Client);
+                ResourcesManager.reloadPlayer(level);
             }
             else
             {
-                Resources.DatabaseManager.Save(level);
-                var p = new GlobalChatLineMessage(level.Client)
-                {
-                    Message = "Game Successfuly Saved!",
-                    HomeId = 0,
-                    CurrentHomeId = 0,
-                    LeagueId = 22,
-                    PlayerName = "Server"
-                };
-                Processor.Send(p);
+                ResourcesManager.DisconnectClient(level.Client);
+                ResourcesManager.reloadPlayer(level);
             }
         }
 

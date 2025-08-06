@@ -8,6 +8,7 @@ using UCS.Core;
 using UCS.Core.Network;
 using UCS.Helpers.Binary;
 using UCS.Logic;
+using UCS.Logic.StreamEntry;
 using UCS.Packets.Messages.Server;
 
 namespace UCS.Packets.Messages.Client
@@ -19,17 +20,37 @@ namespace UCS.Packets.Messages.Client
         }
 
         public long AvatarID { get; set; }
+        public int MessageID { get; set; }
 
         internal override void Decode()
         {
-            this.AvatarID = this.Reader.ReadInt64();
+            var unknown = this.Reader.ReadInt32();
+            this.MessageID = this.Reader.ReadInt32();
         }
 
-        internal override void Process()
+        internal override async void Process()
         {
-            new OwnHomeDataMessage(Device, this.Device.Player).Send();
-            //var defender = ResourcesManager.GetPlayer(AvatarID); // TODO: FIX BUGS		
-            //PacketManager.ProcessOutgoingPacket(new VisitedHomeDataMessage(Client, defender, level)); 
+            try
+            {
+                Alliance a = ObjectManager.GetAlliance(this.Device.Player.Avatar.AllianceId);
+                StreamEntry _Stream = a.m_vChatMessages.Find(c => c.ID == MessageID);
+                
+                Level defender = await ResourcesManager.GetPlayer(_Stream.SenderID); // TODO: FIX BUGS		
+                defender.Tick();
+                new VisitedHomeDataMessage(this.Device, defender, this.Device.Player, true).Send();
+                
+                if (this.Device.Player.Avatar.AllianceId > 0)
+                {
+                    Alliance alliance = ObjectManager.GetAlliance(this.Device.Player.Avatar.AllianceId);
+                    if (alliance != null)
+                    {
+                        //new AllianceStreamMessage(this.Device, alliance).Send();
+                    }
+                }
+            }
+            catch (Exception)
+            {
+            }
         }
     }
 }

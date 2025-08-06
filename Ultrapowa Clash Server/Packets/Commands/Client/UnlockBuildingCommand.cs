@@ -28,17 +28,18 @@ namespace UCS.Packets.Commands.Client
 
             var bd = (BuildingData) b.GetConstructionItemData();
 
+            string name = this.Device.Player.GameObjectManager.GetGameObjectByID(BuildingId).GetData().GetName();
+            
+            if (string.Equals(name, "Alliance Castle"))
+            {
+                ca.IncrementAllianceCastleLevel();
+                Building a = (Building)this.Device.Player.GameObjectManager.GetGameObjectByID(BuildingId);
+                BuildingData al = a.GetBuildingData();
+                ca.SetAllianceCastleTotalCapacity(al.GetUnitStorageCapacity(ca.GetAllianceCastleLevel()));
+            }
             if (ca.HasEnoughResources(bd.GetBuildResource(b.GetUpgradeLevel()), bd.GetBuildCost(b.GetUpgradeLevel())))
             {
-                string name = this.Device.Player.GameObjectManager.GetGameObjectByID(BuildingId).GetData().GetName();
                 Logger.Write("Unlocking Building: " + name + " (" + BuildingId + ')');
-                if (string.Equals(name, "Alliance Castle"))
-                {
-                    ca.IncrementAllianceCastleLevel();
-                    Building a = (Building)this.Device.Player.GameObjectManager.GetGameObjectByID(BuildingId);
-                    BuildingData al = a.GetBuildingData();
-                    ca.SetAllianceCastleTotalCapacity(al.GetUnitStorageCapacity(ca.GetAllianceCastleLevel()));
-                }
                 var rd = bd.GetBuildResource(b.GetUpgradeLevel());
                 ca.SetResourceCount(rd, ca.GetResourceCount(rd) - bd.GetBuildCost(b.GetUpgradeLevel()));
                 b.Unlock();

@@ -65,6 +65,7 @@ namespace UCS.Packets.Commands.Client
                                 kickOutStreamEntry.SetMessage(m_vMessage);
 
                                 var p = new AvatarStreamEntryMessage(targetAccount.Client);
+                                p.SetTargetAcc(targetAccount);
                                 p.SetAvatarStreamEntry(kickOutStreamEntry);
                                 p.Send();
                             }

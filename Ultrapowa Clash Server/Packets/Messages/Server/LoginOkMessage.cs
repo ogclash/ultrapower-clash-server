@@ -38,9 +38,9 @@ namespace UCS.Packets.Messages.Server
             this.Data.AddString(null);
 
 
-            this.Data.AddInt(8);
-            this.Data.AddInt(709);
-            this.Data.AddInt(16);
+            this.Data.AddInt(ServerMajorVersion);
+            this.Data.AddInt(ServerBuild);
+            this.Data.AddInt(ContentVersion);
 
             this.Data.AddString("prod");
 

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UCS.Helpers.List;
 using UCS.Logic;
 using UCS.Logic.Enums;
@@ -28,8 +29,10 @@ namespace UCS.Packets.Messages.Server
                 this.Device.Player.Avatar.m_vShieldTime = shieldTimeRemaining;
                 
                 elapsed = (int)(now - this.Player.Avatar.m_vProtectionTimeStamp);
-                shieldTimeRemaining = Math.Max(0, this.Player.Avatar.m_vProtectionTime - elapsed);
+                shieldTimeRemaining = Math.Max(0, this.Player.Avatar.m_vProtectionTimeValue - elapsed);
                 this.Device.Player.Avatar.m_vProtectionTime = shieldTimeRemaining;
+                var buildings = this.Device.Player.Avatar.getBuildings();
+                this.Player.Avatar.setBuidlings(new List<int[]>());
                 
                 var _Home =
                     new ClientHome

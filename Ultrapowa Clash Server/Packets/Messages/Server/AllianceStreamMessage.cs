@@ -21,8 +21,24 @@ namespace UCS.Packets.Messages.Server
             m_vAlliance = alliance;
         }
 
-        internal override void Encode()
+        internal override async void Encode()
         {
+            StreamEntry oldmessage =  m_vAlliance.m_vChatMessages.Find(c => c.GetStreamEntryType() == 12);
+            if (oldmessage !=  m_vAlliance.m_vChatMessages.Last())
+            {
+                m_vAlliance.m_vChatMessages.Remove(oldmessage);
+                foreach (AllianceMemberEntry op in m_vAlliance.GetAllianceMembers())
+                {
+                    Level aplayer = await ResourcesManager.GetPlayer(op.AvatarId);
+                    if (aplayer.Client != null)
+                    {
+                        if (oldmessage != null)
+                        {
+                            new AllianceStreamEntryRemovedMessage(aplayer.Client, oldmessage.ID).Send();
+                        }
+                    }
+                }
+            }
             var chatMessages = m_vAlliance.m_vChatMessages.ToList();
             this.Data.AddInt(0);
             this.Data.AddInt(chatMessages.Count);

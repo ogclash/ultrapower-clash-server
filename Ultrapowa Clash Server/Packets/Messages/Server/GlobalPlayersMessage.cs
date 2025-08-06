@@ -26,7 +26,7 @@ namespace UCS.Packets.Messages.Server
             {
                 try
                 {
-                    if (player.Avatar.m_vAvatarLevel >= 1)
+                    if (player.Avatar.m_vAvatarLevel >= 1 && player.Avatar.AvatarName != "NoNameYet")
                     {
                         var pl = player.Avatar;
                         if (i >= 100)

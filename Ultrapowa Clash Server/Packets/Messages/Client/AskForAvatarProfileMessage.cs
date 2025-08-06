@@ -31,6 +31,7 @@ namespace UCS.Packets.Messages.Client
             try
             {
                 Level targetLevel = await ResourcesManager.GetPlayer(m_vAvatarId);
+                Logger.Say(m_vAvatarId.ToString() + " is reviewed");
                 if (targetLevel != null)
                 {
                     targetLevel.Tick();

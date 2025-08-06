@@ -115,6 +115,7 @@ namespace UCS.Packets.Messages.Client
                     allianceDeclineMessage.AllianceName = (alliance.m_vAllianceName);
                     var p = new AvatarStreamEntryMessage(requester.Client);
                     p.SetAvatarStreamEntry(allianceDeclineMessage);
+                    p.SetTargetAcc(requester);
                     p.Send();
                 }
             } catch (Exception) { }

@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Text.RegularExpressions;
 using UCS.Core;
 using UCS.Core.Network;
 using UCS.Helpers.Binary;
@@ -29,7 +30,9 @@ namespace UCS.Packets.Commands.Client
             try
             {
                 ClientAvatar player = this.Device.Player.Avatar;
-                player.TroopRequestMessage = this.Message;
+                string filteredMessage = Regex.Replace(this.Message, @"[^a-zA-Z0-9 ]", "");
+                
+                player.TroopRequestMessage = filteredMessage;
                 Alliance all = ObjectManager.GetAlliance(player.AllianceId);
                 TroopRequestStreamEntry cm = new TroopRequestStreamEntry();
                 cm.SetSender(player);
