@@ -28,9 +28,9 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>true</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <InstallUrl>https://www.ultrapowa.xyz/ucs/</InstallUrl>
-    <UpdateUrl>https://www.ultrapowa.xyz/ucs/</UpdateUrl>
-    <SupportUrl>http://www.ultrapowa.com</SupportUrl>
+    <InstallUrl>https:/clashofclans.bl4ck.net/server/</InstallUrl>
+    <UpdateUrl>https:/clashofclans.bl4ck.net/update/</UpdateUrl>
+    <SupportUrl>https:/clashofclans.bl4ck.net</SupportUrl>
     <TargetCulture>en</TargetCulture>
     <ProductName>UCS</ProductName>
     <PublisherName>UltraPowa</PublisherName>
@@ -437,6 +437,9 @@
       <SubType>Code</SubType>
     </Compile>
     <None Include="app.manifest" />
+    <None Include="bin\Debug\Gamefiles\logic\buildings.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Gamefiles\csv\animations.csv">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -1079,6 +1082,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <Resource Include="icone-ucs.ico" />
+    <Content Include="bin\Debug\Gamefiles\logic\buildings.csv" />
     <Content Include="Tools\ucsdb.sql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -1376,7 +1380,6 @@
       <DependentUpon>UCSUI.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>if not exist "$(TargetDir)Logs" mkdir "$(TargetDir)Logs"

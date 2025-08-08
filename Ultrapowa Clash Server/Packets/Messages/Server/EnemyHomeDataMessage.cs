@@ -18,11 +18,16 @@ namespace UCS.Packets.Messages.Server
         {
             try
             {
+                string village = "";
+                if (this.Device.AttackInfo == "challenge")
+                    village = this.OwnerLevel.SaveToJSONforChallangeAttack();
+                else
+                    village = this.OwnerLevel.SaveToJSON();
                 ClientHome ch = new ClientHome
                 {
                     Id = this.OwnerLevel.Avatar.UserId,
                     ShieldTime = this.OwnerLevel.Avatar.m_vShieldTime,
-                    Village = this.OwnerLevel.SaveToJSON(),
+                    Village = village,
                     ProtectionTime = this.OwnerLevel.Avatar.m_vProtectionTime
                 };
 

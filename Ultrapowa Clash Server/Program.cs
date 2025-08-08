@@ -19,7 +19,7 @@ namespace UCS
     internal class Program
     {
         internal static int OP = 0;
-        internal static string Title = $"Ultrapower Clash Server v{Constants.Version} Build: {Constants.Build} - ©Ultrapowa & Naix | Online Players: ";
+        internal static string Title = $"Ultrapower Clash Server v{Constants.Version} Build: {Constants.Build} - ©Ultrapowa | Online Players: ";
         public static Stopwatch _Stopwatch = new Stopwatch();
         public static string Version { get; set; }
 
@@ -30,7 +30,6 @@ namespace UCS
             uint LWA_ALPHA = 0x2;
             IntPtr Handle = GetConsoleWindow();
             SetWindowLong(Handle, GWL_EXSTYLE, (int)GetWindowLong(Handle, GWL_EXSTYLE) ^ WS_EX_LAYERED);
-            //Console.SetWindowSize(92,32);
 
             if (Utils.ParseConfigBoolean("Animation"))
             {
@@ -88,10 +87,6 @@ namespace UCS
                 Console.ResetColor();
                 Console.ForegroundColor = ConsoleColor.Green;
                 Say("Preparing Server...\n");
-                Resources.Initialize();
-                ResourcesManager.loadAllResources();
-		        Say("Resources were successfully loaded");
-                Say($"IP Address: {Dns.GetHostByName(Dns.GetHostName()).AddressList[0]}");
             }
             else if (Version == "Error")
             {
@@ -109,6 +104,10 @@ namespace UCS
                 Thread.Sleep(5000);
                 Environment.Exit(0);
             }
+            Resources.Initialize();
+            ResourcesManager.loadAllResources();
+            Say("Resources were successfully loaded");
+            Say($"IP Address: {Dns.GetHostByName(Dns.GetHostName()).AddressList[0]}");
         }
         
 

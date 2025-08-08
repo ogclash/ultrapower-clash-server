@@ -38,8 +38,8 @@ namespace UCS.Packets.Messages.Client
                 
                 Level defender = await ResourcesManager.GetPlayer(_Stream.SenderID); // TODO: FIX BUGS		
                 defender.Tick();
+                this.Device.AttackInfo = "challenge";
                 new EnemyHomeDataMessage(this.Device, defender, this.Device.Player).Send();
-                this.Device.AttackInfo = "challange";
                 
                 if (this.Device.Player.Avatar.AllianceId > 0)
                 {

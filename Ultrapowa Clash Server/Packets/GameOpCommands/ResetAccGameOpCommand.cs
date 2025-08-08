@@ -30,27 +30,15 @@ namespace UCS.Packets.GameOpCommands
                     }
                     Level oldplayer = await ResourcesManager.GetPlayer(level.Avatar.old_account);
                     Logger.Say("Account with id: "+oldplayer.Avatar.UserId+" was reset");
+                    ResourcesManager.LoadLevel(oldplayer);
                     oldplayer.Avatar.account_switch = 0;
-                    SendGlobalChatMessage(level, "Account with id: "+oldplayer.Avatar.UserId+" was reset!");
+                    ResourcesManager.DisconnectClient(level.Client);
                 }
             }
             else
             {
                 SendCommandFailedMessage(level.Client);
             }
-        }
-        
-        private void SendGlobalChatMessage(Level level, string message)
-        {
-            var p = new GlobalChatLineMessage(level.Client)
-            {
-                Message = message,
-                HomeId = 0,
-                CurrentHomeId = 0,
-                LeagueId = 22,
-                PlayerName = "Server"
-            };
-            p.Send();
         }
     }
 }

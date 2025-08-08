@@ -31,13 +31,18 @@ namespace UCS.Packets.Commands.Client
             {
                 this.Device.AttackInfo = "multiplayer";
             }
+
+            if (this.Device.AttackInfo == "challenge")
+            {
+                return;
+            }
             
             List<DataSlot> _PlayerUnits = this.Device.Player.Avatar.GetUnits();
 
             DataSlot _DataSlot = _PlayerUnits.Find(t => t.Data.GetGlobalID() == Unit.GetGlobalID());
             if (_DataSlot != null)
             {
-                _DataSlot.Value = _DataSlot.Value - 1;
+                _DataSlot.Value--;
             }
             
         }

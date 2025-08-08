@@ -25,11 +25,18 @@ namespace UCS.Packets.GameOpCommands
                 {
                     long targetId = Convert.ToInt64(m_vArgs[1]);
                     var player = await ResourcesManager.GetPlayer(targetId);
+                    if (level.Avatar.old_account != 0)
+                    {
+                        SendGlobalChatMessage(level, "Account switching only works on main account, \ndo /resetacc first");
+                        return;
+                    }
                     if (player.Avatar.account_password != "")
                     {
                         if (player.Avatar.account_password == m_vArgs[2])
                         {
                             level.Avatar.account_switch = (int)player.Avatar.UserId;
+                            if (player.Client != null)
+                                ResourcesManager.DisconnectClient(player.Client);
                             ResourcesManager.DisconnectClient(level.Client);
                         }
                         else

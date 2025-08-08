@@ -1,18 +1,15 @@
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using UCS.Core;
 using UCS.Files.Logic;
-using UCS.Helpers;
 using static System.Convert;
 using static System.Configuration.ConfigurationManager;
 using UCS.Logic.DataSlots;
 using System.Threading.Tasks;
-using Facebook;
 using UCS.Helpers.List;
 using UCS.Logic.AvatarStreamEntry;
 
@@ -204,6 +201,11 @@ namespace UCS.Logic
         {
             try
             {
+                if (AllianceId == 0)
+                {
+                    m_vDonated = 0;
+                    m_vReceived = 0;
+                }
                 Random rnd = new Random();
                 List<byte> data = new List<byte>();
                 data.AddLong(this.UserId);

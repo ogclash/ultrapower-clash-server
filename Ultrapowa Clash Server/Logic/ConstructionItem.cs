@@ -174,6 +174,13 @@ namespace UCS.Logic
         public int GetRequiredTownHallLevelForUpgrade()
         {
             int upgradeLevel = Math.Min(UpgradeLevel + 1, GetConstructionItemData().GetUpgradeLevelCount() - 1);
+            int upgradeLevelTest = Math.Min(UpgradeLevel + 1, GetConstructionItemData().GetUpgradeLevelCount() - 1)-1;
+            int result = GetConstructionItemData().GetRequiredTownHallLevel(upgradeLevel);
+            int testresult = GetConstructionItemData().GetRequiredTownHallLevel(upgradeLevelTest);
+            if (result == testresult)
+            {
+                Logger.Say("Building is max");
+            }
             return GetConstructionItemData().GetRequiredTownHallLevel(upgradeLevel);
         }
 

@@ -1,4 +1,8 @@
-﻿using UCS.Helpers.Binary;
+﻿using System;
+using Newtonsoft.Json.Linq;
+using UCS.Core;
+using UCS.Files.Logic;
+using UCS.Helpers.Binary;
 using UCS.Logic;
 
 namespace UCS.Packets.Commands.Client

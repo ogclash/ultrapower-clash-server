@@ -52,6 +52,8 @@ namespace UCS.Packets.Commands.Client
                     if (Device.Player.GameObjectManager.removedObstacles.Contains(go2))
                     {
                         Device.Player.GameObjectManager.removedObstacles.Remove(go2);
+                        if (go.GetData().GetGlobalID() == 8000030)
+                            this.Device.Player.Avatar.UseDiamonds(25);
                         obstacle.CancelClearing();
                     }
                 }

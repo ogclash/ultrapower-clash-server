@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing.Printing;
+using System.Runtime.Remoting.Messaging;
+using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using UCS.Core;
 using UCS.Files.Logic;
@@ -28,172 +30,37 @@ namespace UCS.Logic.Manager
         readonly List<GameObject> m_vGameObjectRemoveList;
         readonly List<List<GameObject>> m_vGameObjects;
         internal IList<GameObject>removedObstacles;
+        internal IList<GameObject>removedObstaclesFinally;
         readonly List<int> m_vGameObjectsIndex;
         readonly Level m_vLevel;
 	    readonly ObstacleManager m_vObstacleManager;
         
-        public int[] GetFreePlace(GameObject od)
-		{
-			try
-			{
-				var pos = new int[2];
-				var field = new int[48, 48];
-				foreach (var list in GetAllGameObjects())
-				{
-					foreach (var go in list)
-					{
-						int w = 0, h = 0;
-						int x = 0, y = 0;
-						x = go.X;
-						y = go.Y;
-
-						switch (go.GetData().GetDataType())
-						{
-							case 0:
-								x--;
-								y--;
-								w = ((BuildingData)go.GetData()).Width + 2;
-								h = ((BuildingData)go.GetData()).Height + 2;
-								break;
-
-							case 7:
-								w = ((ObstacleData)go.GetData()).Width;
-								h = ((ObstacleData)go.GetData()).Height;
-								break;
-
-							case 11:
-								x--;
-								y--;
-								w = ((TrapData)go.GetData()).Width + 2;
-								h = ((TrapData)go.GetData()).Height + 2;
-								break;
-
-							case 17:
-								x--;
-								y--;
-								w = ((DecoData)go.GetData()).Width + 2;
-								h = ((DecoData)go.GetData()).Height + 2;
-								break;
-						}
-
-						for (var i = 0; i < w; i++)
-						{
-							for (var j = 0; j < h; j++)
-							{
-								field[x + i, y + j] = 1;
-							}
-						}
-					}
-				}
-				
-				int width;
-				int height;
-				switch (od.GetData().GetDataType())
-				{
-					case 0:
-						width = ((BuildingData)od.GetData()).Width + 2;
-						height = ((BuildingData)od.GetData()).Height + 2;
-						break;
-
-					case 7:
-						width = ((ObstacleData)od.GetData()).Width;
-						height = ((ObstacleData)od.GetData()).Height;
-						break;
-					default:
-						width = ((BuildingData)od.GetData()).Width + 2;
-						height = ((BuildingData)od.GetData()).Height + 2;
-						break;
-				}
-				var freePositions = new List<int[]>();
-				for (var i = 2; i < 42 - height; i++)
-				{
-					for (var j = 2; j < 42 - width; j++)
-					{
-						if (field[i, j] != 1)
-						{
-							freePositions.Add(new[] { i, j });
-						}
-					}
-				}
-
-				if (freePositions.Count < height * width)
-				{
-					return null;
-				}
-
-				var n = freePositions.Count;
-				while (n > 1)
-				{
-					n--;
-					var k = ThreadSafeRandom.ThisThreadsRandom.Next(n + 1);
-					var value = freePositions[k];
-					freePositions[k] = freePositions[n];
-					freePositions[n] = value;
-				}
-				var z = 0;
-				pos = null;
-				while (z < freePositions.Count && pos == null)
-				{
-					if (ObjectHasSpace(od, freePositions[z][0], freePositions[z][1], field))
-					{
-						pos = freePositions[z];
-					}
-					z++;
-				}
-				return pos;
-			}
-			catch (Exception e)
-			{
-				return null;
-			}
-		}
-        
-		private bool ObjectHasSpace(GameObject od, int x, int y, int[,] field)
-		{
-			int width;
-			int height;
-			switch (od.GetData().GetDataType())
-			{
-				case 0:
-					width = ((BuildingData)od.GetData()).Width + 2;
-					height = ((BuildingData)od.GetData()).Height + 2;
-					break;
-
-				case 7:
-					width = ((ObstacleData)od.GetData()).Width;
-					height = ((ObstacleData)od.GetData()).Height;
-					break;
-				default:
-					width = ((BuildingData)od.GetData()).Width + 2;
-					height = ((BuildingData)od.GetData()).Height + 2;
-					break;
-			}
-			int w = width, h = height;
-			for (var i = 0; i < w; i++)
-			{
-				for (var j = 0; j < h; j++)
-				{
-					if (field[x + i, y + j] == 1)
-					{
-						return false;
-					}
-				}
-			}
-
-			return true;
-		}
         public void RemoveObstacle(GameObject go)
         
         {
             if (removedObstacles == null)
-            {
                 removedObstacles = new List<GameObject> { go };
-            }
+            
             if (go.ClassId == 3 && !removedObstacles.Contains(go))
-            {
-                var test = "";
                 removedObstacles.Add(go);
-                test = "";
+            
+            if (go.GetData().GetGlobalID() == 8000030)
+                this.m_vLevel.Avatar.AddDiamonds(25);
+            
+            ObstacleData od = (ObstacleData)go.GetData();
+            int cleartime = od.ClearTimeSeconds + 1;
+            Task.Delay(cleartime * 1000).ContinueWith(_ => RemoveObstalceFinally(go));
+        }
+
+        public void RemoveObstalceFinally(GameObject go)
+        {
+            if (removedObstaclesFinally == null)
+                removedObstaclesFinally = new List<GameObject> { };
+
+            if (removedObstacles.Contains(go))
+            {
+                removedObstaclesFinally.Add(go);
+                removedObstacles.Remove(go);
             }
         }
 
@@ -292,7 +159,7 @@ namespace UCS.Logic.Manager
             m_vComponentManager.RemoveGameObjectReferences(go);
         }
 
-        public JObject Save(bool challange = false)
+        public JObject Save(int challange = 0)
         {
             ClientAvatar pl = m_vLevel.Avatar;
             var jsonData = new JObject();
@@ -305,6 +172,7 @@ namespace UCS.Logic.Manager
             
             JArray JObstacles = new JArray();
             int o = 0;
+            var gembox = false;
             foreach (GameObject go in new List<GameObject>(m_vGameObjects[3]))
             {
                 Obstacle d = (Obstacle)go;
@@ -314,15 +182,25 @@ namespace UCS.Logic.Manager
                     j.Add("const_t", d.m_vTimer.GetRemainingSeconds(m_vLevel.Avatar.LastTickSaved));
                 j.Add("id", 503000000 + o);
                 d.Save(j);
-                o++;
                 if (removedObstacles != null)
                 {
                     if (removedObstacles.Contains(go))
-                    {
                         continue;
-                    }
                 }
+                if (removedObstaclesFinally != null)
+                {
+                    if (removedObstaclesFinally.Contains(go))
+                        continue;
+                }
+
+                if (gembox && d.GetData().GetGlobalID() == 8000030)
+                    continue;
+                
+                if (!gembox && d.GetData().GetGlobalID() == 8000030)
+                    gembox = true;
+                
                 JObstacles.Add(j);
+                o++;
             }
             jsonData.Add("obstacles", JObstacles);
 
@@ -332,13 +210,19 @@ namespace UCS.Logic.Manager
             {
                 Building b = (Building)go;
                 JObject j = new JObject();
+                if (challange == 1 && b.GetData().GetGlobalID() == 1000019)
+                    continue;
+                try {
+                    if (m_vLevel.Avatar.m_vTownHallLevel+1 < Convert.ToInt32(b.GetBuildingData().ReqTh[b.UpgradeLevel]))
+                        b.UpgradeLevel--;
+                } catch (Exception) {}
+                if (b.X == -1 || b.Y == -1)
+	                b.SetPositionXY(1, 1, this.m_vLevel.Avatar.m_vActiveLayout);
                 j.Add("data", b.GetBuildingData().GetGlobalID());
                 j.Add("id", 500000000 + c);
-                if (b.X == -1 || b.Y == -1)
-                {
-	                b.SetPositionXY(1, 1, this.m_vLevel.Avatar.m_vActiveLayout);
-                }
                 b.Save(j);
+                if (challange != 0)
+                    j.Remove("const_t");
                 JBuildings.Add(j);
                 c++;
             }
@@ -357,7 +241,7 @@ namespace UCS.Logic.Manager
 	                t.SetPositionXY(1, 1, this.m_vLevel.Avatar.m_vActiveLayout);
                 }
                 t.Save(j);
-                if (!challange)
+                if (challange != 1)
 					JTraps.Add(j);
                 u++;
             }
@@ -392,7 +276,7 @@ namespace UCS.Logic.Manager
                 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000
             };
             jsonData.Add("newShopBuildings", newShopBuildings);
-            var newShopTraps = new JArray { 6, 6, 5, 0, 0, 5, 5, 0, 3 };
+            var newShopTraps = new JArray { 8, 8, 8, 8, 8, 8, 8, 8, 8 };
             jsonData.Add("newShopTraps", newShopTraps);
             var newShopDecos = new JArray
             {

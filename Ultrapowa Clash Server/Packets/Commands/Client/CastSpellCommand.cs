@@ -26,12 +26,16 @@ namespace UCS.Packets.Commands
             {
                 this.Device.AttackInfo = "multiplayer";
             }
+            if (this.Device.AttackInfo == "challenge")
+            {
+                return;
+            }
             List<DataSlot> _PlayerSpells = this.Device.Player.Avatar.GetSpells();
 
             DataSlot _DataSlot = _PlayerSpells.Find(t => t.Data.GetGlobalID() == Spell.GetGlobalID());
             if (_DataSlot != null)
             {
-                _DataSlot.Value = _DataSlot.Value - 1;
+                _DataSlot.Value--;
             }
         }
 

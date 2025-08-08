@@ -90,23 +90,23 @@ namespace UCS.Packets.GameOpCommands
                                 switch (await acc.GetAllianceRole())
                                 {
                                     case 1:
-                                        Message = "\nClan Role : Member";
+                                        Message += "\nClan Role : Member";
                                         break;
 
                                     case 2:
-                                        Message = "\nClan Role : Leader";
+                                        Message += "\nClan Role : Leader";
                                         break;
 
                                     case 3:
-                                        Message = "\nClan Role : Elder";
+                                        Message += "\nClan Role : Elder";
                                         break;
 
                                     case 4:
-                                        Message = "\nClan Role : Co-Leader";
+                                        Message += "\nClan Role : Co-Leader";
                                         break;
 
                                     default:
-                                        Message = "\nClan Role : Unknown";
+                                        Message += "\nClan Role : Unknown";
                                         break;
                                 }
                             }

@@ -20,7 +20,11 @@ namespace UCS.Packets.Messages.Server
             {
                 this.Data.AddRange(await this.Level.Avatar.Encode());
                 this.Data.AddCompressed(this.Level.SaveToJSON(), false);
-
+                if (this.Level.Avatar.AllianceId == 0)
+                {
+                    this.Level.Avatar.m_vDonated = 0;
+                    this.Level.Avatar.m_vReceived = 0;
+                }
                 this.Data.AddInt(this.Level.Avatar.m_vDonated); //Donated
                 this.Data.AddInt(this.Level.Avatar.m_vReceived); //Received
                 this.Data.AddInt(0); //War Cooldown

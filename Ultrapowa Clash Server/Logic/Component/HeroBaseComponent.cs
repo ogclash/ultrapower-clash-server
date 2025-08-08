@@ -42,11 +42,9 @@ namespace UCS.Logic
             var result = false;
             if (m_vTimer == null)
             {
-                var currentLevel = GetParent().Avatar.Avatar.GetUnitUpgradeLevel(m_vHeroData);
                 if (!IsMaxLevel())
                 {
-                    var requiredThLevel = m_vHeroData.GetRequiredTownHallLevel(currentLevel + 1);
-                    result = GetParent().Avatar.Avatar.m_vTownHallLevel >= requiredThLevel;
+                    result = true;
                 }
             }
             return true;
@@ -135,11 +133,7 @@ namespace UCS.Logic
             for (int i = 0; i < herostate.Count; i++)
             {
                 if (this.m_vHeroData == herostate[i].Data)
-                {
-                    var modifiedHero = herostate[i];
-                    modifiedHero.Value = 1;
-                    herostate[i] = modifiedHero; // Reassign to the list
-                }
+                    herostate[i].Value = 0;
             }
             ca.setHeroState(herostate);
             if (CanStartUpgrading())

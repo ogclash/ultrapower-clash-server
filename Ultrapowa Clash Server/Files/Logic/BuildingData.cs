@@ -300,6 +300,8 @@ namespace UCS.Files.Logic
         public bool WallCornerPieces { get; set; }
 
         public int Width { get; set; }
+        
+        public List <string> ReqTh { get; set; }
 
         public ResourceData GetAltBuildResource(int level) => CSVManager.DataTables.GetResourceByName(AltBuildResource[level]);
 

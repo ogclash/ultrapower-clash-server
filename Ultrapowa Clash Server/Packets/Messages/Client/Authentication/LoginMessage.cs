@@ -54,6 +54,7 @@ namespace UCS.Packets.Messages.Client
         public bool Android;
         public long UserID;
         public Level level;
+        long adminaccount =  0;
 
 
         /// <summary>
@@ -114,7 +115,11 @@ namespace UCS.Packets.Messages.Client
             {
                 if (this.Device.PlayerState == State.LOGIN)
                 {
-                    if (this.UserID == 74)
+                    this.adminaccount=  0;
+                    try {
+                        this.adminaccount = Utils.ParseConfigInt("adminAccount");
+                    }catch (Exception){}
+                    if (this.UserID == this.adminaccount)
                     {
                         CheckClient();
                         return;
@@ -239,17 +244,20 @@ namespace UCS.Packets.Messages.Client
                     p.Send();
                 }
             }
-            AllianceMailStreamEntry server_update = new AllianceMailStreamEntry();
-            Level admin = await ResourcesManager.GetPlayer(74);
-            var admin_alliance = ObjectManager.GetAlliance(admin.Avatar.AllianceId);
-            server_update.SetSender(admin.Avatar);
-            server_update.AllianceId = admin_alliance.m_vAllianceId;
-            server_update.AllianceBadgeData = admin_alliance.m_vAllianceBadgeData;
-            server_update.AllianceName = admin_alliance.m_vAllianceName;
-            server_update.Message = "New Server Update!\n - Added Friendly Battles\n - Fixed some bugs\n - Added Account Restoring! \n - Added Clan Progression: 10 TroopHousing-Space filled = 1 Clan-XP";
-            AvatarStreamEntryMessage sys_message = new AvatarStreamEntryMessage(level.Client);
-            sys_message.SetAvatarStreamEntry(server_update, false);
-            sys_message.Send();
+            if (this.adminaccount != 0)
+            {
+                AllianceMailStreamEntry server_update = new AllianceMailStreamEntry();
+                Level admin = await ResourcesManager.GetPlayer(this.adminaccount);
+                var admin_alliance = ObjectManager.GetAlliance(admin.Avatar.AllianceId);
+                server_update.SetSender(admin.Avatar);
+                server_update.AllianceId = admin_alliance.m_vAllianceId;
+                server_update.AllianceBadgeData = admin_alliance.m_vAllianceBadgeData;
+                server_update.AllianceName = admin_alliance.m_vAllianceName;
+                server_update.Message = "New Server Update!\n - Added Friendly Battles\n - Fixed some bugs\n - Added Account Restoring! \n - Added Clan Progression: 10 TroopHousing-Space filled = 1 Clan-XP";
+                AvatarStreamEntryMessage sys_message = new AvatarStreamEntryMessage(level.Client);
+                sys_message.SetAvatarStreamEntry(server_update, false);
+                sys_message.Send();
+            }
         }
 
         private async void CheckClient()
@@ -261,7 +269,6 @@ namespace UCS.Packets.Messages.Client
                      NewUser();
                      return;
                 }
-
                 level = await ResourcesManager.GetPlayer(UserID);
                 if (level.Avatar.account_switch != 0)
                 {
@@ -293,7 +300,6 @@ namespace UCS.Packets.Messages.Client
                         ErrorCode = 12,
                         Reason = "We have some Problems with your Account. Please contact Server Support."
                     }.Send();
-                    return;
                 }
             } catch (Exception) { }
         }
