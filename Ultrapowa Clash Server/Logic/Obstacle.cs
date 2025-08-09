@@ -1,10 +1,8 @@
 using Newtonsoft.Json.Linq;
 using System;
-using System.Runtime.Remoting.Messaging;
 using UCS.Core;
 using UCS.Helpers;
 using UCS.Files.Logic;
-using UCS.Logic.Manager;
 
 namespace UCS.Logic
 {
@@ -24,8 +22,8 @@ namespace UCS.Logic
 
 		public void CancelClearing()
 		{
-			m_vLevel.WorkerManager.DeallocateWorker(this);
 			m_vTimer = null;
+			m_vLevel.WorkerManager.DeallocateWorker(this);
 			var od = GetObstacleData();
 			var rd = od.GetClearingResource();
 			var cost = od.ClearCost;
@@ -37,8 +35,8 @@ namespace UCS.Logic
 			m_vLevel.GameObjectManager.GetObstacleManager().IncreaseObstacleClearCount();
 			m_vLevel.WorkerManager.DeallocateWorker(this);
 			m_vTimer = null;
+            Avatar.GameObjectManager.RemoveObstalceFinallyV2(this);
 			LootObstacle();
-            //Avatar.GameObjectManager.RemoveGameObject(this);
 		}
 
 		public void LootObstacle()
@@ -76,17 +74,15 @@ namespace UCS.Logic
 
 		public void StartClearing()
 		{
-			LootObstacle();
-			Avatar.GameObjectManager.RemoveObstacle(this);
-			return;
-			var constructionTime = GetObstacleData().ClearTimeSeconds -1;
+			//LootObstacle();
+			var constructionTime = GetObstacleData().ClearTimeSeconds +1;
 			if (constructionTime < 1)
 			{
 				ClearingFinished();
 			}
 			else
 			{
-				Avatar.GameObjectManager.RemoveObstacle(this);
+				//Avatar.GameObjectManager.RemoveObstacle(this);
 				m_vTimer = new Timer();
 				m_vTimer.StartTimer(constructionTime, m_vLevel.Avatar.LastTickSaved);
 				m_vLevel.WorkerManager.AllocateWorker(this);
@@ -107,7 +103,7 @@ namespace UCS.Logic
 			var jsonObject = new JObject();
 			jsonObject.Add("data", GetObstacleData().GetGlobalID());
 			if (IsClearingOnGoing())
-				jsonObject.Add("const_t", m_vTimer.GetRemainingSeconds(m_vLevel.Avatar.LastTickSaved));
+				jsonObject.Add("clear_t", m_vTimer.GetRemainingSeconds(m_vLevel.Avatar.LastTickSaved));
 			jsonObject.Add("x", X);
 			jsonObject.Add("y", Y);
 			return jsonObject;

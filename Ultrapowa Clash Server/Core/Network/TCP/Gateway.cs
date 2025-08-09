@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
-using MySql.Data.MySqlClient.Properties;
 using UCS.Core.Settings;
 using UCS.Packets;
-using System.Configuration;
 using UCS.Helpers;
 using UCS.Core.Checker;
 

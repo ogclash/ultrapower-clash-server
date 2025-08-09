@@ -1,13 +1,8 @@
 using System;
-using System.Diagnostics;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Threading;
-using System.Threading.Tasks;
-using System.Timers;
 using UCS.Core.Settings;
 using UCS.Logic;
-using UCS.Packets;
 
 namespace UCS.Core.Threading
 {

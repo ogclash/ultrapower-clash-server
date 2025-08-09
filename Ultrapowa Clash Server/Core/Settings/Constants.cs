@@ -1,8 +1,5 @@
-using System;
-using System.Configuration;
 using System.Reflection;
 using UCS.Helpers;
-using UCS.Core.Checker;
 
 namespace UCS.Core.Settings
 {

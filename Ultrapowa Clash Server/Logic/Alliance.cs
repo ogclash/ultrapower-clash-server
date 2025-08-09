@@ -18,7 +18,7 @@ namespace UCS.Logic
     internal class Alliance
     {
         const int m_vMaxAllianceMembers = 50;
-        const int m_vMaxChatMessagesNumber = 100;
+        const int m_vMaxChatMessagesNumber = 420;
         internal readonly Dictionary<long, AllianceMemberEntry> m_vAllianceMembers;
         internal readonly List<StreamEntry.StreamEntry> m_vChatMessages;
         internal int m_vAllianceBadgeData;
@@ -47,7 +47,6 @@ namespace UCS.Logic
 
         public Alliance(long id)
         {
-            //Random r               = new Random();
             m_vAllianceId          = id;
             m_vAllianceName        = "Default";
             m_vAllianceDescription = "Default";
