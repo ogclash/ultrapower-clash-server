@@ -1,5 +1,6 @@
 using Newtonsoft.Json.Linq;
 using System;
+using System.Runtime.Remoting.Messaging;
 using UCS.Core;
 using UCS.Helpers;
 using UCS.Files.Logic;
@@ -74,7 +75,6 @@ namespace UCS.Logic
 
 		public void StartClearing()
 		{
-			//LootObstacle();
 			var constructionTime = GetObstacleData().ClearTimeSeconds +1;
 			if (constructionTime < 1)
 			{
@@ -96,6 +96,20 @@ namespace UCS.Logic
 				if (m_vTimer.GetRemainingSeconds(m_vLevel.Avatar.LastTickSaved) <= 0)
 					ClearingFinished();
 			}
+		}
+
+		public new void Load(JObject jsonObject)
+		{
+			m_vLevel.WorkerManager.DeallocateWorker(this);
+			var constTimeToken = jsonObject["clear_t"];
+			if (constTimeToken != null)
+			{
+				m_vTimer = new Timer();
+				var remainingConstructionTime = constTimeToken.ToObject<int>();
+				m_vTimer.StartTimer(remainingConstructionTime, m_vLevel.Avatar.LastTickSaved);
+				m_vLevel.WorkerManager.AllocateWorker(this);
+			}
+			base.Load(jsonObject);
 		}
 
 		public JObject ToJson()
