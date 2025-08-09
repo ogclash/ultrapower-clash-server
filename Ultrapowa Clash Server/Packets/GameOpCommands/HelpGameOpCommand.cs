@@ -36,7 +36,6 @@ namespace UCS.Packets.GameOpCommands
                                    "\n/max" +
                                    "\n/accinfo" +
                                    "\n/rename " +
-                                   "\n/reload" +
                                    "\n/resetacc" +
                                    "\n/setpassword <password>" +
                                    "\n/switchacc <id> <password>" +
