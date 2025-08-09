@@ -696,77 +696,14 @@ namespace UCS.Logic
 
         public void testload(string jsonString)
         {
-            messages = new List<AvatarStreamEntry.AvatarStreamEntry>();
             var jsonObject = JObject.Parse(jsonString);
-            JArray jmessages = (JArray)jsonObject["messages"] ?? new JArray();
-            foreach (JObject jobject in jmessages)
-            {
-               
-            }
+            JArray jmessages = (JArray)jsonObject["test"] ?? new JArray();
+            foreach (JObject jobject in jmessages) { }
         }
 
         public string testSave()
         {
-            JArray jmessages = new JArray();
-            foreach (AvatarStreamEntry.AvatarStreamEntry message in messages)
-            {
-                message.IsNew = 0;
-                var type = message.GetStreamEntryType();
-                if (type == 3)
-                {
-                    AllianceDeclineStreamEntry ai = (AllianceDeclineStreamEntry) message;
-                    JObject jO = new JObject();
-                    jO.Add("AllianceBadgeData", ai.AllianceBadgeData);
-                    jO.Add("AllianceId", ai.AllianceId);
-                    jO.Add("AllianceName", ai.AllianceName);
-                    jO.Add("ID", ai.ID);
-                    jO.Add("isNew", ai.IsNew);
-                    jO.Add("SenderId", ai.m_vSenderId);
-                    jO.Add("CreationTime", ai.m_vCreationTime);
-                    jO.Add("SenderLevel", ai.m_vSenderLevel);
-                    jO.Add("SenderName", ai.m_vSenderName);
-                    jO.Add("type", type);
-                    jmessages.Add(jO);
-                }
-                else if (type == 4)
-                {
-                    AllianceInviteStreamEntry ai = (AllianceInviteStreamEntry) message;
-                    JObject jO = new JObject();
-                    jO.Add("AllianceBadgeData", ai.AllianceBadgeData);
-                    jO.Add("AllianceId", ai.AllianceId);
-                    jO.Add("AllianceName", ai.AllianceName);
-                    jO.Add("ID", ai.ID);
-                    jO.Add("isNew", ai.IsNew);
-                    jO.Add("SenderId", ai.m_vSenderId);
-                    jO.Add("CreationTime", ai.m_vCreationTime);
-                    jO.Add("SenderLevel", ai.m_vSenderLevel);
-                    jO.Add("SenderName", ai.m_vSenderName);
-                    jO.Add("type", type);
-                    jmessages.Add(jO);
-                }
-                else if (type == 6)
-                {
-                    AllianceMailStreamEntry am = (AllianceMailStreamEntry) message;
-                    JObject jO = new JObject();
-                    jO.Add("AllianceBadgeData", am.AllianceBadgeData);
-                    jO.Add("AllianceId", am.AllianceId);
-                    jO.Add("AllianceName", am.AllianceName);
-                    jO.Add("ID", am.ID);
-                    jO.Add("isNew", am.IsNew);
-                    jO.Add("Message", am.Message);
-                    jO.Add("SenderId", am.m_vSenderId);
-                    jO.Add("CreationTime", am.m_vCreationTime);
-                    jO.Add("SenderLevel", am.m_vSenderLevel);
-                    jO.Add("SenderName", am.m_vSenderName);
-                    jO.Add("type", type);
-                    jmessages.Add(jO);
-                }
-            }
-            JObject jsonData = new JObject
-            {
-                {"messages", jmessages}
-            };
-
+            JObject jsonData = new JObject { {"test", "test"} };
             return JsonConvert.SerializeObject(jsonData, Formatting.Indented);
         }
 
@@ -990,6 +927,20 @@ namespace UCS.Logic
             {
                 DonationSlot ds = new DonationSlot(did, id, value, level);
                 AllianceUnits.Add(ds);
+            }
+        }
+        
+        public void RemoveAllianceTroop(DonationSlot e, int value)
+        {
+            if (e != null)
+            {
+                int i = AllianceUnits.IndexOf(e);
+                e.Count -= value;
+                
+                if (e.Count <= 0)
+                    AllianceUnits.RemoveAt(i);
+                else
+                    AllianceUnits[i] = e;
             }
         }
 

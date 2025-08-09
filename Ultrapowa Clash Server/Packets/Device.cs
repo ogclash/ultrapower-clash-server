@@ -2,9 +2,7 @@
 using UCS.Logic;
 using UCS.Helpers;
 using System;
-using System.Diagnostics;
 using UCS.Core;
-using UCS.Core.Crypto;
 using UCS.Core.Network;
 using UCS.Helpers.Binary;
 using UCS.Logic.Enums;

@@ -3,10 +3,6 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Forms;
-using UCS.Core.Threading;
-using UCS.Core.Web;
-using static System.Console;
 using static UCS.Core.Logger;
 
 namespace UCS.Core.Settings

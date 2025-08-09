@@ -2,7 +2,6 @@ using UCS.Core;
 using UCS.Files.Logic;
 using UCS.Helpers.Binary;
 using UCS.Logic;
-using UCS.Logic.Manager;
 
 namespace UCS.Packets.Commands.Client
 {
@@ -49,13 +48,14 @@ namespace UCS.Packets.Commands.Client
                 {
                     GameObject go2 = Device.Player.GameObjectManager.GetGameObjectByID(BuildingId);
                     var obstacle = (Obstacle) go2;
-                    if (Device.Player.GameObjectManager.removedObstacles.Contains(go2))
+                    if (Device.Player.GameObjectManager.removedObstacles != null && Device.Player.GameObjectManager.removedObstacles.Contains(go2))
                     {
                         Device.Player.GameObjectManager.removedObstacles.Remove(go2);
                         if (go.GetData().GetGlobalID() == 8000030)
                             this.Device.Player.Avatar.UseDiamonds(25);
-                        obstacle.CancelClearing();
+                        return;
                     }
+                    obstacle.CancelClearing();
                 }
             }
         }

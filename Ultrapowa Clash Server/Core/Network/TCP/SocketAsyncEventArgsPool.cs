@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Net.Sockets;
-using UCS.Core.Settings;
 
 namespace UCS.Core.Network
 {

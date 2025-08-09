@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Drawing.Printing;
-using System.Runtime.Remoting.Messaging;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using UCS.Core;
@@ -44,9 +42,6 @@ namespace UCS.Logic.Manager
             if (go.ClassId == 3 && !removedObstacles.Contains(go))
                 removedObstacles.Add(go);
             
-            if (go.GetData().GetGlobalID() == 8000030)
-                this.m_vLevel.Avatar.AddDiamonds(25);
-            
             ObstacleData od = (ObstacleData)go.GetData();
             int cleartime = od.ClearTimeSeconds + 1;
             Task.Delay(cleartime * 1000).ContinueWith(_ => RemoveObstalceFinally(go));
@@ -62,6 +57,19 @@ namespace UCS.Logic.Manager
                 removedObstaclesFinally.Add(go);
                 removedObstacles.Remove(go);
             }
+        }
+        
+        public void RemoveObstalceFinallyV2(GameObject go)
+        {
+            if (removedObstaclesFinally == null)
+                removedObstaclesFinally = new List<GameObject> { };
+
+            if (!removedObstaclesFinally.Contains(go))
+                removedObstaclesFinally.Add(go);
+            
+            if (go.GetData().GetGlobalID() == 8000030)
+                this.m_vLevel.Avatar.AddDiamonds(25);
+            //RemoveGameObject(go);
         }
 
 		public void AddGameObject(GameObject go)
@@ -179,7 +187,7 @@ namespace UCS.Logic.Manager
                 JObject j = new JObject();
                 j.Add("data", d.GetObstacleData().GetGlobalID());
                 if (d.IsClearingOnGoing())
-                    j.Add("const_t", d.m_vTimer.GetRemainingSeconds(m_vLevel.Avatar.LastTickSaved));
+                    j.Add("clear_t", d.m_vTimer.GetRemainingSeconds(m_vLevel.Avatar.LastTickSaved));
                 j.Add("id", 503000000 + o);
                 d.Save(j);
                 if (removedObstacles != null)

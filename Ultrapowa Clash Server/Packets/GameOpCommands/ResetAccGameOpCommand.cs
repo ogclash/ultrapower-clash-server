@@ -1,10 +1,5 @@
-using System;
 using UCS.Core;
-using UCS.Core.Network;
-using UCS.Core.Threading;
 using UCS.Logic;
-using UCS.Logic.AvatarStreamEntry;
-using UCS.Packets.Messages.Server;
 
 namespace UCS.Packets.GameOpCommands
 {
@@ -24,12 +19,14 @@ namespace UCS.Packets.GameOpCommands
             {
                 if (m_vArgs.Length >= 1)
                 {
-                    if (level.Avatar.old_account == 0)
+                    if (level.Avatar.old_account == level.Avatar.UserId)
                     {
                         return;
                     }
                     Level oldplayer = await ResourcesManager.GetPlayer(level.Avatar.old_account);
                     Logger.Say("Account with id: "+oldplayer.Avatar.UserId+" was reset");
+                    if (oldplayer.Client != null)
+                        ResourcesManager.DisconnectClient(oldplayer.Client);
                     ResourcesManager.LoadLevel(oldplayer);
                     oldplayer.Avatar.account_switch = 0;
                     ResourcesManager.DisconnectClient(level.Client);

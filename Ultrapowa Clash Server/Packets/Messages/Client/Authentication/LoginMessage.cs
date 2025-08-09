@@ -1,26 +1,18 @@
 using System;
 using System.Configuration;
-using System.Globalization;
-using System.IO;
 using System.Linq;
-using System.Net;
-using System.Security.Cryptography;
-using System.Text;
 using UCS.Core;
 using UCS.Core.Crypto;
 using UCS.Core.Network;
 using UCS.Core.Settings;
-using UCS.Files.Logic;
 using UCS.Helpers;
 using UCS.Helpers.Binary;
 using UCS.Logic;
 using UCS.Logic.AvatarStreamEntry;
 using UCS.Logic.Enums;
-using UCS.Packets;
 using UCS.Packets.Messages.Server;
 using UCS.Utilities.Blake2B;
 using UCS.Utilities.Sodium;
-using static UCS.Packets.Device;
 
 namespace UCS.Packets.Messages.Client
 {
@@ -273,7 +265,6 @@ namespace UCS.Packets.Messages.Client
                 if (level.Avatar.account_switch != 0)
                 {
                     level = await ResourcesManager.GetPlayer(level.Avatar.account_switch);
-                    level.Avatar.old_account = (int)UserID;
                 }
                 if (level != null)
                 {
@@ -282,15 +273,17 @@ namespace UCS.Packets.Messages.Client
                         new LoginFailedMessage(Device) {ErrorCode = 11}.Send();
                         return;
                     }
-                    if (ResourcesManager.IsPlayerOnline(level))
+                    if (level.Client != null)
                     {
-                        new LoginFailedMessage(Device) {ErrorCode = 12}.Send();
-                        return;
-                        /*
-                         if (ResourcesManager.IsPlayerOnline(level) && level.Client != null)
-                         { ResourcesManager.DisconnectClient(level.Client); }
-                        */
+                        if (level.Client.Connected)
+                        {
+                            new LoginFailedMessage(Device) {ErrorCode = 12}.Send();
+                            if (!ResourcesManager.IsPlayerOnline(level))
+                                ResourcesManager.LogPlayerIn(level, level.Client);
+                            return;
+                        }
                     }
+                    level.Avatar.old_account = (int)UserID;
                     LogUser();
                 }
                 else

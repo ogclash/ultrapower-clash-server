@@ -18,6 +18,7 @@ namespace UCS.Packets
             {
                 {10100, typeof(SessionRequest)},
                 {10101, typeof(LoginMessage)},
+                {15004, typeof(WatchAttackMessage)},
                 {10105, typeof(AskForFriendListMessage)},
                 {10108, typeof(KeepAliveMessage)},
                 {10117, typeof(ReportPlayerMessage)},

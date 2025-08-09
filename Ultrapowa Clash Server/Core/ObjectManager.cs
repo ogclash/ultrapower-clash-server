@@ -147,10 +147,9 @@ namespace UCS.Core
             int Count = 0;
             NpcLevels.Add(17000000, new StreamReader(@"Gamefiles/level/NPC/tutorial_npc.json").ReadToEnd());
             NpcLevels.Add(17000001, new StreamReader(@"Gamefiles/level/NPC/tutorial_npc2.json").ReadToEnd());
-
             for (int i = 2; i < 50; i++)
             {
-                using (StreamReader sr = new StreamReader(@"Gamefiles/level/NPC/level" + (i + 1) + ".json"))
+                using (StreamReader sr = new StreamReader(@"Gamefiles/level/NPC/npc" + (Count + 1) + ".json"))
                 {
                     NpcLevels.Add(i + 17000000, sr.ReadToEnd());
                 }

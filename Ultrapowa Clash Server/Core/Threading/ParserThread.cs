@@ -2,7 +2,6 @@ using System;
 using System.Configuration;
 using System.Linq;
 using System.Management;
-using System.IO;
 using System.Net;
 using System.Threading;
 using System.Windows.Forms;
@@ -15,7 +14,6 @@ using UCS.Logic;
 using UCS.Packets.Messages.Server;
 using UCS.Core.Checker;
 using UCS.Core.Web;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace UCS.Helpers
