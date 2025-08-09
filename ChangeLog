@@ -1,4 +1,7 @@
-2025-08-09         [RELEASE] Release of UCS-Reworked 1.0.0.1 (Sophia Heinz)
+2025-08-09         [RELEASE] Release of UCS-Reworked 1.0.0.2 (Phia)
+2025-08-09 a5b1c18 [UPDATE] add new npc-levels so singpleplayer becomes native - refactor and improve code - update removeunitscommand to also remove alliance units and fix bugs (dprssdrainbow)
+
+2025-08-09         [RELEASE] Release of UCS-Reworked 1.0.0.1
 2025-08-08 46b13fb [TASK] create first release - refactor version-checker - improve challenges - fix bugs (dprssdrainbow)
 2025-08-06 dd8d41e [TASK] refactor code (dprssdrainbow)
 2025-08-06 857172c [TASK] too much too describe.... - fixed bugs - added mail-savings and fix issues related to mailing - added friendly challenges - added clan progression via donations (10 housingspace filled = 1 clan-xp) - fixed avatar encoding for profiledatamessage (dprssdrainbow)
@@ -9,5 +12,3 @@
 2025-07-17 3f72dda [TASK] extend base config.ucs to prevent conflict while executing built solution (dprssdrainbow)
 2025-07-17 7c32905 Update README.md (sophia-bln)
 2025-07-17 f370b62 [TASK] inital commit: - fix bugs and send timeouts when chained-commands cant get executed // - fix player progressions // - add leaderboards and fix clan chat // change commands to be executed by everyone currently and add new commands and enhance some old ones </> (dprssdrainbow)
-
-
