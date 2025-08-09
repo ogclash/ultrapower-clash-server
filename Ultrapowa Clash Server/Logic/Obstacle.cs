@@ -36,7 +36,7 @@ namespace UCS.Logic
 			m_vLevel.GameObjectManager.GetObstacleManager().IncreaseObstacleClearCount();
 			m_vLevel.WorkerManager.DeallocateWorker(this);
 			m_vTimer = null;
-            Avatar.GameObjectManager.RemoveObstalceFinallyV2(this);
+            Avatar.GameObjectManager.RemoveObstalce(this);
 			LootObstacle();
 		}
 

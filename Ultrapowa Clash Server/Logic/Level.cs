@@ -40,6 +40,7 @@ namespace UCS.Logic
         }
 
         public string SaveToJSON() => JsonConvert.SerializeObject(GameObjectManager.Save(), Formatting.Indented);
+        public string SaveToJSONforPlayer() => JsonConvert.SerializeObject(GameObjectManager.Save(0, true), Formatting.Indented);
         public string SaveToJSONforChallange() => JsonConvert.SerializeObject(GameObjectManager.Save(1), Formatting.Indented);
         public string SaveToJSONforChallangeAttack() => JsonConvert.SerializeObject(GameObjectManager.Save(2), Formatting.Indented);
 

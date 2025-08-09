@@ -77,30 +77,22 @@ namespace UCS
 
             Console.ForegroundColor = ConsoleColor.Blue;
             Console.Write("[UCS]  ");
-            Version = VersionChecker.GetVersionString();
 
             _Stopwatch.Start();
-
-            if (Version == Constants.Version)
+            Version currentVersion = new Version(Constants.Version);
+            Version requiredVersion = new Version(VersionChecker.GetVersionString());
+            
+            if (currentVersion >= requiredVersion)
             {
                 Console.WriteLine($"> UCS is up-to-date: {Constants.Version}");
                 Console.ResetColor();
                 Console.ForegroundColor = ConsoleColor.Green;
                 Say("Preparing Server...\n");
             }
-            else if (Version == "Error")
-            {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("> An Error occured when requesting the Version number.");
-                Console.WriteLine();
-                Logger.Say("Aborting...");
-                Thread.Sleep(5000);
-                Environment.Exit(0);
-            }
             else
             {
                 Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine($"> UCS is not up-to-date! New Version: {Version}. Aborting...");
+                Console.WriteLine($"> UCS is not up-to-date! New Version: {requiredVersion}. Aborting...");
                 Thread.Sleep(5000);
                 Environment.Exit(0);
             }

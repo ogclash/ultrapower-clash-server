@@ -39,7 +39,7 @@ namespace UCS.Packets.Messages.Server
                         Id = this.Player.Avatar.UserId,
                         ShieldTime = this.Device.Player.Avatar.m_vShieldTime,
                         ProtectionTime = this.Device.Player.Avatar.m_vProtectionTime,
-                        Village = this.Player.SaveToJSON()
+                        Village = this.Player.SaveToJSONforPlayer()
                     };
 
                 this.Data.AddInt(0);
