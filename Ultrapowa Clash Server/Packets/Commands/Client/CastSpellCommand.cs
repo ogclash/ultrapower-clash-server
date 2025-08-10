@@ -17,7 +17,10 @@ namespace UCS.Packets.Commands
             this.X = this.Reader.ReadInt32();
             this.Y = this.Reader.ReadInt32();
             this.Spell = (SpellData) this.Reader.ReadDataReference();
-            this.Unknown1 = this.Reader.ReadUInt32();
+            var unknown = this.Reader.ReadBoolean();
+            var lvl = this.Reader.ReadInt32();
+            var unknown1 = this.Reader.ReadInt32();
+            base.Decode();
         }
 
         internal override void Process()

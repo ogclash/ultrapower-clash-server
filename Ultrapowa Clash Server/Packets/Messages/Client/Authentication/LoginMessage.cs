@@ -109,7 +109,7 @@ namespace UCS.Packets.Messages.Client
                 {
                     this.adminaccount=  0;
                     try {
-                        this.adminaccount = Utils.ParseConfigInt("adminAccount");
+                        this.adminaccount = Utils.ParseConfigInt("AdminAccount");
                     }catch (Exception){}
                     if (this.UserID == this.adminaccount)
                     {
@@ -236,8 +236,9 @@ namespace UCS.Packets.Messages.Client
                     p.Send();
                 }
             }
-            if (this.adminaccount != 0)
+            if (this.adminaccount != 0 && Utils.ParseConfigString("AdminMessage") != "")
             {
+                String amessage = Utils.ParseConfigString("AdminMessage").Replace("/n:", "\n");
                 AllianceMailStreamEntry server_update = new AllianceMailStreamEntry();
                 Level admin = await ResourcesManager.GetPlayer(this.adminaccount);
                 var admin_alliance = ObjectManager.GetAlliance(admin.Avatar.AllianceId);
@@ -245,7 +246,7 @@ namespace UCS.Packets.Messages.Client
                 server_update.AllianceId = admin_alliance.m_vAllianceId;
                 server_update.AllianceBadgeData = admin_alliance.m_vAllianceBadgeData;
                 server_update.AllianceName = admin_alliance.m_vAllianceName;
-                server_update.Message = "New Server Update!\n - Added Friendly Battles\n - Fixed some bugs\n - Added Account Restoring! \n - Added Clan Progression: 10 TroopHousing-Space filled = 1 Clan-XP";
+                server_update.Message = amessage;
                 AvatarStreamEntryMessage sys_message = new AvatarStreamEntryMessage(level.Client);
                 sys_message.SetAvatarStreamEntry(server_update, false);
                 sys_message.Send();

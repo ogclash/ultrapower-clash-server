@@ -14,6 +14,7 @@ namespace UCS.Packets.Commands.Client
         internal override void Decode()
         {
             this.ObstacleId = this.Reader.ReadInt32();
+            this.Tick = this.Reader.ReadUInt32();
         }
 
         internal override void Process()

@@ -316,6 +316,7 @@ namespace UCS.Logic.Manager
                     m_vGameObjectsIndex.Add(0);
                 }
                 m_vComponentManager     = new ComponentManager(m_vLevel);
+                m_vLevel.WorkerManager = new WorkerManager();
                 Load(jsonData);
             }
             return jsonData;
