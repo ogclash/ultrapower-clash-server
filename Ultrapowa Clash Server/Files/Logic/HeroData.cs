@@ -130,6 +130,7 @@ namespace UCS.Files.Logic
         public string InfoTID { get; set; }
 
         public bool IsFlying { get; set; }
+        
 
         public int MaxSearchRadiusForDefender { get; set; }
 

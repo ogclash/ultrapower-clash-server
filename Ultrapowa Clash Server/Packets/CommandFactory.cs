@@ -67,6 +67,7 @@ namespace UCS.Packets
                 {552, typeof(SaveVillageLayoutCommand)},
                 {553, typeof(ClientServerTickCommand)},
                 {554, typeof(RotateDefenseCommand)},
+                {556, typeof(MoveWholeLayoutCommand)},
                 {558, typeof(AddQuicKTrainingTroopCommand)},
                 {559, typeof(TrainQuickUnitsCommand)},
                 {560, typeof(StartClanWarCommand)},

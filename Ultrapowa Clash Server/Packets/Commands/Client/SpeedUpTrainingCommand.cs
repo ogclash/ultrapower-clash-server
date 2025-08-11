@@ -14,9 +14,11 @@ namespace UCS.Packets.Commands.Client
         internal override void Decode()
         {
             this.Reader.ReadInt32();
+            this.Reader.ReadBoolean();
             this.Reader.ReadInt32();
-            this.Reader.ReadUInt32();
-            Reader.Read();
+            base.Decode();
+            //this.Reader.ReadUInt32();
+            //.Read();
         }
     }
 }

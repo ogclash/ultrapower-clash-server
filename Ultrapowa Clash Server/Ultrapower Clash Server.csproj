@@ -273,6 +273,7 @@
     <Compile Include="Logic\StreamEntry\ChallengeStreamEntry.cs" />
     <Compile Include="Packets\Commands\Client\CastSpellCommand.cs" />
     <Compile Include="Packets\Commands\Client\DecreaseShieldTimeInfo.cs" />
+    <Compile Include="Packets\Commands\Client\MoveWholeLayoutCommand.cs" />
     <Compile Include="Packets\Commands\Client\PlaceAllianceTroopsCommand.cs" />
     <Compile Include="Packets\Commands\Client\PlayerWarStatusCommand.cs" />
     <Compile Include="Packets\Commands\Client\RemoveShieldToAttackCommand.cs" />
