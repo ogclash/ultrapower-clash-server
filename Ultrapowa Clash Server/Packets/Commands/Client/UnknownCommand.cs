@@ -5,12 +5,16 @@ namespace UCS.Packets.Commands.Client
     // Packet 3072
     internal class UnknownCommand : Command
     {
+        public static int Tick;
         public UnknownCommand(Reader reader, Device client, int id) : base(reader, client, id)
         {
 
         }
-
-        public static int Tick;
-        public static int Unknown1;
+        
+        internal override void Decode()
+        {
+            Tick = Reader.ReadInt32();
+            this.Reader.ReadData();
+        }
     }
 }

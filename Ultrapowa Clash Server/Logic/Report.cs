@@ -11,7 +11,6 @@ namespace UCS.Logic
 
         public long reporterId;
         public Timer timer;
-        public long reportedPlayerId;
         public long reportedMessageId;
     }
 }

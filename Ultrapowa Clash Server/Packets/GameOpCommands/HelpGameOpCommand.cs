@@ -42,16 +42,6 @@ namespace UCS.Packets.GameOpCommands
                                    "\n/addgems <amount>";
 
                     _MSG.Send();
-                    var mail = new AllianceMailStreamEntry();
-                    mail.ID = (int)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
-                    mail.SetSender(avatar);
-                    mail.IsNew = 2;
-                    mail.AllianceId = 0;
-                    mail.AllianceBadgeData = 1526735450;
-                    mail.AllianceName = "UCS Server Commands Help";
-                    //var p = new AvatarStreamEntryMessage(level.Client);
-                    //p.SetAvatarStreamEntry(mail);
-                    //Processor.Send(p);
                 }
             }
             else

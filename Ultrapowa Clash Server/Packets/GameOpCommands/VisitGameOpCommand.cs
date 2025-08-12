@@ -31,9 +31,6 @@ namespace UCS.Packets.GameOpCommands
                             l.Tick();
                             new VisitedHomeDataMessage(level.Client, l, level).Send();
                         }
-                        else
-                        {
-                        }
                     }
                     catch 
                     {

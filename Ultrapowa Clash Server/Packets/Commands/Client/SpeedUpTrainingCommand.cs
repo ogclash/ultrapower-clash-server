@@ -17,8 +17,6 @@ namespace UCS.Packets.Commands.Client
             this.Reader.ReadBoolean();
             this.Reader.ReadInt32();
             base.Decode();
-            //this.Reader.ReadUInt32();
-            //.Read();
         }
     }
 }

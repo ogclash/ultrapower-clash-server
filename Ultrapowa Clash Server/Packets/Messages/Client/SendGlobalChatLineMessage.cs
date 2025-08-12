@@ -83,6 +83,7 @@ namespace UCS.Packets.Messages.Client
                         }
                         else
                         {
+                            Logger.Say($"Global Chat Message: '{Message}' from: {senderName}:{senderId}");
                             foreach (Level onlinePlayer in ResourcesManager.m_vOnlinePlayers)
                             {
                                 if (onlinePlayer.Avatar.Region == this.Device.Player.Avatar.Region)
@@ -97,7 +98,6 @@ namespace UCS.Packets.Messages.Client
                                     };
                                     p.SetAlliance(ObjectManager.GetAlliance(this.Device.Player.Avatar.AllianceId));
                                     p.Send();
-                                    Logger.Write($"Chat Message: '{Message}' from '{senderName}':'{senderId}'");
                                 }
                             }
                         }

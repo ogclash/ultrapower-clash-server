@@ -277,6 +277,7 @@
     <Compile Include="Packets\Commands\Client\MoveWholeLayoutCommand.cs" />
     <Compile Include="Packets\Commands\Client\PlaceAllianceTroopsCommand.cs" />
     <Compile Include="Packets\Commands\Client\PlayerWarStatusCommand.cs" />
+    <Compile Include="Packets\Commands\Client\RemoveAllBuildingsFromLayoutCommand.cs" />
     <Compile Include="Packets\Commands\Client\RemoveShieldToAttackCommand.cs" />
     <Compile Include="Packets\Commands\Client\RenameQuickTrainCommand.cs" />
     <Compile Include="Packets\Commands\Client\SpeedUpRequestUnitsCommand.cs" />
@@ -287,8 +288,6 @@
     <Compile Include="Packets\GameOpCommands\ResetAccGameOpCommand.cs" />
     <Compile Include="Packets\GameOpCommands\SetPasswordGameOpCommand.cs" />
     <Compile Include="Packets\GameOpCommands\SwitchAccGameOpCommand.cs" />
-    <Compile Include="Packets\GameOpCommands\ToggleBroadcastGameOpCommand.cs" />
-    <Compile Include="Packets\Messages\BroadcastManager.cs" />
     <Compile Include="Packets\Messages\Client\AcceptInviteMessage.cs" />
     <Compile Include="Packets\Messages\Client\AccountSwitchMessage.cs" />
     <Compile Include="Packets\Messages\Client\Api\Bind_Google_Message.cs" />

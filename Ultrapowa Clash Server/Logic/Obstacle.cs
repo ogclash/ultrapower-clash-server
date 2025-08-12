@@ -75,7 +75,7 @@ namespace UCS.Logic
 
 		public void StartClearing()
 		{
-			var constructionTime = GetObstacleData().ClearTimeSeconds +1;
+			var constructionTime = GetObstacleData().ClearTimeSeconds;
 			if (constructionTime < 1)
 			{
 				ClearingFinished();

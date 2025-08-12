@@ -28,9 +28,6 @@ namespace UCS.Packets.GameOpCommands
                         {
                             l.Avatar.AccountBanned = false;
                         }
-                        else
-                        {
-                        }
                     }
                     catch
                     {

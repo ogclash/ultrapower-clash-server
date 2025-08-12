@@ -14,6 +14,11 @@ namespace UCS.Packets.Commands.Client
         public DecreaseShieldTimeInfo(Reader reader, Device client, int id) : base(reader, client, id)
         {
         }
+        
+        internal override void Decode()
+        {
+            this.Reader.ReadData();
+        }
 
         internal override void Process()
         {

@@ -13,16 +13,25 @@ namespace UCS.Packets.Commands.Client
         internal override void Decode()
         {
             this.BuildingID = this.Reader.ReadInt32();
-            var layout = Reader.ReadInt32();
-            var layout1 = Reader.ReadInt32();
+            this.layoutId = Reader.ReadInt32();
+            Reader.ReadBoolean();
+            Reader.ReadBoolean();
+            Reader.ReadInt32();
+            Reader.ReadBoolean();
+            this.Reader.ReadData();
+        }
+
+        internal override void Process()
+        {
             var go = this.Device.Player.GameObjectManager.GetGameObjectByID((int)BuildingID);
-            if (layout == Device.Player.Avatar.m_vActiveLayout && go?.GetComponent(1, true) != null)
+            if (layoutId == Device.Player.Avatar.m_vActiveLayout && go?.GetComponent(1, true) != null)
             {
                 ((CombatComponent) go.GetComponent(1, true)).rotateSweeper();
             }
         }
 
         public int BuildingID { get; set; }
+        public int layoutId { get; set; }
 
     }
 }

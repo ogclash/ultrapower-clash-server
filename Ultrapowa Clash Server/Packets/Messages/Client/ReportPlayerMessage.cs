@@ -33,7 +33,6 @@ namespace UCS.Packets.Messages.Client
             {
                 Level ReportedPlayer = await ResourcesManager.GetPlayer(ReportedPlayerID);
                 Report report = new Report(this.Device);
-                report.reportedPlayerId = this.ReportedPlayerID;
                 if (ReportedPlayer.Avatar.reports.Find(r => r.reporterId == Device.Player.Avatar.UserId) != null)
                 {
                     return;

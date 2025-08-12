@@ -71,8 +71,10 @@ namespace UCS.Packets
                 {558, typeof(AddQuicKTrainingTroopCommand)},
                 {559, typeof(TrainQuickUnitsCommand)},
                 {560, typeof(StartClanWarCommand)},
+                {563, typeof(CollectClanResourcesCommand)},
                 {567, typeof(SetActiveVillageLayoutCommand)},
                 {568, typeof(CopyVillageLayoutCommand)},
+                {569, typeof(RemoveAllBuildingsFromLayoutCommand)},
                 {570, typeof(TogglePlayerWarStateCommand)},
                 {571, typeof(FilterChatCommand)},
                 {572, typeof(ToggleHeroAttackModeCommand)},
@@ -89,16 +91,8 @@ namespace UCS.Packets
                 {605, typeof(PlaceHeroCommand)},
                 {700, typeof(SearchOpponentCommand)}
             };
-
-            //Commands.Add(0, typeof(UnknownCommand));
-            //Commands.Add(1, typeof(JoinAlliance));
-            //Commands.Add(2, typeof(LeaveAllianceCommand));
-            //Commands.Add(3, typeof(ChangeAvatarCommand));
-            //Commands.Add(5, typeof());
-            //Commands.Add(551, typeof(ContinueBarrackBoostCommand));
-            Commands.Add(563, typeof(CollectClanResourcesCommand));
-            //Commands.Add(573, typeof(RemoveShieldToAttackCommand));
             
+            Commands.Add(579, typeof(UnknownCommand));
             
             Commands.Add(404, typeof(UnknownCommand));
         }
