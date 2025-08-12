@@ -1,3 +1,4 @@
+This Project is NOT affiliated with Supercell, or any other company.
 
 # Projects
 The original Project was developed by the Ultrapowa Development Team:  
