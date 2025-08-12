@@ -236,6 +236,13 @@ namespace UCS.Packets.Messages.Client
                     p.Send();
                 }
             }
+
+            if (level.Avatar.reports.Last().timer != null)
+            {
+                AvatarChatBanMessage _AvatarChatBanMessage = new AvatarChatBanMessage(level.Client);
+                _AvatarChatBanMessage.SetBanPeriod(level.Avatar.reports.Last().timer.GetRemainingSeconds(DateTime.Now)); // 30 Minutes
+                _AvatarChatBanMessage.Send();
+            }
             if (this.adminaccount != 0 && Utils.ParseConfigString("AdminMessage") != "")
             {
                 String amessage = Utils.ParseConfigString("AdminMessage").Replace("/n:", "\n");

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using UCS.Core;
 using UCS.Core.Network;
 using UCS.Helpers.Binary;
@@ -31,14 +32,24 @@ namespace UCS.Packets.Messages.Client
             try
             {
                 Level ReportedPlayer = await ResourcesManager.GetPlayer(ReportedPlayerID);
+                Report report = new Report(this.Device);
+                report.reportedPlayerId = this.ReportedPlayerID;
+                if (ReportedPlayer.Avatar.reports.Find(r => r.reporterId == Device.Player.Avatar.UserId) != null)
+                {
+                    return;
+                }
                 ReportedPlayer.Avatar.ReportedTimes++;
                 if (ReportedPlayer.Avatar.ReportedTimes >= 3)
                 {
                     AvatarChatBanMessage _AvatarChatBanMessage = new AvatarChatBanMessage(ReportedPlayer.Client);
-                    //_AvatarChatBanMessage.SetBanPeriod(86400); // A Day
                     _AvatarChatBanMessage.SetBanPeriod(1800); // 30 Minutes
                     _AvatarChatBanMessage.Send();
+                    Timer timer = new Timer();
+                    timer.StartTime = DateTime.Now;
+                    timer.Seconds = 1800;
+                    report.timer = timer;
                 }
+                ReportedPlayer.Avatar.reports.Add(report);
             }
             catch (Exception)
             {

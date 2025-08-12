@@ -10,8 +10,12 @@ using static System.Convert;
 using static System.Configuration.ConfigurationManager;
 using UCS.Logic.DataSlots;
 using System.Threading.Tasks;
+using UCS.Core.Network;
+using UCS.Database;
 using UCS.Helpers.List;
 using UCS.Logic.AvatarStreamEntry;
+using UCS.Packets;
+using UCS.Packets.Messages.Server;
 
 namespace UCS.Logic
 {
@@ -43,6 +47,7 @@ namespace UCS.Logic
         internal int m_vProtectionTimeValue;
         internal long m_vProtectionTimeStamp;
         internal int ReportedTimes = 0;
+        internal List<Report> reports = new List<Report>();
         internal int m_vDonated;
         internal int m_vReceived;
         

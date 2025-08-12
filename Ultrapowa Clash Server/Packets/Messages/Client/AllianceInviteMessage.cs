@@ -27,7 +27,7 @@ namespace UCS.Packets.Messages.Client
         internal override async void Process()
         {
             Level targetAccount = await ResourcesManager.GetPlayer(invited_userid);
-            if (targetAccount.Avatar.GetAllianceCastleLevel() == 0)
+            if (targetAccount.Avatar.GetAllianceCastleLevel() == -1)
             {
                 return;
             }

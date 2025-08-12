@@ -270,6 +270,7 @@
     <Compile Include="Logic\Enums\Exits.cs" />
     <Compile Include="Logic\Enums\Save.cs" />
     <Compile Include="Logic\Enums\State.cs" />
+    <Compile Include="Logic\Report.cs" />
     <Compile Include="Logic\StreamEntry\ChallengeStreamEntry.cs" />
     <Compile Include="Packets\Commands\Client\CastSpellCommand.cs" />
     <Compile Include="Packets\Commands\Client\DecreaseShieldTimeInfo.cs" />
