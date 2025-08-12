@@ -35,7 +35,7 @@ namespace UCS.Packets.Messages.Client
             try
             {
                 var castle = Device.Player.Avatar.GetAllianceCastleLevel();
-                if (castle != 0)
+                if (castle != -1)
                 {
                     Level inviter = await ResourcesManager.GetPlayer(userId);
                     Alliance alliance = ObjectManager.GetAlliance(inviter.Avatar.AllianceId);

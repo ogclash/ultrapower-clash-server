@@ -32,11 +32,16 @@ namespace UCS.Packets.Messages.Server
                 {
                     if (targetAccount != null)
                     {
+                        entry.wasOnline = false;
                         targetAccount.Avatar.messages.Add(entry);
                     }
                 }
                 else
                 {
+                    if (this.Device.Connected)
+                    {
+                        entry.wasOnline = true;
+                    }
                     this.Device.Player.Avatar.messages.Add(entry);
                 }
             }

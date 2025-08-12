@@ -214,6 +214,11 @@ namespace UCS.Packets.Messages.Client
             foreach (AvatarStreamEntry amessage in Device.Player.Avatar.messages)
             {
                 var type = amessage.GetStreamEntryType();
+                if (!amessage.wasOnline)
+                {
+                    amessage.IsNew = 2;
+                    amessage.wasOnline = true;
+                }
                 if (type == 3)
                 {
                     AllianceDeclineStreamEntry ai = (AllianceDeclineStreamEntry) amessage;
@@ -237,7 +242,7 @@ namespace UCS.Packets.Messages.Client
                 }
             }
 
-            if (level.Avatar.reports.Last().timer != null)
+            if (level.Avatar.reports.Count > 0 && level.Avatar.reports.Last().timer != null)
             {
                 AvatarChatBanMessage _AvatarChatBanMessage = new AvatarChatBanMessage(level.Client);
                 _AvatarChatBanMessage.SetBanPeriod(level.Avatar.reports.Last().timer.GetRemainingSeconds(DateTime.Now)); // 30 Minutes
