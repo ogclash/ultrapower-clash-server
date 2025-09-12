@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Newtonsoft.Json.Linq;
 using UCS.Core;
 using UCS.Core.Network;
-using UCS.Files.Logic;
 using UCS.Helpers.Binary;
 using UCS.Logic;
 using UCS.Packets.Messages.Server;
@@ -14,8 +9,15 @@ namespace UCS.Packets.Messages.Client
 {
     internal class RetributionAttackerMessage : Message
     {
+        private int battle_id;
         public RetributionAttackerMessage(Device device, Reader reader) : base(device, reader)
         {
+        }
+
+        internal override void Decode()
+        {
+            var unknown = this.Reader.ReadDecimal();
+            this.battle_id = this.Reader.ReadInt32();
         }
 
 
@@ -28,32 +30,18 @@ namespace UCS.Packets.Messages.Client
             }
             else
             {
-                /*if (level.Avatar.GetUnits().Count < 10)
+                JObject battle = Device.Player.Avatar.battles[battle_id-1];
+                Level defender = await ResourcesManager.GetPlayer((long)battle["attacker"]);
+                if (Device.Player.Avatar.revenged.Contains(defender.Avatar.UserId) || ResourcesManager.IsPlayerOnline(defender))
                 {
-                    for (int i = 0; i < 31; i++)
-                    {
-                        Data unitData = CSVManager.DataTables.GetDataById(4000000 + i);
-                        CharacterData combatData = (CharacterData)unitData;
-                        int maxLevel = combatData.GetUpgradeLevelCount();
-                        DataSlot unitSlot = new DataSlot(unitData, 1000);
-
-                        level.Avatar.GetUnits().Add(unitSlot);
-                        level.Avatar.SetUnitUpgradeLevel(combatData, maxLevel - 1);
-                    }
-
-                    for (int i = 0; i < 18; i++)
-                    {
-                        Data spellData = CSVManager.DataTables.GetDataById(26000000 + i);
-                        SpellData combatData = (SpellData)spellData;
-                        int maxLevel = combatData.GetUpgradeLevelCount();
-                        DataSlot spellSlot = new DataSlot(spellData, 1000);
-
-                        level.Avatar.GetSpells().Add(spellSlot);
-                        level.Avatar.SetUnitUpgradeLevel(combatData, maxLevel - 1);
-                    }
-                }*/
-                this.Device.PlayerState = Logic.Enums.State.SEARCH_BATTLE;
-                new RetributionDataMessage(Device, this.Device.Player, 17000049).Send();
+                    new OwnHomeDataMessage(Device, this.Device.Player).Send();
+                }
+                else
+                {
+                    Device.AttackVictim = defender;
+                    Device.Player.Avatar.revenged.Add(defender.Avatar.UserId);
+                    new EnemyHomeDataMessage(this.Device, defender, this.Device.Player).Send();
+                }
             }
         }
     }

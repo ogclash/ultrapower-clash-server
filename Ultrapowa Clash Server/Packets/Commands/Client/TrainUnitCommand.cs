@@ -45,19 +45,19 @@ namespace UCS.Packets.Commands.Client
                 var troops = 0;
                 foreach (var unit in _PlayerUnits)
                 {
-                    var unitData = (UCS.Files.Logic.CharacterData) unit.Data;
+                    if (unit.Value < 0)
+                        unit.Value = 0;
+                    var unitData = (CharacterData) unit.Data;
                     var housingSpace = unitData.HousingSpace;
                     troops += unit.Value * housingSpace;
                 }
 
                 if (_TroopData != null)
                 {
-                    var unitData = (UCS.Files.Logic.CharacterData)_TroopData;
+                    var unitData = (CharacterData)_TroopData;
                     var housingSpace = unitData.HousingSpace;
                     troops += Count * housingSpace;
                 }
-                else
-                    return;
                 if (troops <= gameobjects.GetTotalMaxHousing())
                 {
                     DataSlot _DataSlot = _PlayerUnits.Find(t => t.Data.GetGlobalID() == _TroopData.GetGlobalID());
@@ -84,12 +84,20 @@ namespace UCS.Packets.Commands.Client
                 var spells = 0;
                 foreach (var unit in _PlayerSpells)
                 {
+                    if (unit.Value < 0)
+                        unit.Value = 0;
                     var unitData = (UCS.Files.Logic.SpellData) unit.Data;
                     var housingSpace = unitData.HousingSpace;
                     spells += unit.Value * housingSpace;
                 }
+                if (_SpellData != null)
+                {
+                    var spellData = (SpellData)_SpellData;
+                    var housingSpace = spellData.HousingSpace;
+                    spells += Count * housingSpace;
+                }
                 
-                if (_SpellData != null && spells < gameobjects.GetTotalMaxHousing(true))
+                if (spells < gameobjects.GetTotalMaxHousing(true))
                 {
                     DataSlot _DataSlot = _PlayerSpells.Find(t => t.Data.GetGlobalID() == _SpellData.GetGlobalID());
                     if (_DataSlot != null)

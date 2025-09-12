@@ -14,11 +14,6 @@ namespace UCS.Packets.Commands.Client
         {
             this.BuildingID = this.Reader.ReadInt32();
             this.layoutId = Reader.ReadInt32();
-            Reader.ReadBoolean();
-            Reader.ReadBoolean();
-            Reader.ReadInt32();
-            Reader.ReadBoolean();
-            this.Reader.ReadData();
         }
 
         internal override void Process()

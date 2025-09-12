@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using Newtonsoft.Json.Linq;
 using UCS.Files.Logic;
 using UCS.Helpers.Binary;
 using UCS.Logic;
@@ -33,17 +35,58 @@ namespace UCS.Packets.Commands
             {
                 return;
             }
+            if (this.Device.AttackInfo == "npc")
+            {
+                this.Device.NpcAttacked = true;
+            }
+            
+            bool found = false;
+
+            foreach (JArray unit in this.Device.Player.Avatar.battle.spells.ToList())
+            {
+                int currentUnitId = (int)unit[0];
+                int currentCount = (int)unit[1];
+
+                if (currentUnitId == Spell.GetGlobalID())
+                {
+                    // increment unit count
+                    unit[1] = currentCount + 1;
+                    found = true;
+                    break;
+                }
+            }
+
+            if (!found)
+            {
+                // add new unit if not found
+                JArray unitInfo = new JArray
+                {
+                    Spell.GetGlobalID(),
+                    1
+                };
+                this.Device.Player.Avatar.battle.spells.Add(unitInfo);
+                
+                JArray unitLevel = new JArray
+                {
+                    Spell.GetGlobalID(),
+                    this.Device.Player.Avatar.GetUnitUpgradeLevel(Spell)
+                };
+                this.Device.Player.Avatar.battle.levels.Add(unitLevel);
+            }
+            
             List<DataSlot> _PlayerSpells = this.Device.Player.Avatar.GetSpells();
 
             DataSlot _DataSlot = _PlayerSpells.Find(t => t.Data.GetGlobalID() == Spell.GetGlobalID());
             if (_DataSlot != null)
             {
-                _DataSlot.Value--;
+                if (_DataSlot.Value < 0)
+                    _DataSlot.Value = 0;
+                else
+                    _DataSlot.Value--;
             }
         }
 
         public SpellData Spell;
-        public uint Unknown1;
         public int X;
         public int Y;
     }

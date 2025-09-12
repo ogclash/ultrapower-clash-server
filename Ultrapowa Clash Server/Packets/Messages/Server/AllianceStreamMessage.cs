@@ -24,7 +24,7 @@ namespace UCS.Packets.Messages.Server
         internal override async void Encode()
         {
             StreamEntry oldmessage =  m_vAlliance.m_vChatMessages.Find(c => c.GetStreamEntryType() == 12);
-            if (oldmessage !=  m_vAlliance.m_vChatMessages.Last())
+            if (m_vAlliance.m_vChatMessages .Count() != 0 && oldmessage !=  m_vAlliance.m_vChatMessages.Last())
             {
                 m_vAlliance.m_vChatMessages.Remove(oldmessage);
                 foreach (AllianceMemberEntry op in m_vAlliance.GetAllianceMembers())

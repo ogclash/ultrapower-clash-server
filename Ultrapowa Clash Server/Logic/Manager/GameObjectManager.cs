@@ -183,6 +183,12 @@ namespace UCS.Logic.Manager
             foreach (GameObject go in new List<GameObject>(m_vGameObjects[0]))
             {
                 Building b = (Building)go;
+                if (b.GetData().GetGlobalID() == 1000027 || b.GetData().GetGlobalID() == 1000021 || b.GetData().GetGlobalID() == 1000031)
+                {
+                    if (go?.GetComponent(1, true) != null)
+                        ((CombatComponent) go.GetComponent(1, true)).useAmmo(true);
+                }
+                b = (Building)go;
                 JObject j = new JObject();
                 if (challange == 1 && b.GetData().GetGlobalID() == 1000019)
                     continue;
@@ -209,6 +215,8 @@ namespace UCS.Logic.Manager
                 Trap t = (Trap)go;
                 JObject j = new JObject();
                 j.Add("data", t.GetTrapData().GetGlobalID());
+                if (go?.GetComponent(8, true) != null)
+                    ((TriggerComponent) go.GetComponent(1, true)).SetEnabled(true);
                 j.Add("id", 504000000 + u);
                 if (t.X == -1 || t.Y == -1)
                 {

@@ -75,7 +75,7 @@ namespace UCS.Logic
 
 		public void StartClearing()
 		{
-			var constructionTime = GetObstacleData().ClearTimeSeconds;
+			double constructionTime = GetObstacleData().ClearTimeSeconds-0.5;
 			if (constructionTime < 1)
 			{
 				ClearingFinished();
@@ -84,7 +84,7 @@ namespace UCS.Logic
 			{
 				//Avatar.GameObjectManager.RemoveObstacle(this);
 				m_vTimer = new Timer();
-				m_vTimer.StartTimer(constructionTime, m_vLevel.Avatar.LastTickSaved);
+				m_vTimer.StartTimerDouble(constructionTime, m_vLevel.Avatar.LastTickSaved);
 				m_vLevel.WorkerManager.AllocateWorker(this);
 			}
 		}
@@ -93,7 +93,7 @@ namespace UCS.Logic
 		{
 			if (IsClearingOnGoing())
 			{
-				if (m_vTimer.GetRemainingSeconds(m_vLevel.Avatar.LastTickSaved) <= 0)
+				if (m_vTimer.GetRemainingSecondsDouble(m_vLevel.Avatar.LastTickSaved) <= 0)
 					ClearingFinished();
 			}
 		}
@@ -117,7 +117,7 @@ namespace UCS.Logic
 			var jsonObject = new JObject();
 			jsonObject.Add("data", GetObstacleData().GetGlobalID());
 			if (IsClearingOnGoing())
-				jsonObject.Add("clear_t", m_vTimer.GetRemainingSeconds(m_vLevel.Avatar.LastTickSaved));
+				jsonObject.Add("clear_t", m_vTimer.GetRemainingSecondsDouble(m_vLevel.Avatar.LastTickSaved));
 			jsonObject.Add("x", X);
 			jsonObject.Add("y", Y);
 			return jsonObject;

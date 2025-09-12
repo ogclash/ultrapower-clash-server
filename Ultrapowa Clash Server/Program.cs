@@ -5,13 +5,9 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading;
 using UCS.Core;
-using UCS.Core.Checker;
-using UCS.Core.Network;
 using UCS.Core.Settings;
-using UCS.Core.Threading;
 using UCS.Core.Web;
 using UCS.Helpers;
-using UCS.WebAPI;
 using static UCS.Core.Logger;
 
 namespace UCS
@@ -19,9 +15,8 @@ namespace UCS
     internal class Program
     {
         internal static int OP = 0;
-        internal static string Title = $"Ultrapower Clash Server v{Constants.Version} Build: {Constants.Build} - ©Ultrapowa | Online Players: ";
+        internal static string Title = $"Ultrapower Clash Server v{Constants.Version} Build: {Constants.Build} - ©2025 | Online Players: ";
         public static Stopwatch _Stopwatch = new Stopwatch();
-        public static string Version { get; set; }
 
         internal static void Main()
         {
@@ -61,7 +56,6 @@ namespace UCS
             Say();
 
             Console.ForegroundColor = ConsoleColor.Blue;
-            Logger.WriteCenter("+-------------------------------------------------------+");
             Logger.WriteCenter("            ");
             Logger.WriteCenter(" _   _ _ _                                         ");
             Logger.WriteCenter(" | | | | | |_ _ __ __ _ _ __   _____      _____ _ __ ");
@@ -70,8 +64,11 @@ namespace UCS
             Logger.WriteCenter("  \\___/|_|\\__|_|  \\__,_| .__/ \\___/ \\_/\\_/ \\___|_|   ");
             Logger.WriteCenter("                       |_|                           ");
             Logger.WriteCenter("            ");
-            Logger.WriteCenter("+-------------------------------------------------------+");
             Console.ResetColor();
+            
+            Logger.WriteCenter("+-------------------------------------------------------+");
+            Logger.WriteCenter("|  This program is not affiliated to \"Supercell, Oy\"  |");
+            Logger.WriteCenter("+-------------------------------------------------------+");
 
             Say();
 

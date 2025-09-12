@@ -80,7 +80,7 @@ namespace UCS.Core
             var allAlliances = await Resources.DatabaseManager.GetAllAlliancesFromDbAsync();
             foreach(var account in allAccounts)
             {
-                if (account.Avatar.m_vCastleLevel == -1 && account.Avatar.account_switch != 0)
+                if (account.Avatar.m_vCastleLevel == -1 && account.Avatar.TutorialStepsCount < 10)
                 {
                     continue;
                 }
@@ -98,8 +98,6 @@ namespace UCS.Core
                 }
 
             }
-
-            var test = "";
         }
 
         public static List<long> GetAllPlayerIds() => m_vDatabase.GetAllPlayerIds();
@@ -126,17 +124,12 @@ namespace UCS.Core
         {
             if (_Client != null)
             {
+                //Resources.DatabaseManager.Save(_Client.Player);
                 if (_Client.Player.Client != null)
                     _Client.Player.Client = null;
                 Processor.Send(new OutOfSyncMessage(_Client));
                 DropClient(_Client.SocketHandle);
             }
-        }
-        
-        public static void DisconnectClientD(Device _Client)
-        {
-            Processor.Send(new DisconnectedMessage(_Client));
-            DropClient(_Client.SocketHandle);
         }
 
         public static bool IsClientConnected(IntPtr socketHandle) => m_vClients[socketHandle] != null && m_vClients[socketHandle].IsClientSocketConnected();

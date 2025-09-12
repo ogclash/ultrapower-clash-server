@@ -35,6 +35,8 @@ namespace UCS.Packets.Messages.Client
                     if (!alliance.IsAllianceFull())
                     {
                         this.Device.Player.Avatar.AllianceId = alliance.m_vAllianceId;
+                        this.Device.Player.Avatar.m_vDonated = 0;
+                        this.Device.Player.Avatar.m_vReceived = 0;
                         AllianceMemberEntry member = new AllianceMemberEntry(this.Device.Player.Avatar.UserId);
                         member.Role = 1;
                         alliance.AddAllianceMember(member);

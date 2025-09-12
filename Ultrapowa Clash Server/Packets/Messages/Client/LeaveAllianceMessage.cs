@@ -88,6 +88,8 @@ namespace UCS.Packets.Messages.Client
 
                 alliance.RemoveMember(avatar.UserId);
                 avatar.AllianceId = 0;
+                avatar.m_vDonated = 0;
+                avatar.m_vReceived = 0;
 
                 if (alliance.GetAllianceMembers().Count > 0)
                 {

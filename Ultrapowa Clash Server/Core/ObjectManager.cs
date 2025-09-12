@@ -44,7 +44,7 @@ namespace UCS.Core
             m_vAvatarSeed          = MaxPlayerID;
             m_vAllianceSeed        = MaxAllianceID;
 
-            using (StreamReader sr = new StreamReader(@"Gamefiles/starting_home_with_obstacles.json"))
+            using (StreamReader sr = new StreamReader(@"Gamefiles/starting_home_test.json"))
             {
                 m_vHomeDefault     = sr.ReadToEnd();
             }
@@ -58,6 +58,11 @@ namespace UCS.Core
                 TimerReferenceMysql = new Timer(SaveMysql, null, 40000, 27000);
             }
             Say($"UCS Database has been succesfully loaded. ({Convert.ToInt32(MaxAllianceID + MaxPlayerID)} Tables)");
+        }
+
+        public static DatabaseManager getDatabaseManager()
+        {
+            return m_vDatabase;
         }
 
         private static void SaveRedis(object state)

@@ -37,7 +37,7 @@ namespace UCS.Packets.Messages.Client
                 };
                 p.Send();
             }
-            //new RequestConfirmChangeNameMessage(Client, PlayerName);
+            this.Device.Player.Avatar.TutorialStepsCount = 13;
         }
     }
 }

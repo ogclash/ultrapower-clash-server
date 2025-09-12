@@ -1,5 +1,4 @@
 using UCS.Helpers.Binary;
-using UCS.Logic;
 
 namespace UCS.Packets.Commands.Client
 {
@@ -14,13 +13,28 @@ namespace UCS.Packets.Commands.Client
         {
             this.X = this.Reader.ReadInt32();
             this.Y = this.Reader.ReadInt32();
+            this.Layout = this.Reader.ReadInt32();
+            this.Reader.ReadInt32();
         }
 
         internal override void Process()
         {
+            var avatar = this.Device.Player.Avatar;
+            var buildings = avatar.getBuildings();
+            bool buildingFound = false;
+            for (int i = 0; i < buildings.Count; i++)
+            {
+                var building = buildings[i];
+                if (building[1] == Layout)
+                {
+                    buildings[i][2] += X;
+                    buildings[i][3] += Y;
+                }
+            }
         }
-        
+
         public int X;
         public int Y;
+        public int Layout;
     }
 }

@@ -39,6 +39,15 @@ namespace UCS.Logic
             }
         }
         
+        public void useAmmo(bool warmup = false)
+        {
+            if (!warmup)
+            {
+                var bd = (BuildingData) GetParent().GetData();
+                m_vAmmo -= bd.AmmoCount / 4;
+            }
+        }
+        
         public void toggleMode()
         {
             if (m_vAttackMode)

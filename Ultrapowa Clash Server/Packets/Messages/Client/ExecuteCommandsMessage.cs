@@ -41,11 +41,10 @@ namespace UCS.Packets.Messages.Client
 
             this.Device.Player.Tick();
 
-            if (this.Count > -1 && this.Count <= 400)
+            if (this.Count > -1 && this.Count <= 450)
             {
                 using (Reader Reader = new Reader(this.Commands))
                 {
-                    //Logger.Write(BitConverter.ToString(this.Commands).Replace("-", " "));
                     for (int _Index = 0; _Index < this.Count; _Index++)
                     {
                         int CommandID = Reader.ReadInt32();
@@ -82,14 +81,13 @@ namespace UCS.Packets.Messages.Client
 
                                 this.LCommands.Add(command);
                             }
-
                         }
                     }
                 }
             }
             else
             {
-                new OutOfSyncMessage(this.Device).Send();
+                //new OutOfSyncMessage(this.Device).Send();
             }
         }
     }

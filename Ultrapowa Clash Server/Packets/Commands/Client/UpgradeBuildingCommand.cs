@@ -1,7 +1,5 @@
-﻿using System.IO;
-using UCS.Core;
+﻿using UCS.Core;
 using UCS.Files.Logic;
-using UCS.Helpers;
 using UCS.Helpers.Binary;
 using UCS.Logic;
 using System.Diagnostics;
@@ -12,8 +10,7 @@ namespace UCS.Packets.Commands.Client
     internal class UpgradeBuildingCommand : Command
     {
         public int BuildingId;
-        public uint Unknown1;
-        public uint Unknown2;
+        public uint UpgradeWithEilixir;
 
         public UpgradeBuildingCommand(Reader reader, Device client, int id) : base(reader, client, id)
         {
@@ -22,8 +19,8 @@ namespace UCS.Packets.Commands.Client
         internal override void Decode()
         {
             this.BuildingId = this.Reader.ReadInt32();
-            this.Unknown2 = this.Reader.ReadByte();
-            this.Unknown1 = this.Reader.ReadUInt32();
+            this.UpgradeWithEilixir = this.Reader.ReadByte();
+            this.Reader.ReadUInt32();
         }
 
         internal override void Process()
@@ -36,31 +33,40 @@ namespace UCS.Packets.Commands.Client
                 if (b.CanUpgrade())
                 {
                     var bd = b.GetConstructionItemData();
-                    if (ca.HasEnoughResources(bd.GetBuildResource(b.GetUpgradeLevel() + 1),bd.GetBuildCost(b.GetUpgradeLevel() + 1)))
+                    if (UpgradeWithEilixir == 1)
                     {
-                        if (this.Device.Player.HasFreeWorkers())
+                        ResourceData elixirLocation = CSVManager.DataTables.GetResourceByName("Elixir");
+                        if (ca.HasEnoughResources(elixirLocation,bd.GetBuildCost(b.GetUpgradeLevel() + 1)))
                         {
-                            string name = this.Device.Player.GameObjectManager.GetGameObjectByID(BuildingId).GetData().GetName();
-                            Logger.Say("Building To Upgrade : " + name + " (" + BuildingId + ')');
-                            if (string.Equals(name, "Alliance Castle"))
+                            if (this.Device.Player.HasFreeWorkers())
                             {
-                                ca.IncrementAllianceCastleLevel();
-                                Building a = (Building)this.Device.Player.GameObjectManager.GetGameObjectByID(BuildingId);
-                                BuildingData al = a.GetBuildingData();
-                                ca.SetAllianceCastleTotalCapacity(al.GetUnitStorageCapacity(ca.GetAllianceCastleLevel()));
+                                string name = this.Device.Player.GameObjectManager.GetGameObjectByID(BuildingId).GetData().GetName();
+                                Logger.Say("Building To Upgrade : " + name + " (" + BuildingId + ')');
+                                
+                                ca.SetResourceCount(elixirLocation, ca.GetResourceCount(elixirLocation) - bd.GetBuildCost(b.GetUpgradeLevel() + 1));
+                                b.StartUpgrading();
+                                return;
                             }
-                            else if (string.Equals(name, "Town Hall"))
-                                ca.IncrementTownHallLevel();
-
-                            var rd = bd.GetBuildResource(b.GetUpgradeLevel() + 1);
-                            ca.SetResourceCount(rd, ca.GetResourceCount(rd) - bd.GetBuildCost(b.GetUpgradeLevel() + 1));
-                            b.StartUpgrading();
                         }
                     }
                     else
                     {
-                        Debug.Write("[Debug] cannot upgrade not enough resources ?");
+                        
+                        if (ca.HasEnoughResources(bd.GetBuildResource(b.GetUpgradeLevel() + 1),bd.GetBuildCost(b.GetUpgradeLevel() + 1)))
+                        {
+                            if (this.Device.Player.HasFreeWorkers())
+                            {
+                                string name = this.Device.Player.GameObjectManager.GetGameObjectByID(BuildingId).GetData().GetName();
+                                Logger.Say("Building To Upgrade : " + name + " (" + BuildingId + ')');
+
+                                var rd = bd.GetBuildResource(b.GetUpgradeLevel() + 1);
+                                ca.SetResourceCount(rd, ca.GetResourceCount(rd) - bd.GetBuildCost(b.GetUpgradeLevel() + 1));
+                                b.StartUpgrading();
+                                return;
+                            }
+                        }
                     }
+                    Debug.Write("[Debug] cannot upgrade not enough resources ?");
                 }
                 else
                 {

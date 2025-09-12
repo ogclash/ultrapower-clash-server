@@ -1,3 +1,4 @@
+using System;
 using UCS.Core;
 using UCS.Logic;
 
@@ -15,27 +16,29 @@ namespace UCS.Packets.GameOpCommands
 
         public override async void Execute(Level level)
         {
-            if (GetRequiredAccountPrivileges())
-            {
-                if (m_vArgs.Length >= 1)
+            try {
+                if (GetRequiredAccountPrivileges())
                 {
-                    if (level.Avatar.old_account == level.Avatar.UserId)
+                    if (m_vArgs.Length >= 1)
                     {
-                        return;
+                        if (level.Avatar.old_account == level.Avatar.UserId)
+                        {
+                            return;
+                        }
+                        Level oldplayer = await ResourcesManager.GetPlayer(level.Avatar.old_account);
+                        Logger.Say("Account with id: "+oldplayer.Avatar.UserId+" was reset");
+                        if (oldplayer.Client != null)
+                            ResourcesManager.DisconnectClient(oldplayer.Client);
+                        ResourcesManager.LoadLevel(oldplayer);
+                        oldplayer.Avatar.account_switch = 0;
+                        ResourcesManager.DisconnectClient(level.Client);
                     }
-                    Level oldplayer = await ResourcesManager.GetPlayer(level.Avatar.old_account);
-                    Logger.Say("Account with id: "+oldplayer.Avatar.UserId+" was reset");
-                    if (oldplayer.Client != null)
-                        ResourcesManager.DisconnectClient(oldplayer.Client);
-                    ResourcesManager.LoadLevel(oldplayer);
-                    oldplayer.Avatar.account_switch = 0;
-                    ResourcesManager.DisconnectClient(level.Client);
                 }
-            }
-            else
-            {
-                SendCommandFailedMessage(level.Client);
-            }
+                else
+                {
+                    SendCommandFailedMessage(level.Client);
+                }
+            } catch (Exception) {}
         }
     }
 }

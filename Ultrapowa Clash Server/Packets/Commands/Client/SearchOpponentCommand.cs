@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using UCS.Core;
 using UCS.Core.Network;
 using UCS.Helpers.Binary;
@@ -38,27 +39,37 @@ namespace UCS.Packets.Commands.Client
                             Device.Player.Avatar.mv_ShieldTimeStamp = 0;
                     }
                 }
-                if (this.Device.PlayerState == State.IN_BATTLE)
-                {
-                    this.Device.PlayerState = State.LOGGED;
-                }
-                else
-                {
-                    // New Method
-                    this.Device.PlayerState = State.SEARCH_BATTLE;
-                    Level Defender = ObjectManager.GetRandomOfflinePlayer();
-                    while (Device.Player == Defender || Defender.Avatar.GetScore()+1000 < Device.Player.Avatar.GetScore())
-                    {
-                        Defender = ObjectManager.GetRandomOfflinePlayer();
-                    }
-                    this.Device.AttackVictim = Defender;
-                    Defender.Tick();
-                    new EnemyHomeDataMessage(this.Device, Defender, this.Device.Player).Send();
-                }
+                SearchEnemyAsync();
             }
             catch (Exception)
             {
             }
+        }
+
+        private async Task SearchEnemyAsync()
+        {
+            this.Device.PlayerState = State.SEARCH_BATTLE;
+
+            Level defender = ObjectManager.GetRandomOfflinePlayer();
+
+            // Search loop
+            while (Device.Player.Avatar.UserId == defender.Avatar.UserId || defender.Avatar.GetScore() + 1000 < Device.Player.Avatar.GetScore())
+            {
+                defender = ObjectManager.GetRandomOfflinePlayer();
+                await Task.Delay(1); 
+                if (this.Device.PlayerState != State.SEARCH_BATTLE)
+                {
+                    return;
+                }
+            }
+
+            // Assign victim and start battle
+            this.Device.AttackVictim = defender;
+            defender.Tick();
+            new EnemyHomeDataMessage(this.Device, defender, this.Device.Player).Send();
+
+            // Mark search finished
+            this.Device.PlayerState = State.IN_BATTLE; // Player is now officially in battle
         }
     }
 }

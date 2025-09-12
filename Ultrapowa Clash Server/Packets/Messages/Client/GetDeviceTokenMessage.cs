@@ -1,7 +1,7 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using UCS.Core.Network;
 using UCS.Helpers.Binary;
-using UCS.Logic;
 using UCS.Packets.Messages.Server;
 
 namespace UCS.Packets.Messages.Client
@@ -16,6 +16,16 @@ namespace UCS.Packets.Messages.Client
         internal override void Process()
         {
             new SetDeviceTokenMessage(Device).Send();
+            if (!this.Device.Player.Avatar.m_vAndroid && this.Device.OpenUDID != null)
+            {
+                string fileName = this.Device.OpenUDID + ".txt";
+                string filePath = Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), 
+                    fileName
+                );
+                if (File.Exists(filePath))
+                    File.Delete(filePath);
+            }
         }
     }
 }

@@ -227,9 +227,11 @@ namespace UCS.Helpers.Binary
             return _Buffer;
         }
 
-        internal Data ReadDataReference()
+        internal Data ReadDataReference(int id = 0)
         {
-            return CSVManager.DataTables.GetDataById(this.ReadInt32());
+            if (id == 0)
+                return CSVManager.DataTables.GetDataById(this.ReadInt32());
+            return CSVManager.DataTables.GetDataById(id);
         }
 
         /// <summary>

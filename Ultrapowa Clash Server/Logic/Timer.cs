@@ -5,6 +5,7 @@ namespace UCS.Logic
     internal class Timer
     {
         internal int Seconds;
+        internal Double DoubleSeconds;
         internal DateTime StartTime;
 
         internal Timer()
@@ -52,6 +53,26 @@ namespace UCS.Logic
         {
             this.StartTime = time;
             this.Seconds = seconds;
+        }
+        internal Double GetRemainingSecondsDouble(DateTime time)
+        {
+            // Use float for more precise seconds
+            Double result = this.DoubleSeconds - (float)time.Subtract(this.StartTime).TotalSeconds;
+    
+            if (result <= 0f)
+            {
+                result = 0f;
+            }
+
+            return result;
+        }
+        
+
+        internal void StartTimerDouble(Double seconds, DateTime time)
+        {
+            this.StartTime = time;
+            this.DoubleSeconds = seconds;
+            this.Seconds = (int)seconds;
         }
     }
 }

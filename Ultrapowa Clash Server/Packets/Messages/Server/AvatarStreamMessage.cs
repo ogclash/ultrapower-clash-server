@@ -1,4 +1,7 @@
+using System;
 using System.Collections.Generic;
+using Newtonsoft.Json.Linq;
+using UCS.Core;
 using UCS.Helpers.List;
 using UCS.Logic;
 
@@ -7,36 +10,88 @@ namespace UCS.Packets.Messages.Server
     // Packets 24411
     internal class AvatarStreamMessage : Message
     {
-        public AvatarStreamMessage(Device client) : base(client)
+        private JObject BattleResult;
+        private bool update;
+        public AvatarStreamMessage(Device client, bool update = false) : base(client)
         {
+            this.update = update;
             this.Identifier = 24411;
         }
 
-        internal override void Encode()
+        internal override async void Encode()
         {
-            string StreamTest = @"{""loot"":[[3000002,999999999],[3000001,999999999]],""availableLoot"":[[3000000,0],[3000001,145430],[3000002,142872],[3000003,517]],""units"":[[4000001,58]],""spells"":[],""levels"":[[4000001,4]],""stats"":{""townhallDestroyed"":false,""battleEnded"":true,""allianceUsed"":false,""destructionPercentage"":6,""battleTime"":90,""originalAttackerScore"":6022,""attackerScore"":-10,""originalDefenderScore"":1056,""defenderScore"":18,""allianceName"":""Ultrapower"",""attackerStars"":0,""homeID"":[0,5],""allianceBadge"":1526735450,""allianceBadge2"":1660949336,""allianceID"":[88,884629],""deployedHousingSpace"":168,""armyDeploymentPercentage"":5}}";
+            List<JObject> battleResults = Device.Player.Avatar.battles;
+            this.Data.AddInt(battleResults.Count);
+            int count = 1;
+            foreach (JObject BattleResult in battleResults)
+            {
+                int type = 7; // default: attacked
+                Level pl;
 
-            ClientAvatar pl = this.Device.Player.Avatar;
-            this.Data.AddInt(0); //Stream Ammount
-            /*this.Data.AddInt(2); //Stream Type, 2 = attacked, 7 = defended;
-            this.Data.AddLong(1); //Stream ID
-            this.Data.Add(1);
-            this.Data.AddInt(pl.HighID);
-            this.Data.AddInt(pl.LowID);
-            this.Data.AddString("Ultrapower Server AI"); //Attacker Name
-            this.Data.AddInt(1);
-            this.Data.AddInt(0);
-            this.Data.AddInt(446); //Age
-            this.Data.Add(2); // 2 = new, 0 = old;
-            this.Data.AddString(StreamTest);
-            this.Data.AddInt(0);
-            this.Data.Add(1);
-            this.Data.AddInt(8);
-            this.Data.AddInt(709);
-            this.Data.AddInt(0);
-            this.Data.Add(1);
-            this.Data.AddLong(1);
-            this.Data.AddInt(int.MaxValue);*/
+                long defenderId = (long)BattleResult["defender"];
+                long attackerId = (long)BattleResult["attacker"];
+
+                if (defenderId == Device.Player.Avatar.UserId)
+                {
+                    type = 2; // defended
+                    pl = await ResourcesManager.GetPlayer(attackerId);
+                }
+                else
+                {
+                    pl = await ResourcesManager.GetPlayer(defenderId);
+                }
+                if (pl == null)
+                    continue;
+                ClientAvatar avatar = pl.Avatar;
+                JObject jsonList = (JObject)BattleResult["result"];
+                if (avatar.AllianceId != 0)
+                {
+                    Alliance alliance = ObjectManager.GetAlliance(avatar.AllianceId);
+                    JObject stats = (JObject)jsonList["stats"];
+                    try
+                    {
+                        stats.Add("allianceBadge", alliance.m_vAllianceBadgeData);
+                        stats.Add("allianceName", alliance.m_vAllianceName);
+                    }
+                    catch (Exception)
+                    {
+                        stats["allianceBadge"]= alliance.m_vAllianceBadgeData;
+                        stats["allianceName"]= alliance.m_vAllianceName;
+                    }
+                    stats["homeID"] = new JArray(0, avatar.UserId);
+                    jsonList["stats"] = stats;
+                }
+                string newJson = jsonList.ToString(Newtonsoft.Json.Formatting.None);
+
+                // Stream data for each battle
+                this.Data.AddInt(type);              
+                this.Data.AddLong(count);                
+                this.Data.Add(1);
+                this.Data.AddInt(avatar.HighID);     
+                this.Data.AddInt(avatar.LowID);      
+                this.Data.AddString(avatar.AvatarName);
+                this.Data.AddInt(avatar.m_vAvatarLevel);
+                this.Data.AddInt(0);
+                this.Data.AddInt(0);
+                if ((int)BattleResult["new"] == 2)
+                {
+                    this.Data.Add(2);
+                    if (update)
+                        BattleResult["new"] = 0;
+                } else
+                    this.Data.Add(0);                    
+                this.Data.AddString(newJson);        
+                this.Data.AddInt(0);
+                this.Data.Add(1);
+                this.Data.AddInt(8);
+                this.Data.AddInt(709);
+                this.Data.AddInt(0);
+                this.Data.Add(1);
+                this.Data.AddLong(1);
+                this.Data.AddInt(int.MaxValue);
+                count++;
+            }
+            Device.Player.Avatar.battles = battleResults;
         }
     }
 }

@@ -241,6 +241,8 @@
     <Compile Include="Core\Crypto\Key.cs" />
     <Compile Include="Core\CSVManager.cs" />
     <Compile Include="Core\Events\Region.cs" />
+    <Compile Include="Core\LogicMath\LogicELOMath.cs" />
+    <Compile Include="Core\LogicMath\LogicMath.cs" />
     <Compile Include="Core\Network\Pool.cs" />
     <Compile Include="Core\Network\Processor.cs" />
     <Compile Include="Core\Network\TCP\Gateway.cs" />
@@ -264,6 +266,7 @@
     <Compile Include="Logic\API\FacebookApi.cs" />
     <Compile Include="Logic\AvatarStreamEntry\AllianceDeclineStreamEntry.cs" />
     <Compile Include="Logic\AvatarStreamEntry\AllianceInviteStreamEntry.cs" />
+    <Compile Include="Logic\BattleResult.cs" />
     <Compile Include="Logic\ClanWars.cs" />
     <Compile Include="Logic\Component\ObstacleComponent.cs" />
     <Compile Include="Logic\Enums\Database.cs" />
@@ -285,6 +288,7 @@
     <Compile Include="Packets\Crypto.cs" />
     <Compile Include="Packets\GameOpCommands\AddGemsOpCommand.cs" />
     <Compile Include="Packets\GameOpCommands\MinRessourcesGameOpCommand.cs" />
+    <Compile Include="Packets\GameOpCommands\NewAccountGameOpCommand.cs" />
     <Compile Include="Packets\GameOpCommands\ResetAccGameOpCommand.cs" />
     <Compile Include="Packets\GameOpCommands\SetPasswordGameOpCommand.cs" />
     <Compile Include="Packets\GameOpCommands\SwitchAccGameOpCommand.cs" />
@@ -1080,6 +1084,10 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="bin\Debug\auth" />
+    <Content Include="bin\Debug\Gamefiles\starting_home_test.json" />
+    <Content Include="bin\Debug\WebAPI\HTML\Manager.html" />
+    <Content Include="WebAPI\HTML\Manager.html" />
     <None Include="WebAPI\HTML\Statistics.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

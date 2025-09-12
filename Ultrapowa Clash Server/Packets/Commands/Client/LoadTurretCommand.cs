@@ -1,4 +1,5 @@
-﻿using UCS.Helpers.Binary;
+﻿using System.Collections.Generic;
+using UCS.Helpers.Binary;
 using UCS.Logic;
 
 namespace UCS.Packets.Commands.Client
@@ -13,19 +14,27 @@ namespace UCS.Packets.Commands.Client
         internal override void Decode()
         {
             this.m_vUnknown1 = this.Reader.ReadUInt32();
-            this.m_vBuildingId = this.Reader.ReadInt32();
+            for (uint i = 0; i < m_vUnknown1; i++)
+            {
+                buildings.Add(this.Reader.ReadInt32());
+            }
             this.m_vUnknown2 = this.Reader.ReadUInt32();
         }
 
         internal override void Process()
         {
-            var go = this.Device.Player.GameObjectManager.GetGameObjectByID(m_vBuildingId);
-            if (go?.GetComponent(1, true) != null)
-                ((CombatComponent) go.GetComponent(1, true)).FillAmmo();
+            foreach (int buildingID in buildings)
+            {
+                var go = this.Device.Player.GameObjectManager.GetGameObjectByID(buildingID);
+                if (go?.GetComponent(1, true) != null)
+                    ((CombatComponent) go.GetComponent(1, true)).FillAmmo();
+            }
         }
 
         public int m_vBuildingId;
         public uint m_vUnknown1;
         public uint m_vUnknown2;
+        public uint m_vUnknown3;
+        public List<int> buildings = new List<int>();
     }
 }

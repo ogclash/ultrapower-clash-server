@@ -14,15 +14,16 @@
           </Key>
           <Property Name="ClanId" Type="bigint" Nullable="false" />
           <Property Name="LastUpdateTime" Type="datetime" Precision="0" Nullable="false" />
-          <Property Name="Data" Type="text" Nullable="false" />
+          <Property Name="Data" Type="longtext" Nullable="false" />
         </EntityType>
         <EntityType Name="Player">
           <Key>
             <PropertyRef Name="PlayerId" />
           </Key>
           <Property Name="PlayerId" Type="bigint" Nullable="false" />
-          <Property Name="Avatar" Type="text" Nullable="false" />
-          <Property Name="GameObjects" Type="text" Nullable="false" />
+          <Property Name="Avatar" Type="longtext" Nullable="false" />
+          <Property Name="GameObjects" Type="longtext" Nullable="false" />
+          <Property Name="Battles" Type="longtext" Nullable="false" />
         </EntityType>
         <EntityContainer Name="ucsdbModelStoreContainer">
           <EntitySet Name="Clan" EntityType="Self.Clan" Schema="ucsdb" store:Type="Tables" />
@@ -41,16 +42,18 @@
           </Key>
           <Property Name="ClanId" Type="Int64" Nullable="false" />
           <Property Name="LastUpdateTime" Type="DateTime" Nullable="false" />
-          <Property Name="Data" Type="String" Nullable="false" MaxLength="65535" FixedLength="false" Unicode="false" />
+          <Property Name="Data" Type="String" Nullable="false" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="Player">
           <Key>
             <PropertyRef Name="PlayerId" />
           </Key>
           <Property Name="PlayerId" Type="Int64" Nullable="false" />
-          <Property Name="Avatar" Type="String" Nullable="false" MaxLength="65535" FixedLength="false" Unicode="false" />
-          <Property Name="GameObjects" Type="String" Nullable="false" MaxLength="65535" FixedLength="false"
+          <Property Name="Avatar" Type="String" Nullable="false" FixedLength="false" Unicode="false" />
+          <Property Name="GameObjects" Type="String" Nullable="false" FixedLength="false"
                     Unicode="false" />
+        <Property Name="Battles" Type="String" Nullable="false" FixedLength="false" Unicode="false" />
+
         </EntityType>
         <EntityContainer Name="ucsdbEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="Clan" EntityType="Self.Clan" />
@@ -77,6 +80,7 @@
                 <ScalarProperty Name="PlayerId" ColumnName="PlayerId" />
                 <ScalarProperty Name="GameObjects" ColumnName="GameObjects" />
                 <ScalarProperty Name="Avatar" ColumnName="Avatar" />
+                <ScalarProperty Name="Battles" ColumnName="Battles" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

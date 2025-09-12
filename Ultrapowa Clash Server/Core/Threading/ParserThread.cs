@@ -33,6 +33,10 @@ namespace UCS.Helpers
                 while (true)
                 {
                     string entry = Console.ReadLine().ToLower();
+                    if (entry == null)
+                    {
+                        continue;
+                    }
                     switch (entry)
                     {
                         case "/help":

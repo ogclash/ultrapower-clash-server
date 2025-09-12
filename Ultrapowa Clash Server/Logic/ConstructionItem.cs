@@ -3,7 +3,6 @@ using Newtonsoft.Json.Linq;
 using UCS.Core;
 using UCS.Files.Logic;
 using UCS.Helpers;
-using UCS.Packets;
 
 namespace UCS.Logic
 {
@@ -81,8 +80,19 @@ namespace UCS.Logic
             return result;
         }
 
-        public void FinishConstruction()
+        public void FinishConstruction(int id = 0)
         {
+            if (id != 0 && string.Equals(this.GetData().GetName(), "Alliance Castle"))
+            {
+                Avatar.Avatar.IncrementAllianceCastleLevel();
+                Building a = (Building)Avatar.GameObjectManager.GetGameObjectByID(id);
+                BuildingData al = a.GetBuildingData();
+                Avatar.Avatar.SetAllianceCastleTotalCapacity(
+                    al.GetUnitStorageCapacity(Avatar.Avatar.GetAllianceCastleLevel()));
+            }
+            else if (string.Equals(this.GetData().GetName(), "Town Hall"))
+                Avatar.Avatar.IncrementTownHallLevel();
+
             SetUpgradeLevel(GetUpgradeLevel() + 1);
             m_vIsConstructing = false;
             m_vLevel.WorkerManager.DeallocateWorker(this);
@@ -103,6 +113,7 @@ namespace UCS.Logic
                 Avatar.Avatar.SetHeroHealth(hd, 0);
                 Avatar.Avatar.SetHeroState(hd, 3);
             }
+            Logger.Say($"Finished construction : {this.GetData().GetName()} ({id})");
         }
 
         public int GetBoostDuration()

@@ -1,13 +1,12 @@
 ﻿using System;
-using System.IO;
 using System.Net;
 using UCS.Core;
 using UCS.Core.Checker;
 using UCS.Files.Logic;
 using UCS.Helpers;
 using UCS.Helpers.Binary;
-using System.Diagnostics;
-using UCS.Logic;
+using UCS.Core.Network;
+using UCS.Packets.Messages.Server;
 
 namespace UCS.Packets.Commands.Client
 {
@@ -45,10 +44,6 @@ namespace UCS.Packets.Commands.Client
 
         internal override void Process()
         {
-            if (Unknown1 == 1)
-            {
-                ResourcesManager.DisconnectClient(this.Device);
-            }
             if (Depth >= MaxEmbeddedDepth)
             {
                 IPEndPoint r = this.Device.Socket.RemoteEndPoint as IPEndPoint;
@@ -89,6 +84,11 @@ namespace UCS.Packets.Commands.Client
                             }
                         }
                     }
+                }
+                if (Unknown1 == 1)
+                {
+                    new OwnHomeDataMessage(Device, this.Device.Player).Send();
+                    //ResourcesManager.DisconnectClient(this.Device);
                 }
             }
         }

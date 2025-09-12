@@ -16,6 +16,10 @@ namespace UCS.Database
     {
         public long PlayerId { get; set; }
         public string Avatar { get; set; }
+        
+        public string IPAddress { get; set; }
+        public System.DateTime LastUpdateTime { get; set; }
+        public string Battles { get; set; }
         public string GameObjects { get; set; }
     }
 }

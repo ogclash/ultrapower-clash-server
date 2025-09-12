@@ -10,12 +10,8 @@ using static System.Convert;
 using static System.Configuration.ConfigurationManager;
 using UCS.Logic.DataSlots;
 using System.Threading.Tasks;
-using UCS.Core.Network;
-using UCS.Database;
 using UCS.Helpers.List;
 using UCS.Logic.AvatarStreamEntry;
-using UCS.Packets;
-using UCS.Packets.Messages.Server;
 
 namespace UCS.Logic
 {
@@ -53,9 +49,12 @@ namespace UCS.Logic
         
         internal int account_switch = 0;
         internal int old_account = 0;
+        
+        internal int attacks_won = 0;
+        internal int defenses_won = 0;
 
         // UInt
-        internal uint TutorialStepsCount = 0x0A;
+        internal uint TutorialStepsCount = 0x00;
 
         // Byte
         internal byte m_vNameChangingLeft = 0x02;
@@ -86,6 +85,12 @@ namespace UCS.Logic
         internal DateTime LastTickSaved;
         
         List<int[]> buildings = new List<int[]>();
+        public List<NpcLevel> NpcLevels = new List<NpcLevel>();
+        
+        public BattleResult battle = new BattleResult();
+        public List<long> revenged = new List<long>();
+
+        public List<JObject> battles = new List<JObject>();
         public List<AvatarStreamEntry.AvatarStreamEntry> messages = new List<AvatarStreamEntry.AvatarStreamEntry>();
 
 
@@ -111,6 +116,11 @@ namespace UCS.Logic
             QuickTrain1 = new List<DataSlot>();
             QuickTrain2 = new List<DataSlot>();
             QuickTrain3 = new List<DataSlot>();
+            for (var i = 0; i < ObjectManager.NpcLevels.Count; i++)
+            {
+                NpcLevel npcLevel = new NpcLevel(i);
+                NpcLevels.Add(npcLevel);
+            }
         }
 
         public ClientAvatar(long id, string token) : this()
@@ -283,7 +293,7 @@ namespace UCS.Logic
                 data.AddInt(1200);
                 data.AddInt(60);
                 data.AddInt(m_vScore);
-                data.AddInt(0); // Attack Wins
+                data.AddInt(attacks_won); // Attack Wins
                 data.AddInt(m_vDonated);
                 data.AddInt(0); // Attack Loses
                 data.AddInt(m_vReceived);
@@ -322,7 +332,7 @@ namespace UCS.Logic
                     data.AddInt(u.Count);
                     data.AddInt(u.UnitLevel);
                 }
-
+                
                 data.AddRange(BitConverter.GetBytes(TutorialStepsCount).Reverse());
                 for (uint i = 0; i < TutorialStepsCount; i++)
                     data.AddRange(BitConverter.GetBytes(0x01406F40 + i).Reverse());
@@ -338,12 +348,13 @@ namespace UCS.Logic
                     data.AddRange(BitConverter.GetBytes(0).Reverse());
                 }
 
+                
                 data.AddRange(BitConverter.GetBytes(ObjectManager.NpcLevels.Count).Reverse());
                 {
-                    for (var i = 17000000; i < 17000050; i++)
+                    foreach (NpcLevel npclevel in NpcLevels)
                     {
-                        data.AddRange(BitConverter.GetBytes(i).Reverse());
-                        data.AddRange(BitConverter.GetBytes(rnd.Next(3, 3)).Reverse());
+                        data.AddRange(BitConverter.GetBytes(npclevel.Id).Reverse());
+                        data.AddRange(BitConverter.GetBytes(npclevel.Stars).Reverse());
                     }
                 }
 
@@ -425,6 +436,7 @@ namespace UCS.Logic
         {
             var jsonObject = JObject.Parse(jsonString);
             this.account_switch = jsonObject["acc_switch"]?.ToObject<int>() ?? 0;
+            this.attacks_won = jsonObject["attacks_won"]?.ToObject<int>() ?? 0;
             this.account_password = jsonObject["acc_password"]?.ToObject<string>() ?? "";
             this.UserId = jsonObject["avatar_id"].ToObject<long>();
             this.HighID = jsonObject["id_high_int"].ToObject<int>();
@@ -507,6 +519,7 @@ namespace UCS.Logic
                 this.TroopRequestMessage = null;
             }
             
+
             JArray jmessages = (JArray)jsonObject["messages"] ?? new JArray();
             foreach (JObject jobject in jmessages)
             {
@@ -584,6 +597,8 @@ namespace UCS.Logic
             {
                 DataSlot ds = new DataSlot(null, 0);
                 ds.Load(unit);
+                if (ds.Value < 0)
+                    ds.Value = 0;
                 m_vUnitCount.Add(ds);
             }
 
@@ -592,6 +607,8 @@ namespace UCS.Logic
             {
                 DataSlot ds = new DataSlot(null, 0);
                 ds.Load(spell);
+                if (ds.Value < 0)
+                    ds.Value = 0;
                 m_vSpellCount.Add(ds);
             }
 
@@ -652,6 +669,12 @@ namespace UCS.Logic
                 Achievements.Add(ds);
             }
 
+            JArray jsonNpcLevels = (JArray) jsonObject["npc_levels"] ?? new JArray();
+            foreach (JObject data in jsonNpcLevels)
+            {
+                NpcLevels[(int)data["Index"]].Stars = (int)data["Stars"];
+            }
+            
             JArray jsonNpcStars = (JArray) jsonObject["npc_stars"];
             foreach (JObject data in jsonNpcStars)
             {
@@ -759,6 +782,10 @@ namespace UCS.Logic
             JArray jsonAchievementsProgressArray = new JArray();
             foreach (DataSlot achievement in Achievements)
                 jsonAchievementsProgressArray.Add(achievement.Save(new JObject()));
+            
+            JArray jsonNpcLevelProgression = new JArray();
+            foreach (NpcLevel npclevel in NpcLevels)
+                jsonNpcLevelProgression.Add(npclevel.Save(new JObject()));
 
             JArray jsonNpcStarsArray = new JArray();
             foreach (DataSlot npcLevel in NpcStars)
@@ -778,7 +805,7 @@ namespace UCS.Logic
 
             JArray jsonQuickTrain2Array = new JArray();
             foreach (DataSlot quicktrain2 in QuickTrain2)
-                jsonQuickTrain1Array.Add(quicktrain2.Save(new JObject()));
+                jsonQuickTrain2Array.Add(quicktrain2.Save(new JObject()));
 
             JArray jsonQuickTrain3Array = new JArray();
             foreach (DataSlot quicktrain3 in QuickTrain3)
@@ -854,6 +881,7 @@ namespace UCS.Logic
             {
                 {"acc_switch", this.account_switch},
                 {"acc_password", this.account_password},
+                {"attacks_won", this.attacks_won},
                 {"avatar_id", this.UserId},
                 {"id_high_int", this.HighID},
                 {"id_low_int", this.LowID},
@@ -904,6 +932,7 @@ namespace UCS.Logic
                 {"alliance_units", jsonAllianceUnitsArray},
                 {"tutorial_step", this.TutorialStepsCount},
                 {"achievements_progress", jsonAchievementsProgressArray},
+                {"npc_levels", jsonNpcLevelProgression},
                 {"npc_stars", jsonNpcStarsArray},
                 {"npc_looted_gold", jsonNpcLootedGoldArray},
                 {"npc_looted_elixir", jsonNpcLootedElixirArray},
@@ -911,9 +940,32 @@ namespace UCS.Logic
                 {"quick_train_2", jsonQuickTrain2Array},
                 {"quick_train_3", jsonQuickTrain3Array},
                 {"messages", jmessages},
+                {"battles", new JArray()},
                 {"Premium", true}
             };
 
+            return JsonConvert.SerializeObject(jsonData, Formatting.Indented);
+        }
+
+        public void loadBattlesFromJson(string jsonString)
+        {
+            var jsonObject = JObject.Parse(jsonString);
+            JArray jbattles = (JArray)jsonObject["battles"] ?? new JArray();
+            foreach (JObject jobject in jbattles)
+            {
+                battles.Add(jobject);
+            }
+        }
+
+        public string saveBattlesToJson()
+        {
+            JArray json_battles = new JArray();
+            foreach (JObject battle_json in battles)
+                json_battles.Add(battle_json);
+            Object jsonData = new JObject
+            {
+                { "battles", json_battles }
+            };
             return JsonConvert.SerializeObject(jsonData, Formatting.Indented);
         }
 

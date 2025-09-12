@@ -16,7 +16,7 @@ namespace UCS.Packets.Commands.Client
         internal override void Decode()
         {
             this.BuildingId = this.Reader.ReadInt32();
-            this.Unknown1 = this.Reader.ReadUInt32();
+            this.Reader.ReadUInt32();
         }
 
         internal override void Process()
@@ -30,23 +30,19 @@ namespace UCS.Packets.Commands.Client
 
             string name = this.Device.Player.GameObjectManager.GetGameObjectByID(BuildingId).GetData().GetName();
             
-            if (string.Equals(name, "Alliance Castle"))
-            {
-                ca.IncrementAllianceCastleLevel();
-                Building a = (Building)this.Device.Player.GameObjectManager.GetGameObjectByID(BuildingId);
-                BuildingData al = a.GetBuildingData();
-                ca.SetAllianceCastleTotalCapacity(al.GetUnitStorageCapacity(ca.GetAllianceCastleLevel()));
-            }
-            if (ca.HasEnoughResources(bd.GetBuildResource(b.GetUpgradeLevel()), bd.GetBuildCost(b.GetUpgradeLevel())))
-            {
-                Logger.Write("Unlocking Building: " + name + " (" + BuildingId + ')');
-                var rd = bd.GetBuildResource(b.GetUpgradeLevel());
+            ca.SetAllianceCastleLevel(0);
+            Building a = (Building)this.Device.Player.GameObjectManager.GetGameObjectByID(BuildingId);
+            BuildingData al = a.GetBuildingData();
+            ca.SetAllianceCastleTotalCapacity(al.GetUnitStorageCapacity(ca.GetAllianceCastleLevel()));
+            Logger.Write("Unlocking Building: " + name + " (" + BuildingId + ')');
+            b.Unlock();
+            var rd = bd.GetBuildResource(b.GetUpgradeLevel());
+            if (ca.GetResourceCount(rd)-bd.GetBuildCost(b.GetUpgradeLevel()) < 0)
+                ca.SetResourceCount(rd, 0);
+            else 
                 ca.SetResourceCount(rd, ca.GetResourceCount(rd) - bd.GetBuildCost(b.GetUpgradeLevel()));
-                b.Unlock();
-            }
         }
 
         public int BuildingId;
-        public uint Unknown1;
     }
 }

@@ -118,6 +118,11 @@ namespace UCS.Logic
 
         public List<DataSlot> GetUnits() => m_vUnitCount;
 
+        public void SetUnits(List<DataSlot> units)
+        {
+            m_vUnitCount = units;
+        }
+
         public int GetUnitUpgradeLevel(CombatItemData cd)
         {
             int result = 0;
