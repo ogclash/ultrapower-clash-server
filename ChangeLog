@@ -1,3 +1,12 @@
+2025-08-12         [RELEASE] Release of UCS-Reworked 1.1.0.0 (Phia)
+2025-08-12 f024b74 [TASK] refactor and improve code (dprssdrainbow)
+2025-08-12 9ea4c98 [TASK] fix another bug with clan-invites and make messages which are received while offline as new inbox messages and apply it only on new messsages after this update and currently only session-wise (no indicator for new messages after server restart) (dprssdrainbow)
+2025-08-12 a108e63 [TASK] fix íssue with clan-invites and add functional global reports even after game-restart (dprssdrainbow)
+2025-08-11 e609859 [TASK] fix some decoding issues (dprssdrainbow)
+2025-08-10 aee6c37 [TASK] improve code (dprssdrainbow)
+2025-08-09 f15bf63 [TASK] refactor and optimize code (dprssdrainbow)
+2025-08-09 361fec9 [TASK] change gameobjectmanager (dprssdrainbow)
+
 2025-08-09         [RELEASE] Release of UCS-Reworked 1.0.0.2 (Phia)
 2025-08-09 a5b1c18 [UPDATE] add new npc-levels so singpleplayer becomes native - refactor and improve code - update removeunitscommand to also remove alliance units and fix bugs (dprssdrainbow)
 
