@@ -1,3 +1,25 @@
+2025-09-13         [RELEASE] Release of UCS-Reworked 1.2.0.3 (Phia)
+2025-09-12 2692f4e Update Projects.sln to Ultrapower Community.sln (sophia-bln)
+2025-09-12 252f7df Delete WebAPI.PNG (sophia-bln)
+2025-09-12 db69a36 Delete Screenshot_API.PNG (sophia-bln)
+2025-09-12 8e7df10 Delete 0732_Screenshot.PNG (sophia-bln)
+2025-09-12 a48136c Update README.md (sophia-bln)
+2025-09-13 5ba5f18 [TASK] too much to describe... 
+- fixed quick-army and added spell-support to it 
+- added movewholelayout to layout-editor so no more bugs can happen 
+- added battle-log 
+- fixed bugs 
+- added ddos-protection 
+- refactored/improved code 
+- added more depth to trophy simulation and added to some extend accurate tropy gain/loss 
+- added new command: /newaccount 
+- added loss of ammo during defends to make player reload defenses. 
+- fixed reloading all defenses of a type 
+- make upgrading walls with elixir possible - added support for tutorial 
+- added campain progression 
+(dprssdrainbow)
+2025-08-12 9a19b64 Update README.md (sophia-bln)
+
 2025-08-12         [RELEASE] Release of UCS-Reworked 1.1.0.0 (Phia)
 2025-08-12 f024b74 [TASK] refactor and improve code (dprssdrainbow)
 2025-08-12 9ea4c98 [TASK] fix another bug with clan-invites and make messages which are received while offline as new inbox messages and apply it only on new messsages after this update and currently only session-wise (no indicator for new messages after server restart) (dprssdrainbow)
