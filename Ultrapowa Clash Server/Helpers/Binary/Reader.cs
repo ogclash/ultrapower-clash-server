@@ -143,6 +143,21 @@ namespace UCS.Helpers.Binary
         {
             return (long)this.ReadUInt64();
         }
+        private Int64 ReadInt64WithEndian()
+        {
+            byte[] a64 = this.ReadBytes(8);
+            if (BitConverter.IsLittleEndian)
+                Array.Reverse(a64);
+            return BitConverter.ToInt64(a64, 0);
+        }
+
+        private Int32 ReadInt32WithEndian()
+        {
+            byte[] a32 = this.ReadBytes(4);
+            if (BitConverter.IsLittleEndian)
+                Array.Reverse(a32);
+            return BitConverter.ToInt32(a32, 0);
+        }
 
         /// <summary>
         /// Reads a string from the current stream. The string is prefixed with the length, encoded as an integer seven bits at a time.

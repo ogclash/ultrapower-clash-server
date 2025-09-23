@@ -76,11 +76,34 @@ namespace UCS.Packets.Messages.Client
             this.Length = (ushort)Buffer.Length;
 
         }
+        
+        
+        public String ReadScString(BinaryReader br)
+        {
+            int stringLength = br.ReadInt32();
+            string result;
+
+            if (stringLength > -1)
+            {
+                if (stringLength > 0)
+                {
+                    byte[] astr = br.ReadBytes(stringLength);
+                    result = System.Text.Encoding.UTF8.GetString(astr);
+                }
+                else
+                {
+                    result = string.Empty;
+                }
+            }
+            else
+                result = null;
+            return result;
+        }
 
         internal override void Decode()
         {
             this.UserID = this.Reader.ReadInt64();
-            this.UserToken = Reader.ReadString();
+            this.UserToken = this.Reader.ReadString();
             this.MajorVersion = Reader.ReadInt32();
             this.ContentVersion = Reader.ReadInt32();
             this.MinorVersion = Reader.ReadInt32();
