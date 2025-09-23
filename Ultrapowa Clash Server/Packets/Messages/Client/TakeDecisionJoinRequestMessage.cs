@@ -87,6 +87,7 @@ namespace UCS.Packets.Messages.Client
                             new AvailableServerCommandMessage(requester.Client, d.Handle()).Send();
 
                             new AllianceStreamMessage(requester.Client, a).Send();
+                            requester.Avatar.SendCLanMessagesToOldClient(requester.Client);
                         }
                     }
                 }

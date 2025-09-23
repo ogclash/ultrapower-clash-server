@@ -6,6 +6,9 @@ using UCS.Helpers;
 using UCS.Logic;
 using UCS.Packets.Messages.Server;
 using UCS.Helpers.Binary;
+using UCS.Logic.StreamEntry;
+using UCS.Packets.Messages.Server.Support;
+
 namespace UCS.Packets.Messages.Client
 {
     // Packet 14113
@@ -28,7 +31,10 @@ namespace UCS.Packets.Messages.Client
             {
                 Level targetLevel = await ResourcesManager.GetPlayer(AvatarId);
                 targetLevel.Tick();
-                new VisitedHomeDataMessage(Device, targetLevel, this.Device.Player).Send();
+                if (this.Device.Player.Avatar.minorversion >= 709)
+                    new VisitedHomeDataMessage(Device, targetLevel, this.Device.Player).Send();
+                else
+                    new VisitedHomeDataForOldClients(Device, targetLevel, this.Device.Player).Send();
                 
                 Logger.Say(AvatarId.ToString() + " is visited");
                 if (this.Device.Player.Avatar.AllianceId > 0)
@@ -38,6 +44,8 @@ namespace UCS.Packets.Messages.Client
                     {
                         new AllianceStreamMessage(Device, alliance).Send();
                     }
+                    
+                    this.Device.Player.Avatar.SendCLanMessagesToOldClient(this.Device);
                 }
             }
             catch (Exception)

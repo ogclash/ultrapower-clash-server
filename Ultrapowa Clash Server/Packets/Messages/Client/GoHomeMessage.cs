@@ -9,6 +9,8 @@ using UCS.Packets.Messages.Server;
 using Newtonsoft.Json.Linq;
 using UCS.Core.LogicMath;
 using UCS.Files.Logic;
+using UCS.Logic.StreamEntry;
+using UCS.Packets.Messages.Server.Support;
 
 namespace UCS.Packets.Messages.Client
 {
@@ -52,10 +54,25 @@ namespace UCS.Packets.Messages.Client
             this.Device.PlayerState = Logic.Enums.State.LOGGED;
             this.Device.Player.Tick();
             Alliance alliance = ObjectManager.GetAlliance(this.Device.Player.Avatar.AllianceId);
-            new OwnHomeDataMessage(Device, this.Device.Player).Send();
-            if (alliance != null)
+            if (this.Device.Player.Avatar.minorversion >= 709)
             {
-                new AllianceStreamMessage(Device, alliance).Send();
+                new OwnHomeDataMessage(Device, this.Device.Player).Send();
+                if (alliance != null)
+                {
+                    new AllianceStreamMessage(Device, alliance).Send();
+                }
+            }
+            else
+            {
+                new OwnHomeDataForOldClients(this.Device, this.Device.Player).Send();
+                if (alliance != null)
+                {
+                    new AllianceStreamMessage(Device, alliance).Send();
+                }
+                if (this.Device.Player.Avatar.AllianceId > 0)
+                {
+                    this.Device.Player.Avatar.SendCLanMessagesToOldClient(this.Device);
+                }
             }
         }
 

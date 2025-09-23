@@ -6,6 +6,7 @@ using UCS.Helpers.Binary;
 using UCS.Logic;
 using UCS.Logic.Enums;
 using UCS.Packets.Messages.Server;
+using UCS.Packets.Messages.Server.Support;
 
 namespace UCS.Packets.Commands.Client
 {
@@ -66,8 +67,10 @@ namespace UCS.Packets.Commands.Client
             // Assign victim and start battle
             this.Device.AttackVictim = defender;
             defender.Tick();
-            new EnemyHomeDataMessage(this.Device, defender, this.Device.Player).Send();
-
+            if (this.Device.Player.Avatar.minorversion >= 709)
+                new EnemyHomeDataMessage(this.Device, defender, this.Device.Player).Send();
+            else
+                new EnemyHomeDataForOldClients(this.Device, defender, this.Device.Player).Send();
             // Mark search finished
             this.Device.PlayerState = State.IN_BATTLE; // Player is now officially in battle
         }

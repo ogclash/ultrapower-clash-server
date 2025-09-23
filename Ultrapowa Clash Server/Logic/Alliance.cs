@@ -70,7 +70,7 @@ namespace UCS.Logic
             m_vChatMessages.Add(message);
         }
 
-        public byte[] EncodeFullEntry()
+        public byte[] EncodeFullEntry(bool old=false)
         {
             List<byte> data = new List<byte>();
             data.AddLong(this.m_vAllianceId);
@@ -89,9 +89,12 @@ namespace UCS.Logic
             data.AddInt(this.m_vAllianceExperience);
             data.AddInt(this.m_vAllianceLevel);
             data.AddInt(0);
-            data.AddInt(0);
-            data.Add(this.m_vWarLogPublic);
-            data.Add(this.m_vFriendlyWar);
+            if (!old)
+            {
+                data.AddInt(0);
+                data.Add(this.m_vWarLogPublic);
+                data.Add(this.m_vFriendlyWar);
+            }
             return data.ToArray();
         }
 

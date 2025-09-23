@@ -3,6 +3,7 @@ using UCS.Core;
 using UCS.Core.Network;
 using UCS.Logic;
 using UCS.Packets.Messages.Server;
+using UCS.Packets.Messages.Server.Support;
 
 namespace UCS.Packets.GameOpCommands
 {
@@ -47,6 +48,10 @@ namespace UCS.Packets.GameOpCommands
                         _MSG.Message = "Added " + Convert.ToInt32(m_vArgs[1]) + " gem(s)";
                         _MSG.Send();
                     }
+                    if (level.Avatar.minorversion >= 709)
+                        new OwnHomeDataMessage(level.Client, level).Send();
+                    else
+                        new OwnHomeDataForOldClients(level.Client, level).Send();
                 }
                 catch (Exception)
                 {

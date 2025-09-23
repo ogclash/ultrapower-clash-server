@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
+using UCS.Core.Network;
 using UCS.Helpers.List;
 using UCS.Logic;
 using UCS.Logic.Enums;
+using UCS.Packets.Messages.Server.Support;
 
 namespace UCS.Packets.Messages.Server
 {
@@ -20,6 +22,11 @@ namespace UCS.Packets.Messages.Server
 
         internal override async void Encode()
         {
+            if (this.Device.Player.Avatar.minorversion < 709)
+            {
+                new OwnHomeDataForOldClients(this.Device, this.Player).Send();
+                return;
+            }
             try
             {
                 long now = DateTimeOffset.UtcNow.ToUnixTimeSeconds();

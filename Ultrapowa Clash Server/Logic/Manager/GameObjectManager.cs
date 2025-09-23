@@ -77,29 +77,38 @@ namespace UCS.Logic.Manager
             var jsonBuildings = (JArray) jsonObject["buildings"];
             foreach (JObject jsonBuilding in jsonBuildings)
             {
-                var bd = (BuildingData)CSVManager.DataTables.GetDataById(jsonBuilding["data"].ToObject<int>());
-                var b = new Building(bd, m_vLevel);
-                AddGameObject(b);
-                b.Load(jsonBuilding);
+                try
+                {
+                    var bd = (BuildingData)CSVManager.DataTables.GetDataById(jsonBuilding["data"].ToObject<int>());
+                    var b = new Building(bd, m_vLevel);
+                    AddGameObject(b);
+                    b.Load(jsonBuilding);
+                } catch(Exception) {}
             }
 
             var jsonTraps = (JArray) jsonObject["traps"];
             foreach (JObject jsonTrap in jsonTraps)
             {
-                var td = (TrapData)CSVManager.DataTables.GetDataById(jsonTrap["data"].ToObject<int>());
-                var t = new Trap(td, m_vLevel);
-                AddGameObject(t);
-                t.Load(jsonTrap);
+                try
+                {
+                    var td = (TrapData)CSVManager.DataTables.GetDataById(jsonTrap["data"].ToObject<int>());
+                    var t = new Trap(td, m_vLevel);
+                    AddGameObject(t);
+                    t.Load(jsonTrap);
+                } catch(Exception) {}
             }
 
             var jsonDecos = (JArray) jsonObject["decos"];
 
             foreach (JObject jsonDeco in jsonDecos)
             {
-                var dd = (DecoData)CSVManager.DataTables.GetDataById(jsonDeco["data"].ToObject<int>());
-                var d = new Deco(dd, m_vLevel);
-                AddGameObject(d);
-                d.Load(jsonDeco);
+                try
+                {
+                    var dd = (DecoData)CSVManager.DataTables.GetDataById(jsonDeco["data"].ToObject<int>());
+                    var d = new Deco(dd, m_vLevel);
+                    AddGameObject(d);
+                    d.Load(jsonDeco);
+                } catch(Exception) {}
             }
 
             if (jsonObject["obstacles"] != null)
@@ -107,10 +116,13 @@ namespace UCS.Logic.Manager
                 JArray jsonObstacles = (JArray)jsonObject["obstacles"];
                 foreach (JObject jsonObstacle in jsonObstacles)
                 {
-                    var od = (ObstacleData)CSVManager.DataTables.GetDataById(jsonObstacle["data"].ToObject<int>());
-                    var o = new Obstacle(od, m_vLevel);
-                    AddGameObject(o);
-                    o.Load(jsonObstacle);
+                    try
+                    {
+                        var od = (ObstacleData)CSVManager.DataTables.GetDataById(jsonObstacle["data"].ToObject<int>());
+                        var o = new Obstacle(od, m_vLevel);
+                        AddGameObject(o);
+                        o.Load(jsonObstacle);
+                    } catch(Exception) {}
                 }
             }
 			m_vObstacleManager.Load(jsonObject);
@@ -135,7 +147,6 @@ namespace UCS.Logic.Manager
         {
             m_vComponentManager.RemoveGameObjectReferences(go);
         }
-
         public JObject Save(int challange = 0, bool reload = false)
         {
             ClientAvatar pl = m_vLevel.Avatar;

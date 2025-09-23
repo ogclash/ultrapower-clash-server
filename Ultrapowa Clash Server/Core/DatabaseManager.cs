@@ -94,9 +94,11 @@ namespace UCS.Core
                                 account = new Level();
                                 account.Avatar.LoadFromJSON(p.Avatar);
                                 account.LoadFromJSON(p.GameObjects);
-                                Redis.Players.StringSet(playerId.ToString(), p.Avatar + "#:#:#:#" + p.GameObjects, TimeSpan.FromHours(4));
+                                Redis.Players.StringSet(playerId.ToString(), p.Avatar + "#:#:#:#" + p.GameObjects,
+                                    TimeSpan.FromHours(4));
                             }
                         }
+
                         ;
                     }
                 }
@@ -116,8 +118,15 @@ namespace UCS.Core
                         }
                     }
                 }
+
                 return account;
-            } catch (Exception) { return null; }
+            }
+            catch (Exception ex)
+            {
+                if (Constants.DebugMode)
+                    Logger.Write("Failed loading account because of following exception: " + ex);
+                return null;
+            }
         }
         public async Task<List<Level>> GetAllAccountsFromDb()
         {
@@ -144,12 +153,19 @@ namespace UCS.Core
                                 account.LoadFromJSON(p.GameObjects);
                                 accounts.Add(account);
                             }
-                            catch (Exception)
+                            catch (Exception ex)
                             {
                                 Logger.Say("User with id: " + account.Avatar.UserId + " failed to load");
+                                if (Constants.DebugMode)
+                                    Logger.Say(" because of following reason: " +ex);
                             }
                         }
-                    } catch (Exception) { }
+                    }
+                    catch (Exception ex)
+                    {
+                        if (Constants.DebugMode)
+                            Logger.Write("Failed loading account because of following exception: " + ex);
+                    }
                 }
             }
             return accounts;

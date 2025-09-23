@@ -7,6 +7,7 @@ using UCS.Helpers;
 using UCS.Helpers.Binary;
 using UCS.Core.Network;
 using UCS.Packets.Messages.Server;
+using UCS.Packets.Messages.Server.Support;
 
 namespace UCS.Packets.Commands.Client
 {
@@ -87,7 +88,10 @@ namespace UCS.Packets.Commands.Client
                 }
                 if (Unknown1 == 1)
                 {
-                    new OwnHomeDataMessage(Device, this.Device.Player).Send();
+                    if (Device.Player.Avatar.minorversion >= 709)
+                        new OwnHomeDataMessage(Device, this.Device.Player).Send();
+                    else
+                        new OwnHomeDataForOldClients(Device, this.Device.Player).Send();
                     //ResourcesManager.DisconnectClient(this.Device);
                 }
             }

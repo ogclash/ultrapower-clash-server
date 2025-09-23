@@ -14,7 +14,9 @@ using UCS.Helpers.Binary;
 using UCS.Logic;
 using UCS.Logic.AvatarStreamEntry;
 using UCS.Logic.Enums;
+using UCS.Logic.StreamEntry;
 using UCS.Packets.Messages.Server;
+using UCS.Packets.Messages.Server.Support;
 using UCS.Utilities.Blake2B;
 using UCS.Utilities.Sodium;
 
@@ -272,6 +274,8 @@ namespace UCS.Packets.Messages.Client
                 ServerBuild = 709,
                 ContentVersion = 16
             };
+            this.Device.Player.Avatar.mayorversion = this.MajorVersion;
+            this.Device.Player.Avatar.minorversion = this.MinorVersion;
             message.Send();
 
             if (level.Avatar.AllianceId > 0)
@@ -290,7 +294,13 @@ namespace UCS.Packets.Messages.Client
                 }
             }
             new AvatarStreamMessage(this.Device, true).Send();
-            new OwnHomeDataMessage(this.Device, level).Send();
+            if (this.MinorVersion < 709)
+            {
+                new OwnHomeDataForOldClients(this.Device, level).Send();
+                level.Avatar.SendCLanMessagesToOldClient(this.Device);
+            }
+            else
+                new OwnHomeDataMessage(this.Device, level).Send();
             new BookmarkMessage(this.Device).Send();
 
             foreach (AvatarStreamEntry amessage in Device.Player.Avatar.messages)
