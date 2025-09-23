@@ -8,6 +8,7 @@ using UCS.Logic;
 using UCS.Logic.StreamEntry;
 using UCS.Packets.Commands.Server;
 using UCS.Packets.Messages.Server;
+using UCS.Packets.Messages.Server.Support;
 
 namespace UCS.Packets.Messages.Client
 {
@@ -103,7 +104,10 @@ namespace UCS.Packets.Messages.Client
                                 }
 
                             }
-                            new OwnHomeDataMessage(this.Device, this.Device.Player).Send();
+                            if (this.Device.Player.Avatar.minorversion >= 709)
+                                new OwnHomeDataMessage(this.Device, this.Device.Player).Send();
+                            else
+                                new OwnHomeDataForOldClients(this.Device, this.Device.Player).Send();
                         }
                         else
                         {

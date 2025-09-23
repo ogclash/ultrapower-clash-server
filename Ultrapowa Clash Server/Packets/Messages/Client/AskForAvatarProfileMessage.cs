@@ -6,6 +6,7 @@ using UCS.Helpers;
 using UCS.Helpers.Binary;
 using UCS.Logic;
 using UCS.Packets.Messages.Server;
+using UCS.Packets.Messages.Server.Support;
 
 namespace UCS.Packets.Messages.Client
 {
@@ -35,7 +36,10 @@ namespace UCS.Packets.Messages.Client
                 if (targetLevel != null)
                 {
                     targetLevel.Tick();
-                    new AvatarProfileMessage(this.Device) { Level = targetLevel }.Send();
+                    if (this.Device.Player.Avatar.minorversion >= 709)
+                        new AvatarProfileMessage(this.Device) { Level = targetLevel }.Send();
+                    else
+                        new AvatarProfileForOldClients(this.Device, targetLevel).Send();
                 }
             }
             catch (Exception)

@@ -2,6 +2,7 @@ using UCS.Core;
 using UCS.Core.Network;
 using UCS.Logic;
 using UCS.Packets.Messages.Server;
+using UCS.Packets.Messages.Server.Support;
 
 namespace UCS.Packets.GameOpCommands
 {
@@ -21,7 +22,10 @@ namespace UCS.Packets.GameOpCommands
                 p.SetResourceCount(CSVManager.DataTables.GetResourceByName("Elixir"), 999999999);
                 p.SetResourceCount(CSVManager.DataTables.GetResourceByName("DarkElixir"), 999999999);
                 p.m_vCurrentGems = 999999999;
-                Processor.Send(new OwnHomeDataMessage(level.Client, level));
+                if (level.Avatar.minorversion >= 709)
+                    new OwnHomeDataMessage(level.Client, level).Send();
+                else
+                    new OwnHomeDataForOldClients(level.Client, level).Send();
             }
             else
                 SendCommandFailedMessage(level.Client);

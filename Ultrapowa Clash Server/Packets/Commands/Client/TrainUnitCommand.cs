@@ -24,7 +24,8 @@ namespace UCS.Packets.Commands.Client
             this.UnitType = this.Reader.ReadInt32();
             this.Count    = this.Reader.ReadInt32();
             uint t3 = this.Reader.ReadUInt32();
-            Tick     = this.Reader.ReadInt32();
+            if (this.Device.Player.Avatar.minorversion >= 709)
+                Tick  = this.Reader.ReadInt32();
         }
 
         public int Count;

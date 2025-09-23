@@ -6,6 +6,7 @@ using UCS.Helpers.Binary;
 using UCS.Logic;
 using UCS.Logic.Enums;
 using UCS.Packets.Messages.Server;
+using UCS.Packets.Messages.Server.Support;
 
 namespace UCS.Packets.Messages.Client
 {
@@ -36,7 +37,10 @@ namespace UCS.Packets.Messages.Client
                 if (LevelId > 0 || LevelId < 1000000)
                 {
                     this.Device.PlayerState = State.IN_BATTLE;
-                    new NpcDataMessage(Device, this.Device.Player, this).Send();
+                    if (this.Device.Player.Avatar.minorversion >= 709)
+                        new NpcDataMessage(Device, this.Device.Player, this).Send();
+                    else
+                        new NpcDataForOldClients(Device, this.Device.Player, this).Send();
                 }
 
                 if (LevelId == 17000001 && this.Device.Player.Avatar.TutorialStepsCount < 10)

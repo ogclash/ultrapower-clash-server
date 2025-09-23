@@ -304,6 +304,12 @@
     <Compile Include="Packets\Messages\Server\DeviceAlreadyBoundMessage.cs" />
     <Compile Include="Packets\Messages\Server\Friend_Request_Failed_Message.cs" />
     <Compile Include="Packets\Messages\Server\RetributionDataMessage.cs" />
+    <Compile Include="Packets\Messages\Server\Support\AllianceDataForOldClients.cs" />
+    <Compile Include="Packets\Messages\Server\Support\AvatarProfileForOldClients.cs" />
+    <Compile Include="Packets\Messages\Server\Support\EnemyHomeDataForOldClients.cs" />
+    <Compile Include="Packets\Messages\Server\Support\NpcDataForOldClients.cs" />
+    <Compile Include="Packets\Messages\Server\Support\OwnHomeDataForOldClients.cs" />
+    <Compile Include="Packets\Messages\Server\Support\VisitedHomeDataForOldClients.cs" />
     <Compile Include="Utilities\Blake2B\Blake2BBase.cs" />
     <Compile Include="Utilities\Blake2B\Blake2BBuilder.cs" />
     <Compile Include="Utilities\Blake2B\Blake2BConfig.cs" />

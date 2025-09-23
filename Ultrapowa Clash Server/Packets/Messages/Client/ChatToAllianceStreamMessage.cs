@@ -39,10 +39,6 @@ namespace UCS.Packets.Messages.Client
                                     player += " (" + this.Device.Player.Avatar.UserId + ", " +
                                               this.Device.Player.Avatar.AvatarName + ")";
                                 ((GameOpCommand)obj).Execute(this.Device.Player);
-                                if (m_vChatMessage.Split(' ')[0] == "/addgems")
-                                {
-                                    new OwnHomeDataMessage(Device, this.Device.Player).Send();
-                                }
                             }
                         }
                         else

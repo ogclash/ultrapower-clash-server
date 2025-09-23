@@ -61,6 +61,7 @@ namespace UCS.Packets.Messages.Client
 
                         new AllianceStreamMessage(Device, alliance).Send();
 
+                        this.Device.Player.Avatar.SendCLanMessagesToOldClient(this.Device);
                         foreach (AllianceMemberEntry a in alliance.GetAllianceMembers())
                         {
                             Level l = await ResourcesManager.GetPlayer(a.AvatarId);

@@ -10,8 +10,12 @@ using static System.Convert;
 using static System.Configuration.ConfigurationManager;
 using UCS.Logic.DataSlots;
 using System.Threading.Tasks;
+using UCS.Core.Network;
 using UCS.Helpers.List;
 using UCS.Logic.AvatarStreamEntry;
+using UCS.Logic.StreamEntry;
+using UCS.Packets;
+using UCS.Packets.Messages.Server;
 
 namespace UCS.Logic
 {
@@ -23,6 +27,8 @@ namespace UCS.Logic
         internal long UserId;
 
         // Int
+        internal int mayorversion;
+        internal int minorversion;
         internal int HighID;
         internal int LowID;
         internal int m_vAvatarLevel;
@@ -210,6 +216,150 @@ namespace UCS.Logic
         public void setHeroState(List<DataSlot> heroState)
         {
             m_vHeroState = heroState;
+        }
+
+        public void SendCLanMessagesToOldClient(Device client)
+        {
+            if (this.AllianceId > 0 && this.minorversion < 709)
+            {
+                Alliance alliance = ObjectManager.GetAlliance(this.AllianceId);
+                foreach (StreamEntry.StreamEntry test in alliance.m_vChatMessages)
+                {
+                    try
+                    {
+                        if (test.m_vUnitDonation != null)
+                        {
+                            TroopRequestStreamEntry tr = (TroopRequestStreamEntry)test;
+                            new AllianceStreamEntryMessage(client) { StreamEntry = tr }.Send();
+                        } else if (test.m_vJudge != "")
+                        {
+                            InvitationStreamEntry ie = (InvitationStreamEntry)test;
+                            new AllianceStreamEntryMessage(client) { StreamEntry = ie }.Send();
+                        }
+                        else
+                        {
+                            ChatStreamEntry cm = (ChatStreamEntry)test;
+                            if (cm.Message != null)
+                                new AllianceStreamEntryMessage(client) { StreamEntry = cm }.Send();
+                        }
+                    } catch(Exception) {}
+                }
+            }
+        }
+
+        public async Task<byte[]> EncodeForOldVersion()
+        {
+            var data = new List<byte>();
+
+            data.AddInt(0);
+            data.AddLong(UserId);
+            data.AddLong(UserId);
+            if (AllianceId != 0)
+            {
+                data.Add(1);
+                data.AddLong(AllianceId);
+                var alliance = ObjectManager.GetAlliance(AllianceId);
+                data.AddString(alliance.m_vAllianceName);
+                data.AddInt(alliance.m_vAllianceBadgeData);
+                data.AddInt(await GetAllianceRole());
+                data.AddInt(alliance.m_vAllianceLevel);
+            }
+            data.Add(0);
+            //7.156
+            data.AddInt(0); //1
+            data.AddInt(0); //2
+            data.AddInt(0); //3
+            data.AddInt(0); //4
+            data.AddInt(0); //5
+            data.AddInt(0); //6
+            data.AddInt(0); //7
+            data.AddInt(0); //8
+            data.AddInt(0); //9
+            data.AddInt(0); //10
+            data.AddInt(1); //11
+
+            data.AddInt(m_vLeagueId);
+
+            data.AddInt(GetAllianceCastleLevel());
+            data.AddInt(GetAllianceCastleTotalCapacity());
+            data.AddInt(GetAllianceCastleUsedCapacity());
+            data.AddInt(0);
+            data.AddInt(0);
+            data.AddInt(m_vTownHallLevel);
+            data.AddString(AvatarName);
+            data.AddInt(-1);
+            data.AddInt(m_vAvatarLevel);
+            data.AddInt(m_vExperience);
+            data.AddInt(m_vCurrentGems);
+            data.AddInt(m_vCurrentGems);
+            data.AddInt(1200);
+            data.AddInt(60);
+            data.AddInt(m_vScore);
+
+            data.AddInt(100); //Attack win
+            data.AddInt(0);
+            data.AddInt(100);
+            data.AddInt(0);
+
+            data.AddInt(0);
+            data.AddInt(0);
+            data.AddInt(0);
+            data.Add(1);
+            data.AddLong(0);
+
+            data.Add(m_vnameChosenByUser);
+
+            data.AddInt(0);
+            data.AddInt(0);
+            data.AddInt(0);
+            data.AddInt(1);
+
+            data.AddInt(1);
+            data.AddInt(0);
+
+            data.AddDataSlots(GetResourceCaps());
+            data.AddDataSlots(GetResources());
+            data.AddDataSlots(GetUnits());
+            data.AddDataSlots(GetSpells());
+            data.AddDataSlots(m_vUnitUpgradeLevel);
+            data.AddDataSlots(m_vSpellUpgradeLevel);
+            data.AddDataSlots(m_vHeroUpgradeLevel);
+            data.AddDataSlots(m_vHeroHealth);
+            data.AddDataSlots(m_vHeroState);
+
+            data.AddRange(BitConverter.GetBytes(AllianceUnits.Count).Reverse());
+            foreach (DonationSlot u in AllianceUnits)
+            {
+                data.AddInt(u.ID);
+                data.AddInt(u.Count);
+                data.AddInt(u.UnitLevel);
+            }
+
+            data.AddRange(BitConverter.GetBytes(TutorialStepsCount).Reverse());
+            for (uint i = 0; i < TutorialStepsCount; i++)
+                data.AddRange(BitConverter.GetBytes(0x01406F40 + i).Reverse());
+
+            data.AddRange(BitConverter.GetBytes(Achievements.Count).Reverse());
+            foreach (var a in Achievements)
+                data.AddRange(BitConverter.GetBytes(a.Data.GetGlobalID()).Reverse());
+
+            data.AddRange(BitConverter.GetBytes(Achievements.Count).Reverse());
+            foreach (var a in Achievements)
+            {
+                data.AddRange(BitConverter.GetBytes(a.Data.GetGlobalID()).Reverse());
+                data.AddRange(BitConverter.GetBytes(0).Reverse());
+            }
+
+            data.AddDataSlots(NpcStars);
+            data.AddDataSlots(NpcLootedGold);
+            data.AddDataSlots(NpcLootedElixir);
+
+            data.AddDataSlots(new List<DataSlot>());
+            data.AddDataSlots(new List<DataSlot>());
+            data.AddDataSlots(new List<DataSlot>());
+            data.AddDataSlots(new List<DataSlot>());
+
+            return data.ToArray();
         }
 
         public async Task<byte[]> Encode()
