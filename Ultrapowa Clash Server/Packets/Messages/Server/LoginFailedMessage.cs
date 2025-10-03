@@ -1,8 +1,6 @@
-using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
-using System.Text;
 using UCS.Core.Crypto;
 using UCS.Helpers.List;
 using UCS.Logic.Enums;

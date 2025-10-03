@@ -1,7 +1,4 @@
-using System;
-using System.IO;
 using UCS.Helpers.Binary;
-using UCS.Logic;
 
 namespace UCS.Packets.Messages.Client
 {

@@ -1,5 +1,4 @@
-﻿
-namespace UCS.Core.Events
+﻿namespace UCS.Core.Events
 {
 
     using System;

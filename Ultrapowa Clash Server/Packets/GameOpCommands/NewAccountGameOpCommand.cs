@@ -1,10 +1,6 @@
-using System;
 using UCS.Core;
 using UCS.Core.Network;
-using UCS.Core.Threading;
-using UCS.Helpers;
 using UCS.Logic;
-using UCS.Logic.AvatarStreamEntry;
 using UCS.Packets.Messages.Server;
 
 namespace UCS.Packets.GameOpCommands

@@ -1,8 +1,6 @@
 ﻿using System;
-using System.IO;
 using UCS.Core;
 using UCS.Core.Network;
-using UCS.Helpers;
 using UCS.Helpers.Binary;
 using UCS.Logic;
 using UCS.Packets.Messages.Server;
@@ -32,7 +30,7 @@ namespace UCS.Packets.Messages.Client
             try
             {
                 Level targetLevel = await ResourcesManager.GetPlayer(m_vAvatarId);
-                Logger.Say(m_vAvatarId.ToString() + " is reviewed");
+                Logger.Say($"{this.Device.Player.Avatar.AvatarName} [{this.Device.Player.Avatar.UserId}] reviews {targetLevel.Avatar.AvatarName} [{targetLevel.Avatar.UserId}]");
                 if (targetLevel != null)
                 {
                     targetLevel.Tick();

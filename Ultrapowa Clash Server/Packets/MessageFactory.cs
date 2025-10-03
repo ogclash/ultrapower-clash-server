@@ -1,9 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
-using UCS.Core;
-using UCS.Helpers;
-using UCS.Packets.Messages.Client;
 using UCS.Packets.Messages.Client;
 
 namespace UCS.Packets

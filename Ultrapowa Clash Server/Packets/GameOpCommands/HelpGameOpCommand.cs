@@ -1,9 +1,5 @@
-﻿using System;
-using UCS.Core;
-using UCS.Core.Network;
-using UCS.Core.Threading;
+﻿using UCS.Core.Network;
 using UCS.Logic;
-using UCS.Logic.AvatarStreamEntry;
 using UCS.Packets.Messages.Server;
 
 namespace UCS.Packets.GameOpCommands
@@ -37,6 +33,8 @@ namespace UCS.Packets.GameOpCommands
                                    "\n/accinfo" +
                                    "\n/rename " +
                                    "\n/resetacc" +
+                                   "\n/clearbattles" +
+                                   "\n/clearinbox" +
                                    "\n/setpassword <password>" +
                                    "\n/switchacc <id> <password>" +
                                    "\n/addgems <amount>";

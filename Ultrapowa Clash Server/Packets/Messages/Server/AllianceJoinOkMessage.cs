@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace UCS.Packets.Messages.Server
+﻿namespace UCS.Packets.Messages.Server
 {
     // Packet 24303
     internal class AllianceJoinOkMessage : Message

@@ -1,6 +1,4 @@
 ﻿using System;
-using System.IO;
-using System.Text;
 using UCS.Core;
 using UCS.Core.Network;
 using UCS.Helpers.Binary;
@@ -8,7 +6,6 @@ using UCS.Logic;
 using UCS.Logic.StreamEntry;
 using UCS.Packets.Messages.Server;
 using  UCS.Packets.Commands.Server;
-using System.Threading.Tasks;
 
 namespace UCS.Packets.Messages.Client
 {

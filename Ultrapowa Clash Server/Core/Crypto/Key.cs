@@ -1,7 +1,4 @@
-﻿using System;
-using UCS.Utilities.Sodium;
-
-namespace UCS.Core.Crypto
+﻿namespace UCS.Core.Crypto
 {
     public static class Key
     {

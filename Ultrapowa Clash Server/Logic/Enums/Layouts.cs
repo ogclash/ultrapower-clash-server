@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace UCS.Logic.Enums
+﻿namespace UCS.Logic.Enums
 {
     class Layouts 
     {

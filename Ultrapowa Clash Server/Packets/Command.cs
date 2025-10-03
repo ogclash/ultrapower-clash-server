@@ -1,13 +1,11 @@
-using System;
 using System.Collections.Generic;
-using UCS.Helpers;
 using UCS.Helpers.Binary;
-using UCS.Logic;
 
 namespace UCS.Packets
 {
     internal class Command
     {
+        internal string CommandName = "Command";
         public const int MaxEmbeddedDepth = 10;
 
         internal int Depth;
@@ -45,6 +43,21 @@ namespace UCS.Packets
             this.Identifier = Identifier;
             this.Device = Device;
             this.Reader = Reader;
+        }
+
+        internal virtual void Load()
+        {
+            
+        }
+        
+        internal string GetName()
+        {
+            return CommandName;
+        }
+        
+        internal void SetName(string name)
+        {
+            CommandName = name;
         }
 
         /// <summary>

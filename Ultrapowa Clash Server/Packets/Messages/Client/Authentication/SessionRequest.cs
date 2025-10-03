@@ -1,12 +1,5 @@
-﻿using System;
-using System.Configuration;
-using System.IO;
-using UCS.Core;
-using UCS.Core.Network;
-using UCS.Core.Settings;
-using UCS.Helpers;
+﻿using UCS.Core.Network;
 using UCS.Helpers.Binary;
-using UCS.Logic;
 using UCS.Logic.Enums;
 using UCS.Packets.Messages.Server;
 

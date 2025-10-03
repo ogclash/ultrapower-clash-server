@@ -34,6 +34,8 @@ namespace UCS.Packets
                 m_vCommands.Add("/newaccount", typeof(NewAccountGameOpCommand));
                 m_vCommands.Add("/setpassword", typeof(SetPasswordGameOpCommand));
                 m_vCommands.Add("/resetacc", typeof(ResetAccGameOpCommand));
+                m_vCommands.Add("/clearinbox", typeof(ClearInboxGameOpCommand));
+                m_vCommands.Add("/clearbattles", typeof(ClearBattleLogGameOpCommand));
                 m_vCommands.Add("/accinfo", typeof(AccountInformationGameOpCommand));
             } catch (Exception) {}
         }

@@ -1,7 +1,6 @@
 using System;
 using System.Diagnostics;
 using System.Net;
-using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading;
 using UCS.Core;
@@ -96,7 +95,7 @@ namespace UCS
             Resources.Initialize();
             ResourcesManager.loadAllResources();
             Say("Resources were successfully loaded");
-            Say($"IP Address: {Dns.GetHostByName(Dns.GetHostName()).AddressList[0]}");
+            Say($"IP Address: {Dns.GetHostByName(Dns.GetHostName()).AddressList[0]}\n");
         }
         
 

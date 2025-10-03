@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using UCS.Core;
 using UCS.Core.Network;
 using UCS.Helpers.Binary;

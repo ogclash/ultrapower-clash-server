@@ -54,7 +54,7 @@ namespace UCS.Packets.Commands.Client
             Level defender = ObjectManager.GetRandomOfflinePlayer();
 
             // Search loop
-            while (Device.Player.Avatar.UserId == defender.Avatar.UserId || defender.Avatar.GetScore() + 1000 < Device.Player.Avatar.GetScore())
+            while (Device.Player.Avatar.UserId == defender.Avatar.UserId || defender.Avatar.GetScore() + 720 < Device.Player.Avatar.GetScore())
             {
                 defender = ObjectManager.GetRandomOfflinePlayer();
                 await Task.Delay(1); 

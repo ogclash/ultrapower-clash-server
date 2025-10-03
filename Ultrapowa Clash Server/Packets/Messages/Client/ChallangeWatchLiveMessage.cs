@@ -1,12 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UCS.Core.Network;
 using UCS.Helpers.Binary;
-using UCS.Logic;
-using UCS.Packets;
 using UCS.Packets.Messages.Server;
 
 namespace UCS.Packets.Messages.Client

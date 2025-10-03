@@ -1,7 +1,5 @@
-using System.Threading.Tasks;
 using UCS.Core;
 using UCS.Core.Network;
-using UCS.Core.Settings;
 using UCS.Logic;
 using UCS.Packets.Messages.Server;
 

@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using UCS.Helpers;
-using UCS.Helpers.List;
+﻿using UCS.Helpers.List;
 
 namespace UCS.Packets.Messages.Server
 {

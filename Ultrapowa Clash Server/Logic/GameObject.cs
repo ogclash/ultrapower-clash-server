@@ -2,9 +2,6 @@
 using System.Windows;
 using Newtonsoft.Json.Linq;
 using UCS.Files.Logic;
-using System.Threading.Tasks;
-using UCS.Logic.Enums;
-using System;
 
 namespace UCS.Logic
 {
@@ -57,7 +54,7 @@ namespace UCS.Logic
             }
         }
 
-        public Component GetComponent(int index, bool test)
+        public Component GetComponent(int index, bool test = false)
         {
             Component result = null;
             if (!test || m_vComponents[index].IsEnabled())

@@ -14,6 +14,8 @@ namespace UCS.Packets.Commands.Client
         {
             this.BuildingID = this.Reader.ReadInt32();
             this.layoutId = Reader.ReadInt32();
+            if (Reader.BaseStream.Length-Reader.BaseStream.Position > 0)
+                this.Reader.ReadBytes((int)(Reader.BaseStream.Length - Reader.BaseStream.Position));
         }
 
         internal override void Process()

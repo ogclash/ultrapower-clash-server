@@ -340,19 +340,46 @@ namespace UCS.Logic.Manager
             return jsonData;
         }
 
-        public void Tick()
+        public void Tick(bool offline = false)
         {
-            m_vComponentManager.Tick();
-            m_vObstacleManager.Tick();
-            foreach (var l in m_vGameObjects)
+            if (offline)
             {
-                foreach (var go in l)
-                    go.Tick();
+                foreach (var go in m_vGameObjects[0] ?? new List<GameObject>())
+                {
+                    var b = go as Building;
+                    if (b != null && 
+                        b.GetData()?.GetGlobalID() == 1000020 && 
+                        b.GetBuildingData()?.BuildingClass?.ToLower() == "army")
+                    {
+                        var c = b.GetComponent(3) as UnitProductionComponent;
+                        if (c != null && c.GetSlotCount() > 0 && !c.IsWaitingForSpace())
+                            c.OfflineTick();
+                        break;
+                    }
+                }
+
+                var go2 = GetGameObjectByID(500000010) as Building;
+                if (go2 != null && go2.GetBuildingData()?.BuildingClass?.ToLower() == "army")
+                {
+                    var c2 = go2.GetComponent(3) as UnitProductionComponent;
+                    if (c2 != null && c2.GetSlotCount() > 0 && !c2.IsWaitingForSpace())
+                        c2.OfflineTick();
+                }
             }
-            foreach (var g in new List<GameObject>(m_vGameObjectRemoveList))
+            else
             {
-                RemoveGameObjectTotally(g);
-                m_vGameObjectRemoveList.Remove(g);
+                m_vComponentManager.Tick();
+                m_vObstacleManager.Tick();
+                foreach (var l in m_vGameObjects)
+                {
+                    foreach (var go in l)
+                        go.Tick();
+                }
+                foreach (var g in new List<GameObject>(m_vGameObjectRemoveList))
+                {
+                    RemoveGameObjectTotally(g);
+                    m_vGameObjectRemoveList.Remove(g);
+                }
             }
         }
 

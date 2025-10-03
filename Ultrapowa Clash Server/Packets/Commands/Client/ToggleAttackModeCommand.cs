@@ -1,6 +1,5 @@
 ﻿using UCS.Helpers.Binary;
 using UCS.Logic;
-using UCS.Logic.Manager;
 
 namespace UCS.Packets.Commands.Client
 {

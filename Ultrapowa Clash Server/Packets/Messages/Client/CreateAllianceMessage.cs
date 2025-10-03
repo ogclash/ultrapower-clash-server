@@ -1,10 +1,7 @@
-using System;
-using System.IO;
 using UCS.Core;
 using UCS.Core.Network;
 using UCS.Helpers.Binary;
 using UCS.Logic;
-using UCS.Packets.Commands.Client;
 using UCS.Packets.Messages.Server;
 using UCS.Packets.Commands.Server;
 

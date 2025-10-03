@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using UCS.Core.Settings;
 using UCS.Files;
 using UCS.Logic;
@@ -22,6 +23,7 @@ namespace UCS.Core
         public static bool m_vTimerCanceled;
         public static Timer TimerReferenceRedis;
         public static Timer TimerReferenceMysql;
+        public static Timer TimerReferenceOfflineTick;
         public static Dictionary<int, string> NpcLevels;
         public static Dictionary<int, string> m_vRandomBases;
         public static FingerPrint FingerPrint;
@@ -56,6 +58,7 @@ namespace UCS.Core
             {
                 TimerReferenceRedis = new Timer(SaveRedis, null, 10000, 40000);
                 TimerReferenceMysql = new Timer(SaveMysql, null, 40000, 27000);
+                TimerReferenceOfflineTick = new Timer(StartOfflineTick, null, 10000, 1000);
             }
             Say($"UCS Database has been succesfully loaded. ({Convert.ToInt32(MaxAllianceID + MaxPlayerID)} Tables)");
         }
@@ -63,6 +66,26 @@ namespace UCS.Core
         public static DatabaseManager getDatabaseManager()
         {
             return m_vDatabase;
+        }
+        
+        private async void OfflineTick(List<Level> avatars)
+        {
+            foreach (Level pl in avatars)
+            {
+                try
+                {
+                    await Task.Run(() => pl.Tick(true));
+                }
+                catch (Exception ex)
+                {
+                    Logger.Write($"RunTime-Error: "+ex);
+                }
+            }
+        }
+
+        private void StartOfflineTick(object state)
+        {
+            OfflineTick(ResourcesManager.m_vInMemoryLevels.Values.ToList());
         }
 
         private static void SaveRedis(object state)

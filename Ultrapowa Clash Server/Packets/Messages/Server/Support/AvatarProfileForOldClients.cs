@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using Newtonsoft.Json;
 using UCS.Helpers.List;
 using UCS.Logic;

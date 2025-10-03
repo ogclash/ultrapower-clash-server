@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.IO;
 using UCS.Core;
 using UCS.Files.Logic;
 using UCS.Helpers.Binary;

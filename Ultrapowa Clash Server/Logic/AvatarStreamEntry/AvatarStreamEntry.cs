@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using UCS.Helpers;
 using UCS.Helpers.List;
 
 namespace UCS.Logic.AvatarStreamEntry

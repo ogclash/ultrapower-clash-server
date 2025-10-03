@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UCS.Files.Logic;
 using UCS.Helpers.Binary;
 using UCS.Logic;
@@ -68,14 +69,74 @@ namespace UCS.Packets.Commands.Client
 				var housingSpace = unitData.HousingSpace;
 				spells += unit.Value * housingSpace;
 			}
+			var sorted = quicktrain
+				.OrderBy(i =>
+				{
+					// troop = 0, spell = 1
+					return i.Data is SpellData ? 1 : 0;
+				})
+				.ThenBy(i =>
+				{
+					int resourceOrder = 0;
+					// normal elixir = 0, dark elixir = 1
+					if (i.Data is CharacterData)
+					{
+						CharacterData c = (CharacterData)i.Data;
+						if (c.UpgradeResource[0] == "DarkElixir")
+							resourceOrder = 1;
+					}
+					else if (i.Data is SpellData)
+					{
+						SpellData s = (SpellData)i.Data;
+						if (s.UpgradeResource[0] == "DarkElixir")
+							resourceOrder = 1;
+					}
 
-			foreach (DataSlot i in quicktrain)
+					return resourceOrder;
+				})
+				.ThenBy(i =>
+				{
+					if (i.Data is CharacterData)
+					{
+						CharacterData c = (CharacterData)i.Data;
+						return c.BarrackLevel;
+					}
+
+					if (i.Data is SpellData)
+					{
+						SpellData s = (SpellData)i.Data;
+						return s.SpellForgeLevel;
+					}
+					return int.MaxValue;
+				})
+				.ToList();
+			
+			foreach (DataSlot i in sorted)
 			{
-				
 				DataSlot _DataSlot = _PlayerUnits.Find(t => t.Data.GetGlobalID() == i.Data.GetGlobalID());
 				int maxTrainableUnits = i.Value;
 				if (i.Data.GetGlobalID().ToString().StartsWith("400"))
 				{
+					int traincount = 0;
+					UnitProductionComponent barrack = (UnitProductionComponent)this.Device.Player.GameObjectManager.GetGameObjectByID(500000010).GetComponent(3);
+					foreach (var newbarrack in barrack.getBarracks())
+					{
+						newbarrack.GetComponent(3);
+						UnitProductionComponent c = (UnitProductionComponent)newbarrack.GetComponent(3);
+						traincount += c.GetTotalCount();
+					}
+
+					CharacterData cd = (CharacterData) i.Data;
+					traincount = gameobjects.GetTotalMaxHousing()*2-traincount;
+					traincount = (traincount-troops)/cd.HousingSpace;
+					
+					if (i.Value < traincount)
+						traincount = i.Value;
+					for (int j = 0; j < traincount; j++)
+					{
+						barrack.AddUnitToProductionQueue(cd, true);
+					}
+					continue;
 					if (_DataSlot != null)
 					{
 						var unitData = (UCS.Files.Logic.CharacterData) _DataSlot.Data;
@@ -105,6 +166,29 @@ namespace UCS.Packets.Commands.Client
 				}
 				else
 				{
+					List<GameObject> buildings = this.Device.Player.GameObjectManager.GetAllGameObjects()[0];
+					List<GameObject> factories = new List<GameObject>();
+					foreach (GameObject gameObject in buildings)
+					{
+						if (gameObject.GetData().GetGlobalID() == 1000020)
+						{
+							factories.Add(gameObject);
+						}
+					}
+					UnitProductionComponent factory = (UnitProductionComponent)factories[0].GetComponent(3, false);
+					int traincount = factory.GetTotalCount();
+					traincount = gameobjects.GetTotalMaxHousing()*2-traincount;
+					SpellData cd = (SpellData) i.Data;
+					traincount = (traincount-troops)/cd.HousingSpace;
+					
+					if (i.Value < traincount)
+						traincount = i.Value;
+					for (int j = 0; j < traincount; j++)
+					{
+						factory.AddUnitToProductionQueue(cd, true);
+					}
+					continue;
+					
 					if (_DataSlot != null)
 					{
 						SpellData _SpellData = (SpellData)_DataSlot.Data;

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using UCS.Core;
 using UCS.Core.Network;
 using UCS.Helpers.List;
 using UCS.Logic;
@@ -51,7 +52,9 @@ namespace UCS.Packets.Messages.Server
 
                 this.Data.AddInt(0);
                 this.Data.AddInt(-1);
-                this.Data.AddInt((int)Player.Avatar.LastTickSaved.Subtract(new DateTime(1970, 1, 1)).TotalSeconds);
+                //this.Data.AddInt((int)Player.Avatar.LastTickSaved.Subtract(new DateTime(1970, 1, 1)).TotalSeconds);
+                this.Data.AddInt((int)DateTimeOffset.UtcNow.ToUnixTimeSeconds());
+                Logger.Write("Current Server Time: "+ (int)DateTimeOffset.UtcNow.ToUnixTimeSeconds());
                 this.Data.AddRange(_Home.Encode);
                 this.Data.AddRange(await this.Player.Avatar.Encode());
                 this.Data.AddInt(this.Device.PlayerState == State.WAR_EMODE ? 1 : 0);

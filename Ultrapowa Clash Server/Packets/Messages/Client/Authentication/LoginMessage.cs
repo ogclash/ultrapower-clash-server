@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using System.Linq;
@@ -14,7 +13,6 @@ using UCS.Helpers.Binary;
 using UCS.Logic;
 using UCS.Logic.AvatarStreamEntry;
 using UCS.Logic.Enums;
-using UCS.Logic.StreamEntry;
 using UCS.Packets.Messages.Server;
 using UCS.Packets.Messages.Server.Support;
 using UCS.Utilities.Blake2B;
@@ -76,11 +74,25 @@ namespace UCS.Packets.Messages.Client
             this.Length = (ushort)Buffer.Length;
 
         }
+        
+        bool IsBinaryToken(string token)
+        {
+            foreach (char c in token)
+            {
+                if (c < 0x20 || c > 0x7E) // outside printable ASCII
+                    return true;
+            }
+            return false;
+        }
 
         internal override void Decode()
         {
             this.UserID = this.Reader.ReadInt64();
-            this.UserToken = Reader.ReadString();
+            var bytes = Reader.ReadBytes();
+            if (bytes == null)
+                this.UserToken = null;
+            else
+                this.UserToken = Encoding.UTF8.GetString(bytes);
             this.MajorVersion = Reader.ReadInt32();
             this.ContentVersion = Reader.ReadInt32();
             this.MinorVersion = Reader.ReadInt32();
@@ -104,6 +116,8 @@ namespace UCS.Packets.Messages.Client
             this.Reader.ReadString();
             this.Reader.ReadString();
             this.ClientVersion = this.Reader.ReadString();
+            if (UserToken != null && IsBinaryToken(this.UserToken))
+                this.UserToken = BitConverter.ToUInt64(bytes, 0).ToString();
             Logger.Write($"UserID: {this.UserID}");
             Logger.Write($"UserToken: {this.UserToken}");
             Logger.Write($"MajorVersion: {this.MajorVersion}");
@@ -120,15 +134,14 @@ namespace UCS.Packets.Messages.Client
                 this.Device.OpenUDID = this.OpenUDID;
                 Logger.Write($"Device: IOS");
                 Logger.Write($"OpenUDID: {this.OpenUDID}");
+                this.Device.AdvertiseID = this.AdvertisingGUID;
+                Logger.Write($"AdvertisingGUID: {this.AdvertisingGUID}");
             }
-
             this.Device.Model = this.DeviceModel;
             Logger.Write($"DeviceModel: {this.DeviceModel}");
             this.Device.OSVersion = this.OSVersion;
             Logger.Write($"OSVersion: {this.OSVersion}");
             Logger.Write($"Seed: {this.Seed}");
-            this.Device.AdvertiseID = this.AdvertisingGUID;
-            Logger.Write($"AdvertisingGUID: {this.AdvertisingGUID}");
             Logger.Write($"MasterHash: {this.MasterHash}\n");
         }
 
@@ -320,6 +333,8 @@ namespace UCS.Packets.Messages.Client
                 }
                 else if (type == 4)
                 {
+                    if (this.Device.Player.Avatar.AllianceId > 0)
+                        continue;
                     AllianceInviteStreamEntry ai = (AllianceInviteStreamEntry) amessage;
                     AvatarStreamEntryMessage p = new AvatarStreamEntryMessage(level.Client);
                     p.SetAvatarStreamEntry(ai, false);
@@ -361,32 +376,48 @@ namespace UCS.Packets.Messages.Client
         {
             try
             {
-                if (UserID == 0 || string.IsNullOrEmpty(UserToken))
+                if (string.IsNullOrEmpty(UserToken))
                 {
                     NewUser(true);
                     return;
                 }
-                var lines = File.ReadAllLines("auth");
-
-                foreach (var line in lines)
+                if (Android == false)
                 {
-                    var parts = line.Split(':');
-                    if (parts.Length < 3) continue;
-
-                    long id = long.Parse(parts[0]);
-                    string token = parts[1];
-                    int dummyId = int.Parse(parts[2]);
-                    if (token == "disabled")
-                        token = UserToken;
-
-                    if (UserID == id && UserToken == token)
+                    var lines = File.ReadAllLines("auth");
+                    foreach (var line in lines)
                     {
-                        var dummy = await ResourcesManager.GetPlayer(dummyId);
-                        UserID = dummy.Avatar.UserId;
-                        UserToken = dummy.Avatar.UserToken;
-                        break;
+                        var parts = line.Split(':');
+                        if (parts.Length < 3) continue;
+
+                        long id = long.Parse(parts[0]);
+                        string token = parts[1];
+                        if (token == "disabled")
+                        {
+                            string deviceid = parts[2];
+                            int dummyId = int.Parse(parts[3]);
+                            if (UserID == id && OpenUDID == deviceid)
+                            {
+                                var dummy = await ResourcesManager.GetPlayer(dummyId);
+                                UserID = dummy.Avatar.UserId;
+                                UserToken = dummy.Avatar.UserToken;
+                                break;
+                            }
+                        }
+                        else
+                        {
+                            int dummyId = int.Parse(parts[2]);
+                            if (UserID == id && UserToken == token)
+                            {
+                                var dummy = await ResourcesManager.GetPlayer(dummyId);
+                                UserID = dummy.Avatar.UserId;
+                                UserToken = dummy.Avatar.UserToken;
+                                break;
+                            }
+                        }
                     }
                 }
+                if (UserID == 0)
+                    UserID = Seed;
                 level = await ResourcesManager.GetPlayer(UserID);
                 if (level != null)
                 {
@@ -454,7 +485,7 @@ namespace UCS.Packets.Messages.Client
                 else
                 {
                     Logger.Write("Creating new Account because of UserID not existent in DB");
-                    NewUser();
+                    NewUser(false, UserID);
                 }
             }
             catch (Exception e)
@@ -464,10 +495,10 @@ namespace UCS.Packets.Messages.Client
             }
         }
 
-        private void NewUser(bool empty_login = false)
+        private void NewUser(bool empty_login = false, long user_id = 0)
         {
             Level oldlevel = level;
-            level = ObjectManager.CreateAvatar(0, null);
+            level = ObjectManager.CreateAvatar(user_id, null);
             if (oldlevel != null)
                 oldlevel.Avatar.account_switch = (int)level.Avatar.UserId;
             if (empty_login)

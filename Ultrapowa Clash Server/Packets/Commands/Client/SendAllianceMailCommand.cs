@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Linq;
 using UCS.Core;
 using UCS.Core.Network;
 using UCS.Helpers.Binary;
-using UCS.Logic;
 using UCS.Logic.AvatarStreamEntry;
 using UCS.Packets.Messages.Server;
 

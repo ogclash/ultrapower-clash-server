@@ -16,10 +16,11 @@ namespace UCS.Packets.Commands.Client
         internal override void Decode()
         {
             this.BuildingId = this.Reader.ReadInt32();
-            var unknown = this.Reader.ReadInt32();
+            this.Reader.ReadInt32();
             this.UnitType = this.Reader.ReadInt32();
             this.Count = this.Reader.ReadInt32();
-
+            this.SlotId = this.Reader.ReadInt32();
+            this.Reader.ReadInt32();
         }
 
         internal override void Process()
@@ -28,25 +29,54 @@ namespace UCS.Packets.Commands.Client
             List<DataSlot> _PlayerSpells = this.Device.Player.Avatar.GetSpells();
             if (UnitType.ToString().StartsWith("400"))
             {
-                CombatItemData _Troop = (CombatItemData)CSVManager.DataTables.GetDataById(UnitType); ;
-                DataSlot _DataSlot = _PlayerUnits.Find(t => t.Data.GetGlobalID() == _Troop.GetGlobalID());
-                if (_DataSlot != null)
+                CombatItemData _Troop = (CombatItemData)CSVManager.DataTables.GetDataById(UnitType);
+                if (this.Device.Player.Avatar.minorversion >= 709)
                 {
-                    _DataSlot.Value = _DataSlot.Value - Count;
+                    UnitProductionComponent barrack = (UnitProductionComponent)this.Device.Player.GameObjectManager.GetGameObjectByID(500000010).GetComponent(3, false);
+                    for (int i = 0; i < Count; i++)
+                        barrack.RemoveUnit(_Troop, SlotId);
                 }
+                else
+                {
+                    DataSlot _DataSlot = _PlayerUnits.Find(t => t.Data.GetGlobalID() == _Troop.GetGlobalID());
+                    if (_DataSlot != null)
+                    {
+                        _DataSlot.Value = _DataSlot.Value - Count;
+                    }
+                }
+                
             }
             else if (UnitType.ToString().StartsWith("260"))
             {
-                SpellData _Spell = (SpellData)CSVManager.DataTables.GetDataById(UnitType); ;
-                DataSlot _DataSlot = _PlayerSpells.Find(t => t.Data.GetGlobalID() == _Spell.GetGlobalID());
-                if (_DataSlot != null)
+                SpellData _SpellData = (SpellData)CSVManager.DataTables.GetDataById(UnitType);
+                if (this.Device.Player.Avatar.minorversion >= 709)
                 {
-                    _DataSlot.Value = _DataSlot.Value - Count;
+                    List<GameObject> buildings = this.Device.Player.GameObjectManager.GetAllGameObjects()[0];
+                    List<GameObject> factories = new List<GameObject>();
+                    foreach (GameObject gameObject in buildings)
+                    {
+                        if (gameObject.GetData().GetGlobalID() == 1000020)
+                        {
+                            factories.Add(gameObject);
+                        }
+                    }
+                    UnitProductionComponent factory = (UnitProductionComponent)factories[0].GetComponent(3, false);
+                    for (int i = 0; i < Count; i++)
+                        factory.RemoveUnit(_SpellData, SlotId);
+                }
+                else
+                {
+                    DataSlot _DataSlot = _PlayerSpells.Find(t => t.Data.GetGlobalID() == _SpellData.GetGlobalID());
+                    if (_DataSlot != null)
+                    {
+                        _DataSlot.Value = _DataSlot.Value - Count;
+                    }
                 }
             }
         }
 
         public int BuildingId;
+        public int SlotId;
         public int Count;
         public int UnitType;
     }

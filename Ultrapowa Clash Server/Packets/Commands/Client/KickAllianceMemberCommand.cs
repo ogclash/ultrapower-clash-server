@@ -1,14 +1,11 @@
 using System;
-using System.IO;
 using UCS.Core;
 using UCS.Core.Network;
-using UCS.Helpers;
 using UCS.Logic;
 using UCS.Logic.AvatarStreamEntry;
 using UCS.Logic.StreamEntry;
 using UCS.Packets.Messages.Server;
 using UCS.Packets.Commands.Server;
-using System.Threading.Tasks;
 using UCS.Helpers.Binary;
 
 namespace UCS.Packets.Commands.Client

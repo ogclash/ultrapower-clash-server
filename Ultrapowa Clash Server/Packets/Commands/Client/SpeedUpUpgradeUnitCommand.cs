@@ -1,6 +1,4 @@
 ﻿using UCS.Helpers.Binary;
-using UCS.Core;
-using UCS.Files.Logic;
 using UCS.Logic;
 
 namespace UCS.Packets.Commands.Client

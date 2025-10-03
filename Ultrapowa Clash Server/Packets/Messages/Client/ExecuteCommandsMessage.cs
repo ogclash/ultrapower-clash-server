@@ -1,13 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using UCS.Core;
-using UCS.Core.Network;
-using UCS.Helpers;
 using UCS.Helpers.Binary;
-using UCS.Logic;
-using UCS.Packets.Messages.Server;
+using UCS.Packets.Commands.Client;
 
 namespace UCS.Packets.Messages.Client
 {
@@ -50,11 +46,11 @@ namespace UCS.Packets.Messages.Client
                         int CommandID = Reader.ReadInt32();
                         if (CommandFactory.Commands.ContainsKey(CommandID))
                         {
-                            Logger.Say("Command '" + CommandID + "' is handled");
                             Command Command = Activator.CreateInstance(CommandFactory.Commands[CommandID], Reader, this.Device,CommandID) as Command;
 
                             if (Command != null)
                             {
+                                Logger.Say($"{Command.GetType().Name} (" + CommandID + $") is handled by {this.Device.Player.Avatar.AvatarName} [{this.Device.Player.Avatar.UserId}]");
                                 Command.Decode();
                                 Command.Process();
 
@@ -66,7 +62,15 @@ namespace UCS.Packets.Messages.Client
                             Console.ForegroundColor = ConsoleColor.Red;
                             if (this.LCommands.Any())
                             {
-                                Logger.Say("\nCommand " + CommandID + " has not been handled.\nPrevious command was " + this.LCommands.Last().Identifier + ". [" + (_Index + 1) + " / " + this.Count + "]\n");
+                                if (CommandID == 0 && LCommands.First() is RotateDefenseCommand)
+                                {
+                                    RotateDefenseCommand shadowcommand = new RotateDefenseCommand(Reader, this.Device,554);
+                                    shadowcommand.BuildingID = ((RotateDefenseCommand)LCommands.First()).BuildingID;
+                                    shadowcommand.layoutId = ((RotateDefenseCommand)LCommands.First()).layoutId;
+                                    shadowcommand.Process();
+                                }
+                                else
+                                    Logger.Say("\nCommand " + CommandID + " has not been handled.\nPrevious command was " + this.LCommands.Last().Identifier + ". [" + (_Index + 1) + " / " + this.Count + "]\n");
                             }
                             else
                             {

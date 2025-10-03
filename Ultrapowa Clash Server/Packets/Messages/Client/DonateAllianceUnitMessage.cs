@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using UCS.Core;
 using UCS.Core.Network;
 using UCS.Files.Logic;
@@ -38,6 +39,19 @@ namespace UCS.Packets.Messages.Client
                 if (this.BuyTroop >= 1)
                 {     
                     this.Device.Player.Avatar.UseDiamonds(1);
+                }
+                else
+                {
+                    List<DataSlot> _PlayerUnits = this.Device.Player.Avatar.GetUnits();
+
+                    DataSlot _DataSlot = _PlayerUnits.Find(t => t.Data.GetGlobalID() == Troop.GetGlobalID());
+                    if (_DataSlot != null)
+                    {
+                        if (_DataSlot.Value < 0)
+                            _DataSlot.Value = 0;
+                        else
+                            _DataSlot.Value--;
+                    }
                 }
 
                 Alliance a = ObjectManager.GetAlliance(this.Device.Player.Avatar.AllianceId);

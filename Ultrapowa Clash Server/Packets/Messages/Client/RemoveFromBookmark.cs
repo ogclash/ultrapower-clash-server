@@ -1,8 +1,5 @@
-﻿using System;
-using System.IO;
-using UCS.Core.Network;
+﻿using UCS.Core.Network;
 using UCS.Helpers.Binary;
-using UCS.Logic;
 using UCS.Logic.DataSlots;
 using UCS.Packets.Messages.Server;
 

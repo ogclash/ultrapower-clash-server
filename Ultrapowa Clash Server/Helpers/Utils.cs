@@ -1,16 +1,9 @@
 using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Configuration;
-using System.Diagnostics;
-using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Text;
 using UCS.Core;
 using UCS.Files.Logic;
-using UCS.Logic;
-using UCS.Utilities.ZLib;
 
 namespace UCS.Helpers
 {

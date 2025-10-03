@@ -9,7 +9,6 @@ using UCS.Packets.Messages.Server;
 using Newtonsoft.Json.Linq;
 using UCS.Core.LogicMath;
 using UCS.Files.Logic;
-using UCS.Logic.StreamEntry;
 using UCS.Packets.Messages.Server.Support;
 
 namespace UCS.Packets.Messages.Client
@@ -248,17 +247,37 @@ namespace UCS.Packets.Messages.Client
                 Device.AttackVictim.Avatar.SetScore(Device.AttackVictim.Avatar.GetScore() - score);
                 Device.AttackVictim.Avatar.AllianceUnits.Clear();
                 Device.AttackVictim.Avatar.SetAllianceCastleUsedCapacity(0);
-                foreach (GameObject go in
-                         new List<GameObject>(Device.AttackVictim.GameObjectManager.GetAllGameObjects()[0]))
+                try
                 {
-                    Building b = (Building)go;
-                    JObject j = new JObject();
-                    if (b.GetData().GetGlobalID() == 1000027 || b.GetData().GetGlobalID() == 1000021 || b.GetData().GetGlobalID() == 1000031)
+                    foreach (GameObject go in
+                             new List<GameObject>(Device.AttackVictim.GameObjectManager.GetAllGameObjects()[0]))
                     {
-                        if (go?.GetComponent(1, true) != null)
-                            ((CombatComponent) go.GetComponent(1, true)).useAmmo();
+                        try
+                        {
+                            Building b = (Building)go;
+                            if (b.GetData().GetGlobalID() == 1000027 || b.GetData().GetGlobalID() == 1000021 || b.GetData().GetGlobalID() == 1000031)
+                            {
+                                if (go?.GetComponent(1, true) != null)
+                                    ((CombatComponent) go.GetComponent(1, true)).useAmmo();
+                            }
+                        } catch (Exception) {}
                     }
-                }
+                } catch (Exception) {}
+                
+                try
+                {
+                    foreach (GameObject go2 in
+                             new List<GameObject>(Device.AttackVictim.GameObjectManager.GetAllGameObjects()[4]))
+                    {
+                        try
+                        {
+                            Trap t = (Trap)go2;
+                            ((TriggerComponent)t.GetComponent(8)).TriggerTrap();
+                        } catch (Exception) {}
+                    }
+                } catch (Exception) {}
+                
+
             }
             else
             {

@@ -277,9 +277,11 @@
     <Compile Include="Logic\StreamEntry\ChallengeStreamEntry.cs" />
     <Compile Include="Packets\Commands\Client\CastSpellCommand.cs" />
     <Compile Include="Packets\Commands\Client\DecreaseShieldTimeInfo.cs" />
+    <Compile Include="Packets\Commands\Client\LockUnitProductionCommand.cs" />
     <Compile Include="Packets\Commands\Client\MoveWholeLayoutCommand.cs" />
     <Compile Include="Packets\Commands\Client\PlaceAllianceTroopsCommand.cs" />
     <Compile Include="Packets\Commands\Client\PlayerWarStatusCommand.cs" />
+    <Compile Include="Packets\Commands\Client\RearmTrapCommand.cs" />
     <Compile Include="Packets\Commands\Client\RemoveAllBuildingsFromLayoutCommand.cs" />
     <Compile Include="Packets\Commands\Client\RemoveShieldToAttackCommand.cs" />
     <Compile Include="Packets\Commands\Client\RenameQuickTrainCommand.cs" />
@@ -287,6 +289,8 @@
     <Compile Include="Packets\Commands\Server\ReceivedAllianceUnitCommand.cs" />
     <Compile Include="Packets\Crypto.cs" />
     <Compile Include="Packets\GameOpCommands\AddGemsOpCommand.cs" />
+    <Compile Include="Packets\GameOpCommands\ClearBattleLogGameOpCommand.cs" />
+    <Compile Include="Packets\GameOpCommands\ClearInboxGameOpCommand.cs" />
     <Compile Include="Packets\GameOpCommands\MinRessourcesGameOpCommand.cs" />
     <Compile Include="Packets\GameOpCommands\NewAccountGameOpCommand.cs" />
     <Compile Include="Packets\GameOpCommands\ResetAccGameOpCommand.cs" />
