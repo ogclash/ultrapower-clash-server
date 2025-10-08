@@ -1,3 +1,8 @@
+2025-10-08         [RELEASE] Release of ultrapower-clash-server 1.2.3.2 (Phia)
+2025-10-08 b3dab5a [TASK] many changes and improvments / added empty sql-dump of updated db (dprssdrainbow)
+2025-10-03 47506e6 [TASK] big commit... - added troop-training - added triggered-traps after attack - code-cleanup (dprssdrainbow)
+2025-09-23 0a440cb [TASK] add support for version 8.212 (dprssdrainbow)
+
 2025-09-13         [RELEASE] Release of UCS-Reworked 1.2.0.3 (Phia)
 2025-09-12 2692f4e Update Projects.sln to Ultrapower Community.sln (sophia-bln)
 2025-09-12 252f7df Delete WebAPI.PNG (sophia-bln)
