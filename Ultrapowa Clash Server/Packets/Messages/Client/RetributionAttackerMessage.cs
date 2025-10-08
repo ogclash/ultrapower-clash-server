@@ -35,7 +35,7 @@ namespace UCS.Packets.Messages.Client
                 Level defender = await ResourcesManager.GetPlayer((long)battle["attacker"]);
                 if (Device.Player.Avatar.revenged.Contains(defender.Avatar.UserId) || ResourcesManager.IsPlayerOnline(defender))
                 {
-                    if (this.Device.Player.Avatar.minorversion >= 709)
+                    if (this.Device.Player.Avatar.minorversion >= 551)
                         new OwnHomeDataMessage(Device, this.Device.Player).Send();
                     else
                         new OwnHomeDataForOldClients(this.Device, this.Device.Player).Send();

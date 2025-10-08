@@ -21,7 +21,7 @@ namespace UCS.Packets.Commands.Client
             this.UnitType = this.Reader.ReadInt32();
             this.Count    = this.Reader.ReadInt32();
             this.slotId = this.Reader.ReadUInt32();
-            if (this.Device.Player.Avatar.minorversion >= 709)
+            if (this.Device.Player.Avatar.minorversion >= 551)
                 Tick  = this.Reader.ReadInt32();
         }
 
@@ -41,7 +41,7 @@ namespace UCS.Packets.Commands.Client
                 CombatItemData _TroopData = (CombatItemData)CSVManager.DataTables.GetDataById(UnitType);
                 List<DataSlot> _PlayerUnits = this.Device.Player.Avatar.GetUnits();
                 ResourceData _TrainingResource = _TroopData.GetTrainingResource();
-                if (this.Device.Player.Avatar.minorversion < 709)
+                if (this.Device.Player.Avatar.minorversion < 551)
                 {
                     var gameobjects = this.Device.Player.GameObjectManager.GetComponentManager();
                     var troops = 0;
@@ -78,6 +78,8 @@ namespace UCS.Packets.Commands.Client
                 }
                 else
                 {
+                    int unitLevel = this.Device.Player.Avatar.GetUnitUpgradeLevel(_TroopData);
+                    this.Device.Player.Avatar.SetResourceCount(_TroopData.GetTrainingResource(), this.Device.Player.Avatar.GetResourceCount(_TroopData.GetTrainingResource())-_TroopData.GetTrainingCost(unitLevel));
                     if (buildingId == 0)
                         buildingId = 500000010;
                     UnitProductionComponent barrack = (UnitProductionComponent)this.Device.Player.GameObjectManager.GetGameObjectByID(buildingId).GetComponent(3, false);
@@ -88,7 +90,7 @@ namespace UCS.Packets.Commands.Client
             else if (UnitType.ToString().StartsWith("260"))
             {
                 SpellData _SpellData = (SpellData)CSVManager.DataTables.GetDataById(UnitType);
-                if (this.Device.Player.Avatar.minorversion < 709)
+                if (this.Device.Player.Avatar.minorversion < 551)
                 {
                     List<DataSlot> _PlayerSpells = this.Device.Player.Avatar.GetSpells();
                     ResourceData _CastResource = _SpellData.GetTrainingResource();
@@ -128,6 +130,8 @@ namespace UCS.Packets.Commands.Client
                 }
                 else
                 {
+                    int spelllevel = this.Device.Player.Avatar.GetUnitUpgradeLevel(_SpellData);
+                    this.Device.Player.Avatar.SetResourceCount(_SpellData.GetTrainingResource(),  this.Device.Player.Avatar.GetResourceCount(_SpellData.GetTrainingResource())-_SpellData.GetTrainingCost(spelllevel));
                     List<GameObject> buildings = this.Device.Player.GameObjectManager.GetAllGameObjects()[0];
                     List<GameObject> factories = new List<GameObject>();
                     foreach (GameObject gameObject in buildings)

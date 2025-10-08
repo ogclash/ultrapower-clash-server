@@ -47,6 +47,9 @@
   <add key="DebugMode" value="false" />
   <!-- Debug Mode for Shadow-Server -->
   
+  <add key="DeveloperBuild" value="false" />
+  <!-- Important for commands -->
+  
   <add key="CacheServer" value="false" />
   <!-- Use Redis as cache server-->
   

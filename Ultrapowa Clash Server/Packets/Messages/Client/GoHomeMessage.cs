@@ -53,7 +53,7 @@ namespace UCS.Packets.Messages.Client
             this.Device.PlayerState = Logic.Enums.State.LOGGED;
             this.Device.Player.Tick();
             Alliance alliance = ObjectManager.GetAlliance(this.Device.Player.Avatar.AllianceId);
-            if (this.Device.Player.Avatar.minorversion >= 709)
+            if (this.Device.Player.Avatar.minorversion >= 551)
             {
                 new OwnHomeDataMessage(Device, this.Device.Player).Send();
                 if (alliance != null)
@@ -122,7 +122,7 @@ namespace UCS.Packets.Messages.Client
             Random random = new Random();
             int goldvalue = 0;
             int elexirvalue = 0;
-            int darkelixirvalue = random.Next(500, 4200);
+            int darkelixirvalue = 0;
             int chance = random.Next(100); // 0-99
             int score;
             
@@ -193,7 +193,7 @@ namespace UCS.Packets.Messages.Client
                     avatar.SetResourceCount(elixirLocation, avatar.GetResourceCap(elixirLocation));
                 }
 
-                if (avatar.m_vTownHallLevel >= 7)
+                if (avatar.m_vTownHallLevel >= 6)
                 {
                     if (currentDarkElixir+darkelixirvalue <= avatar.GetResourceCap(darkelixirLocation))
                     {
@@ -203,6 +203,10 @@ namespace UCS.Packets.Messages.Client
                     {
                         avatar.SetResourceCount(darkelixirLocation, avatar.GetResourceCap(darkelixirLocation));
                     }
+                }
+                else
+                {
+                    darkelixirvalue = 0;
                 }
                 var oldscore = avatar.GetScore();
                 var newAttackerScore = LogicELOMath.CalculateNewRating(true, avatar.GetScore(), Device.AttackVictim.Avatar.GetScore(), 20 * 3);
@@ -218,7 +222,8 @@ namespace UCS.Packets.Messages.Client
                         ["loot"] = new JArray
                         {
                             new JArray(3000002, goldvalue),
-                            new JArray(3000001, elexirvalue)
+                            new JArray(3000001, elexirvalue),
+                            new JArray(3000003, darkelixirvalue)
                         },
                         ["availableLoot"] = new JArray(),
                         ["units"] = Device.Player.Avatar.battle.units,

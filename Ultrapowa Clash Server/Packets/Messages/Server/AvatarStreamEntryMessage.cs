@@ -1,4 +1,6 @@
-﻿using UCS.Logic;
+﻿using System;
+using System.Diagnostics.Eventing.Reader;
+using UCS.Logic;
 using UCS.Logic.AvatarStreamEntry;
 
 namespace UCS.Packets.Messages.Server
@@ -15,7 +17,13 @@ namespace UCS.Packets.Messages.Server
         }
 
         internal override void Encode()
-        { 
+        {
+            /*try
+            {
+                AllianceInviteStreamEntry ai = (AllianceInviteStreamEntry)m_vAvatarStreamEntry;
+                this.Data.AddRange(ai.Encode());
+                return;
+            } catch (Exception) {}*/
             this.Data.AddRange(m_vAvatarStreamEntry.Encode());
         }
 

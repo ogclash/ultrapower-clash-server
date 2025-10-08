@@ -40,8 +40,14 @@ namespace UCS.Packets.Commands.Client
             }
             else
             {
-                UnitProductionComponent barrack = (UnitProductionComponent)this.Device.Player.GameObjectManager.GetGameObjectByID(500000010).GetComponent(3, false);
-                barrack.SpeedUp();
+                foreach (GameObject gameObject in  this.Device.Player.GameObjectManager.GetAllGameObjects()[0])
+                {
+                    if (gameObject.GetData().GetGlobalID() == 1000006)
+                    {
+                        UnitProductionComponent barrack = (UnitProductionComponent)gameObject.GetComponent(3);
+                        barrack.SpeedUp();
+                    }
+                }
             }
         }
     }

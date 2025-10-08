@@ -30,47 +30,24 @@ namespace UCS.Packets.Commands.Client
             if (go != null)
             {
                 var b = (ConstructionItem)go;
-                if (b.CanUpgrade())
+                var bd = b.GetConstructionItemData();
+                if (this.Device.Player.HasFreeWorkers())
                 {
-                    var bd = b.GetConstructionItemData();
-                    if (UpgradeWithEilixir == 1)
-                    {
-                        ResourceData elixirLocation = CSVManager.DataTables.GetResourceByName("Elixir");
-                        if (ca.HasEnoughResources(elixirLocation,bd.GetBuildCost(b.GetUpgradeLevel() + 1)))
-                        {
-                            if (this.Device.Player.HasFreeWorkers())
-                            {
-                                string name = this.Device.Player.GameObjectManager.GetGameObjectByID(BuildingId).GetData().GetName();
-                                Logger.Say("Building To Upgrade : " + name + " (" + BuildingId + ')');
-                                
-                                ca.SetResourceCount(elixirLocation, ca.GetResourceCount(elixirLocation) - bd.GetBuildCost(b.GetUpgradeLevel() + 1));
-                                b.StartUpgrading();
-                                return;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        
-                        if (ca.HasEnoughResources(bd.GetBuildResource(b.GetUpgradeLevel() + 1),bd.GetBuildCost(b.GetUpgradeLevel() + 1)))
-                        {
-                            if (this.Device.Player.HasFreeWorkers())
-                            {
-                                string name = this.Device.Player.GameObjectManager.GetGameObjectByID(BuildingId).GetData().GetName();
-                                Logger.Say("Building To Upgrade : " + name + " (" + BuildingId + ')');
-
-                                var rd = bd.GetBuildResource(b.GetUpgradeLevel() + 1);
-                                ca.SetResourceCount(rd, ca.GetResourceCount(rd) - bd.GetBuildCost(b.GetUpgradeLevel() + 1));
-                                b.StartUpgrading();
-                                return;
-                            }
-                        }
-                    }
-                    Debug.Write("[Debug] cannot upgrade not enough resources ?");
+                    string name = this.Device.Player.GameObjectManager.GetGameObjectByID(BuildingId).GetData().GetName();
+                    Logger.Say("Building To Upgrade : " + name + " (" + BuildingId + ')');
+                    
+                    b.StartUpgrading();
+                }
+                if (UpgradeWithEilixir == 1)
+                {
+                    ResourceData elixirLocation = CSVManager.DataTables.GetResourceByName("Elixir");
+                    ca.SetResourceCount(elixirLocation, ca.GetResourceCount(elixirLocation) - bd.GetBuildCost(b.GetUpgradeLevel() + 1));
+                    b.StartUpgrading();
                 }
                 else
                 {
-                    Debug.Write("[Debug] cannot upgrade for some reason ");
+                    var rd = bd.GetBuildResource(b.GetUpgradeLevel() + 1);
+                    ca.SetResourceCount(rd, ca.GetResourceCount(rd) - bd.GetBuildCost(b.GetUpgradeLevel() + 1));
                 }
             }
             else

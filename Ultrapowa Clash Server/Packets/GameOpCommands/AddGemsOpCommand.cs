@@ -48,7 +48,7 @@ namespace UCS.Packets.GameOpCommands
                         _MSG.Message = "Added " + Convert.ToInt32(m_vArgs[1]) + " gem(s)";
                         _MSG.Send();
                     }
-                    if (level.Avatar.minorversion >= 709)
+                    if (level.Avatar.minorversion >= 551)
                         new OwnHomeDataMessage(level.Client, level).Send();
                     else
                         new OwnHomeDataForOldClients(level.Client, level).Send();

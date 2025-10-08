@@ -4,6 +4,7 @@ using System.Linq;
 using Newtonsoft.Json.Linq;
 using UCS.Core;
 using UCS.Files.Logic;
+using UCS.Helpers;
 
 namespace UCS.Logic
 {
@@ -28,6 +29,8 @@ namespace UCS.Logic
         private int lastIndex;
         bool m_vIsSpellForge;
         bool currentTick;
+        bool IsSpeedUp;
+        int TotalRemainingSeconds = 0;
         bool m_vIsWaitingForSpace;
         Timer m_vTimer;
 
@@ -122,6 +125,36 @@ namespace UCS.Logic
                 count += GetParent().Avatar.GetComponentManager().GetTotalUsedHousing(true);
             }
             return count;
+        }
+        
+        public int GetTotalRemainingSeconds()
+        {
+            var result = 0;
+            var firstUnit = true;
+            if (m_vUnits.Count > 0)
+            {
+                foreach (var ds in m_vUnits)
+                {
+                    var cd = (CombatItemData) ds.Data;
+                    if (cd != null)
+                    {
+                        var count = ds.Value;
+                        if (count >= 1)
+                        {
+                            if (firstUnit)
+                            {
+                                if (m_vTimer != null)
+                                    result += m_vTimer.GetRemainingSeconds(GetParent().Avatar.Avatar.LastTickSaved);
+                                count--;
+                                firstUnit = false;
+                            }
+                            var ca = GetParent().Avatar.Avatar;
+                            result += count * cd.GetTrainingTime(ca.GetUnitUpgradeLevel(cd));
+                        }
+                    }
+                }
+            }
+            return result;
         }
 
         public bool IsSpellForge() => m_vIsSpellForge;
@@ -296,6 +329,8 @@ namespace UCS.Logic
         
         public void StartProducingNextUnit()
         {
+            if (IsSpeedUp && m_vTimer != null)
+                TotalRemainingSeconds += m_vTimer.GetRemainingSeconds(DateTime.Now);
             m_vTimer = null;
             if (GetSlotCount() >= 1)
             {
@@ -406,7 +441,7 @@ namespace UCS.Logic
             foreach (GameObject barrack in barracks)
             {
                 Building building = (Building)barrack;
-                if (building.UpgradeLevel + 1 >= ((CharacterData)cd).BarrackLevel)
+                if (!building.IsConstructing() && building.UpgradeLevel + 1 >= ((CharacterData)cd).BarrackLevel)
                     count++;
             }
             if (count == 0)
@@ -423,9 +458,18 @@ namespace UCS.Logic
 
         public void SpeedUp()
         {
+            IsSpeedUp = true;
+            TotalRemainingSeconds = 0;
+            if (m_vTimer != null)
+                TotalRemainingSeconds += m_vTimer.GetRemainingSeconds(DateTime.Now);
             while (m_vUnits.Count >= 1 && ProductionCompleted())
             {
             }
+
+            int cost = GamePlayUtil.GetSpeedUpCost(TotalRemainingSeconds*4);
+            GetParent().Avatar.Avatar.UseDiamonds(cost);
+            TotalRemainingSeconds = 0;
+            IsSpeedUp = false;
         }
 
         
@@ -472,6 +516,7 @@ namespace UCS.Logic
                 unitProdObject.Add("t", m_vTimer.GetRemainingSeconds(DateTime.Now));
             }
 
+            Building b = (Building)GetParent();
             if (GetSlotCount() >= 1)
             {
                 var unitJsonArray = new JArray();
@@ -495,6 +540,17 @@ namespace UCS.Logic
                     unitJsonArray.Add(unitJsonObject);
                 }
                 unitProdObject.Add("slots", unitJsonArray);
+                if (b.IsConstructing())
+                {
+                    GetParent().Avatar.unitProductionJson = unitProdObject;
+                    return jsonObject;
+                }
+            }
+            else if (!b.IsConstructing())
+            {
+                if (GetParent().Avatar.unitProductionJson != null)
+                    unitProdObject = GetParent().Avatar.unitProductionJson;
+                GetParent().Avatar.unitProductionJson = null;
             }
             jsonObject.Add("unit_prod", unitProdObject);
             return jsonObject;

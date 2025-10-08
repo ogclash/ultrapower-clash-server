@@ -1,4 +1,5 @@
 ﻿using UCS.Core.Network;
+using UCS.Core.Settings;
 using UCS.Logic;
 using UCS.Packets.Messages.Server;
 
@@ -24,20 +25,36 @@ namespace UCS.Packets.GameOpCommands
                     GlobalChatLineMessage _MSG = new GlobalChatLineMessage(level.Client);
                     _MSG.PlayerName = "Server";
                     _MSG.LeagueId = 22;
-                    _MSG.Message = "Your ID: " + level.Avatar.UserId;
-                    _MSG.Message = @"/help" +
-                                   "\n/status" +
-                                   "\n/visit" +
-                                   "\n/min" +
-                                   "\n/max" +
-                                   "\n/accinfo" +
-                                   "\n/rename " +
-                                   "\n/resetacc" +
-                                   "\n/clearbattles" +
-                                   "\n/clearinbox" +
-                                   "\n/setpassword <password>" +
-                                   "\n/switchacc <id> <password>" +
-                                   "\n/addgems <amount>";
+                    if (Constants.DebugMode)
+                    {
+                        _MSG.Message = @"/help" +
+                                       "\n/status" +
+                                       "\n/visit" +
+                                       "\n/min" +
+                                       "\n/max" +
+                                       "\n/accinfo" +
+                                       "\n/rename " +
+                                       "\n/resetacc" +
+                                       "\n/clearbattles" +
+                                       "\n/clearinbox" +
+                                       "\n/newaccount" +
+                                       "\n/setpassword <password>" +
+                                       "\n/switchacc <id> <password>" +
+                                       "\n/addgems <amount>";
+                    }
+                    else
+                    {
+                        _MSG.Message = @"/help" +
+                                       "\n/visit" +
+                                       "\n/accinfo" +
+                                       "\n/rename " +
+                                       "\n/resetacc" +
+                                       "\n/clearbattles" +
+                                       "\n/clearinbox" +
+                                       "\n/newaccount" +
+                                       "\n/setpassword <password>" +
+                                       "\n/switchacc <id> <password>";
+                    }
 
                     _MSG.Send();
                 }

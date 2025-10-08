@@ -302,6 +302,7 @@
     <Compile Include="Packets\Messages\Client\RetributionAttackerMessage.cs" />
     <Compile Include="Packets\Messages\Client\DeclineInviteMessage.cs" />
     <Compile Include="Packets\Messages\Client\WatchAttackMessage.cs" />
+    <Compile Include="Packets\Messages\Server\Api\EventMessage.cs" />
     <Compile Include="Packets\Messages\Server\Api\Facebook_Connect_OK.cs" />
     <Compile Include="Packets\Messages\Server\ClanBattleLiveNotificationMessage.cs" />
     <Compile Include="Packets\Messages\Server\Clash_Friend_Request_Sent_Message.cs" />
@@ -1050,6 +1051,18 @@
     <None Include="Gamefiles\starting_home.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Gamefiles\starting_home_1.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Gamefiles\starting_home_2.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Gamefiles\starting_home_3.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Gamefiles\starting_home_4.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="Gamefiles\starting_home_with_obstacles.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -1095,8 +1108,11 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="bin\Debug\auth" />
+    <Content Include="bin\Debug\bckupauth" />
+    <Content Include="bin\Debug\Gamefiles\starting_home.json" />
     <Content Include="bin\Debug\Gamefiles\starting_home_test.json" />
     <Content Include="bin\Debug\WebAPI\HTML\Manager.html" />
+    <Content Include="ucsdb.sql" />
     <Content Include="WebAPI\HTML\Manager.html" />
     <None Include="WebAPI\HTML\Statistics.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

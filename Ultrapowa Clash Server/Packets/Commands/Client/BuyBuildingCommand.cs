@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using UCS.Core;
 using UCS.Files.Logic;
 using UCS.Helpers.Binary;
@@ -44,6 +45,16 @@ namespace UCS.Packets.Commands.Client
             var rd = bd.GetBuildResource(0);
             ca.CommodityCountChangeHelper(0, rd, -bd.GetBuildCost(0));
 
+            if (bd.BuildingClass == "Worker")
+            {
+                int currentWorkers = this.Device.Player.WorkerManager.m_vWorkerCount; // e.g., 1
+                int baseCost = 250;
+                int nextWorkerCost = baseCost * (int)Math.Pow(2, currentWorkers - 1);
+
+                if (!this.Device.Player.Avatar.HasEnoughDiamonds(nextWorkerCost))
+                    return;
+                this.Device.Player.Avatar.UseDiamonds(nextWorkerCost);
+            }
             b.StartConstructing(X, Y);
             this.Device.Player.GameObjectManager.AddGameObject(b);
 
@@ -55,6 +66,8 @@ namespace UCS.Packets.Commands.Client
 
         internal override void Process()
         {
+            if(this.Device.Player.GameObjectManager.removedObstacles != null && this.Device.Player.GameObjectManager.removedObstacles.Count > 0)
+                this.Device.Player.SaveToJSONforPlayer();
             var ca = this.Device.Player.Avatar;
             var bd = (BuildingData)CSVManager.DataTables.GetDataById(BuildingId);
             var b = new Building(bd, this.Device.Player);

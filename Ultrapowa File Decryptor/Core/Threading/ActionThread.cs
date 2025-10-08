@@ -15,6 +15,7 @@ namespace UFD.Core.Threading
                 Thread T = new Thread(() =>
                 {
                     CSVDecryptor.Decrypt();
+                    CSVDecryptor.Decrypt("logic");
                 }); T.Start();
             }
             else if (action == Types.CsvEncrypt)
@@ -22,6 +23,7 @@ namespace UFD.Core.Threading
                 Thread T = new Thread(() =>
                 {
                     CSVEncryptor.Encrypt();
+                    CSVEncryptor.Encrypt("logic");
                 }); T.Start();
             }
             else if (!Settings.ScVersion.HasValue)

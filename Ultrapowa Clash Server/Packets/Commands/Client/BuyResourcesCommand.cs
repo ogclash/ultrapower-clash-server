@@ -88,7 +88,7 @@ namespace UCS.Packets.Commands.Client
                 }
                 if (Unknown1 == 1)
                 {
-                    if (Device.Player.Avatar.minorversion >= 709)
+                    if (Device.Player.Avatar.minorversion >= 551)
                         new OwnHomeDataMessage(Device, this.Device.Player).Send();
                     else
                         new OwnHomeDataForOldClients(Device, this.Device.Player).Send();

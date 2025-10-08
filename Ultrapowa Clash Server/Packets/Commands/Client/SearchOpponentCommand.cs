@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 using UCS.Core;
 using UCS.Core.Network;
+using UCS.Files.Logic;
 using UCS.Helpers.Binary;
 using UCS.Logic;
 using UCS.Logic.Enums;
@@ -40,6 +41,8 @@ namespace UCS.Packets.Commands.Client
                             Device.Player.Avatar.mv_ShieldTimeStamp = 0;
                     }
                 }
+                ResourceData goldLocation = CSVManager.DataTables.GetResourceByName("Gold");
+                this.Device.Player.Avatar.SetResourceCount(goldLocation, this.Device.Player.Avatar.GetResourceCount(goldLocation)-((TownhallLevelData)CSVManager.DataTables.GetTable(14).GetItemById(this.Device.Player.Avatar.m_vTownHallLevel)).AttackCost);
                 SearchEnemyAsync();
             }
             catch (Exception)
@@ -56,6 +59,7 @@ namespace UCS.Packets.Commands.Client
             // Search loop
             while (Device.Player.Avatar.UserId == defender.Avatar.UserId || defender.Avatar.GetScore() + 720 < Device.Player.Avatar.GetScore())
             {
+                
                 defender = ObjectManager.GetRandomOfflinePlayer();
                 await Task.Delay(1); 
                 if (this.Device.PlayerState != State.SEARCH_BATTLE)
@@ -67,7 +71,7 @@ namespace UCS.Packets.Commands.Client
             // Assign victim and start battle
             this.Device.AttackVictim = defender;
             defender.Tick();
-            if (this.Device.Player.Avatar.minorversion >= 709)
+            if (this.Device.Player.Avatar.minorversion >= 551)
                 new EnemyHomeDataMessage(this.Device, defender, this.Device.Player).Send();
             else
                 new EnemyHomeDataForOldClients(this.Device, defender, this.Device.Player).Send();

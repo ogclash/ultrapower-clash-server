@@ -72,7 +72,7 @@ namespace UCS.Logic
                         int requiredTownHallLevel = GetRequiredTownHallLevelForUpgrade();
                         if (currentTownHallLevel < requiredTownHallLevel)
                         {
-                            result = false;
+                            result = true;
                         }
                     }
                 }

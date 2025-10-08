@@ -38,7 +38,7 @@ namespace UCS.Logic
         internal int m_vScore;
         internal int m_vDonatedUnits;
         internal int m_vRecievedUnits;
-        internal int m_vActiveLayout;
+        internal int m_vActiveLayout = 0;
         internal int m_vAlliance_Gold = 0;
         internal int m_vAlliance_Elixir = 0;
         internal int m_vAlliance_DarkElixir = 0;
@@ -220,7 +220,7 @@ namespace UCS.Logic
 
         public void SendCLanMessagesToOldClient(Device client)
         {
-            if (this.AllianceId > 0 && this.minorversion < 709)
+            if (this.AllianceId > 0 && this.minorversion < 551)
             {
                 Alliance alliance = ObjectManager.GetAlliance(this.AllianceId);
                 foreach (StreamEntry.StreamEntry test in alliance.m_vChatMessages)
@@ -573,7 +573,8 @@ namespace UCS.Logic
 
         public int GetActiveLayout()
         {
-            return this.m_vActiveLayout;
+            //return this.m_vActiveLayout;
+            return 0;
         }
 
         public int GetSecondsFromLastUpdate() => (int)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds - LastUpdate;
@@ -599,7 +600,8 @@ namespace UCS.Logic
             this.AccountPrivileges = jsonObject["avatar_privilages"].ToObject<byte>();
             this.AccountBanned = false;
             
-            this.m_vActiveLayout = jsonObject["active_layout"].ToObject<int>();
+            //this.m_vActiveLayout = jsonObject["active_layout"].ToObject<int>();
+            this.m_vActiveLayout = 0;
             this.LastTickSaved = jsonObject["last_tick_save"].ToObject<DateTime>();
             this.m_vAndroid = jsonObject["android"].ToObject<bool>();
             this.CurrentHomeId = jsonObject["current_home_id"].ToObject<long>();
@@ -1041,7 +1043,7 @@ namespace UCS.Logic
                 {"avatar_creation_date", this.m_vAccountCreationDate},
                 {"avatar_privilages", this.AccountPrivileges},
                 {"avatar_banned", false},
-                {"active_layout", this.m_vActiveLayout},
+                {"active_layout", 1},
                 {"last_tick_save", this.LastTickSaved},
                 {"android", this.m_vAndroid},
                 {"current_home_id", this.CurrentHomeId},

@@ -1,3 +1,4 @@
+using System.Drawing;
 using Newtonsoft.Json.Linq;
 using UCS.Core;
 using UCS.Files.Logic;
@@ -31,10 +32,17 @@ namespace UCS.Logic
             var ca = GetParent().Avatar.Avatar;
             var bd = (BuildingData) GetParent().GetData();
             var rd = CSVManager.DataTables.GetResourceByName(bd.AmmoResource);
-
-            if (ca.HasEnoughResources(rd, bd.AmmoCost))
+            Building b = (Building)GetParent();
+            int cost = bd.AmmoCost;
+            if (bd.AmmoResource.ToLower() == "elixir")
+                cost = bd.AmmoCost + 2000*(b.UpgradeLevel+1);
+            else if (bd.AmmoResource.ToLower() == "darkelixir")
+                cost = bd.AmmoCost + 100*b.UpgradeLevel;
+            int test = 4-(m_vAmmo / (bd.AmmoCount/4));
+            cost = cost/4*test;
+            if (ca.HasEnoughResources(rd, cost))
             {
-                ca.CommodityCountChangeHelper(0, rd, bd.AmmoCost);
+                ca.CommodityCountChangeHelper(0, rd, cost);
                 m_vAmmo = bd.AmmoCount;
             }
         }

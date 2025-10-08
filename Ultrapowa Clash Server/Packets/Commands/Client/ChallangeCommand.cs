@@ -42,7 +42,7 @@ namespace UCS.Packets.Commands
                 foreach (AllianceMemberEntry op in alliance.GetAllianceMembers())
                 {
                     Level aplayer = await ResourcesManager.GetPlayer(op.AvatarId);
-                    if (aplayer.Avatar.minorversion < 709)
+                    if (aplayer.Avatar.minorversion < 551)
                         continue;
                     if (aplayer.Client != null)
                     {

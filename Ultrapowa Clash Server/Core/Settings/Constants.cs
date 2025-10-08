@@ -14,6 +14,7 @@ namespace UCS.Core.Settings
         public static int MaxOnlinePlayers           = Utils.ParseConfigInt("MaxOnlinePlayers");
 
         public static readonly bool DebugMode = Utils.ParseConfigBoolean("DebugMode");
+        public static readonly bool DeveloperBuild = Utils.ParseConfigBoolean("DeveloperBuild");
 
         internal const int SendBuffer = 2048;
         internal const int ReceiveBuffer = 2048;

@@ -34,7 +34,7 @@ namespace UCS.Packets.Messages.Client
                 if (targetLevel != null)
                 {
                     targetLevel.Tick();
-                    if (this.Device.Player.Avatar.minorversion >= 709)
+                    if (this.Device.Player.Avatar.minorversion >= 551)
                         new AvatarProfileMessage(this.Device) { Level = targetLevel }.Send();
                     else
                         new AvatarProfileForOldClients(this.Device, targetLevel).Send();

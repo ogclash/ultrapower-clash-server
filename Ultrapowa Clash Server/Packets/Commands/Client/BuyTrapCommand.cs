@@ -22,6 +22,8 @@ namespace UCS.Packets.Commands.Client
 
         internal override void Process()
         {
+            if(this.Device.Player.GameObjectManager.removedObstacles != null && this.Device.Player.GameObjectManager.removedObstacles.Count > 0)
+                this.Device.Player.SaveToJSONforPlayer();
             var ca = this.Device.Player.Avatar;
 
             var td = (TrapData)CSVManager.DataTables.GetDataById(TrapId);

@@ -103,7 +103,7 @@ namespace UCS.Packets.Messages.Client
                                 }
 
                             }
-                            if (this.Device.Player.Avatar.minorversion >= 709)
+                            if (this.Device.Player.Avatar.minorversion >= 551)
                                 new OwnHomeDataMessage(this.Device, this.Device.Player).Send();
                             else
                                 new OwnHomeDataForOldClients(this.Device, this.Device.Player).Send();

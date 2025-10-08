@@ -136,6 +136,8 @@ namespace UCS.Packets.Commands.Client
 					{
 						barrack.AddUnitToProductionQueue(cd, true);
 					}
+					ResourceData _TrainingResource = cd.GetTrainingResource();
+					this.Device.Player.Avatar.SetResourceCount(_TrainingResource, this.Device.Player.Avatar.GetResourceCount(_TrainingResource) - cd.GetTrainingCost(this.Device.Player.Avatar.GetUnitUpgradeLevel(cd)));
 					continue;
 					if (_DataSlot != null)
 					{
@@ -187,8 +189,9 @@ namespace UCS.Packets.Commands.Client
 					{
 						factory.AddUnitToProductionQueue(cd, true);
 					}
+					ResourceData _CastResource = cd.GetTrainingResource();
+					this.Device.Player.Avatar.SetResourceCount(_CastResource, this.Device.Player.Avatar.GetResourceCount(_CastResource) - cd.GetTrainingCost(this.Device.Player.Avatar.GetUnitUpgradeLevel(cd)));
 					continue;
-					
 					if (_DataSlot != null)
 					{
 						SpellData _SpellData = (SpellData)_DataSlot.Data;

@@ -27,7 +27,7 @@ namespace UCS.Packets.Messages.Client
             try
             {
                 Alliance alliance = ObjectManager.GetAlliance(m_vAllianceId);
-                if (this.Device.Player.Avatar.minorversion >= 709)
+                if (this.Device.Player.Avatar.minorversion >= 551)
                     new AllianceDataMessage(Device, alliance).Send(); 
                 else
                     new AllianceDataForOldClients(Device, alliance).Send();   

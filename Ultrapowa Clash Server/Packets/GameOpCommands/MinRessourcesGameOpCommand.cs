@@ -22,7 +22,7 @@ namespace UCS.Packets.GameOpCommands
                 p.SetResourceCount(CSVManager.DataTables.GetResourceByName("Elixir"), 1000);
                 p.SetResourceCount(CSVManager.DataTables.GetResourceByName("DarkElixir"), 100);
                 p.m_vCurrentGems = 200;
-                if (level.Avatar.minorversion >= 709)
+                if (level.Avatar.minorversion >= 551)
                     new OwnHomeDataMessage(level.Client, level).Send();
                 else
                     new OwnHomeDataForOldClients(level.Client, level).Send();

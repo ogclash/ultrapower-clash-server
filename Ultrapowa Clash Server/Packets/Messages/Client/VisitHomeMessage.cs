@@ -28,7 +28,7 @@ namespace UCS.Packets.Messages.Client
             {
                 Level targetLevel = await ResourcesManager.GetPlayer(AvatarId);
                 targetLevel.Tick();
-                if (this.Device.Player.Avatar.minorversion >= 709)
+                if (this.Device.Player.Avatar.minorversion >= 551)
                     new VisitedHomeDataMessage(Device, targetLevel, this.Device.Player).Send();
                 else
                     new VisitedHomeDataForOldClients(Device, targetLevel, this.Device.Player).Send();

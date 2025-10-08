@@ -15,7 +15,7 @@ namespace UCS.Packets.Commands.Client
 
         internal override void Decode()
         {
-            var unknown = this.Reader.ReadByte();
+            this.UpgradeWithEilixir = this.Reader.ReadByte();
             this.m_vBuildingIdList = new List<int>();
             var buildingCount = this.Reader.ReadInt32();
             for (var i = 0; i < buildingCount; i++)
@@ -37,22 +37,19 @@ namespace UCS.Packets.Commands.Client
                 {
                     var bd = b.GetBuildingData();
                     var cost = bd.GetBuildCost(b.GetUpgradeLevel() + 1);
-                    ResourceData rd = m_vIsAltResource == 0 ? bd.GetBuildResource(b.GetUpgradeLevel() + 1) : bd.GetAltBuildResource(b.GetUpgradeLevel() + 1);
                     if (this.Device.Player.HasFreeWorkers())
                     {
-                        string name = b.GetData().GetName();
-                        Logger.Write("Building To Upgrade : " + name + " (" + buildingId + ')');
-                        if (string.Equals(name, "Alliance Castle"))
-                        {
-                            ca.IncrementAllianceCastleLevel();
-                            ca.SetAllianceCastleTotalCapacity(bd.GetUnitStorageCapacity(ca.GetAllianceCastleLevel()));
-                        }
-                        else if (string.Equals(name, "Town Hall"))
-                            ca.IncrementTownHallLevel();
                         b.StartUpgrading();
-                        if (ca.HasEnoughResources(rd, cost))
+                        if (UpgradeWithEilixir == 1)
                         {
-                            ca.SetResourceCount(rd, ca.GetResourceCount(rd) - cost);
+                            ResourceData elixirLocation = CSVManager.DataTables.GetResourceByName("Elixir");
+                            ca.SetResourceCount(elixirLocation, ca.GetResourceCount(elixirLocation) - bd.GetBuildCost(b.GetUpgradeLevel() + 1));
+                            b.StartUpgrading();
+                        }
+                        else
+                        {
+                            var rd = bd.GetBuildResource(b.GetUpgradeLevel() + 1);
+                            ca.SetResourceCount(rd, ca.GetResourceCount(rd) - bd.GetBuildCost(b.GetUpgradeLevel() + 1));
                         }
                     }
                 }
@@ -60,5 +57,6 @@ namespace UCS.Packets.Commands.Client
         }
         internal List<int> m_vBuildingIdList;
         internal byte m_vIsAltResource;
+        internal uint  UpgradeWithEilixir;
     }
 }

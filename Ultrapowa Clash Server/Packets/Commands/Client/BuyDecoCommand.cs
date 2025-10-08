@@ -22,6 +22,8 @@ namespace UCS.Packets.Commands.Client
 
         internal override void Process()
         {
+            if(this.Device.Player.GameObjectManager.removedObstacles != null && this.Device.Player.GameObjectManager.removedObstacles.Count > 0)
+                this.Device.Player.SaveToJSONforPlayer();
             ClientAvatar ca = this.Device.Player.Avatar;
 
             DecoData dd = (DecoData)CSVManager.DataTables.GetDataById(DecoId);

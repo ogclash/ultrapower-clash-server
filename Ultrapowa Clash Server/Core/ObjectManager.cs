@@ -19,7 +19,7 @@ namespace UCS.Core
         public static int m_vDonationSeed;
         private static int m_vRandomBaseAmount;
         private static DatabaseManager m_vDatabase;
-        private static string m_vHomeDefault;
+        private static string[] m_vHomeDefault;
         public static bool m_vTimerCanceled;
         public static Timer TimerReferenceRedis;
         public static Timer TimerReferenceMysql;
@@ -45,11 +45,17 @@ namespace UCS.Core
 
             m_vAvatarSeed          = MaxPlayerID;
             m_vAllianceSeed        = MaxAllianceID;
-
-            using (StreamReader sr = new StreamReader(@"Gamefiles/starting_home_test.json"))
-            {
-                m_vHomeDefault     = sr.ReadToEnd();
-            }
+            m_vHomeDefault = new string[5];
+            using (StreamReader sr = new StreamReader(@"Gamefiles/starting_home_with_obstacles.json"))
+                m_vHomeDefault[0] = sr.ReadToEnd();
+            using (StreamReader sr = new StreamReader(@"Gamefiles/starting_home_1.json"))
+                m_vHomeDefault[1] = sr.ReadToEnd();
+            using (StreamReader sr = new StreamReader(@"Gamefiles/starting_home_2.json"))
+                m_vHomeDefault[2] = sr.ReadToEnd();
+            using (StreamReader sr = new StreamReader(@"Gamefiles/starting_home_3.json"))
+                m_vHomeDefault[3] = sr.ReadToEnd();
+            using (StreamReader sr = new StreamReader(@"Gamefiles/starting_home_4.json"))
+                m_vHomeDefault[4] = sr.ReadToEnd();
 
             LoadNpcLevels();
             //LoadRandomBase(); // Useless atm
@@ -122,7 +128,8 @@ namespace UCS.Core
             }
             pl = new Level(seed, token);
             m_vAvatarSeed++;
-            pl.LoadFromJSON(m_vHomeDefault);
+            Random random = new Random();
+            pl.LoadFromJSON(m_vHomeDefault[random.Next(0, m_vHomeDefault.Length)]);
             m_vDatabase.CreateAccount(pl);
             return pl;
         }

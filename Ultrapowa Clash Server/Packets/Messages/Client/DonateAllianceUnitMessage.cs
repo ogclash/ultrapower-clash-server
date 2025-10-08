@@ -38,7 +38,8 @@ namespace UCS.Packets.Messages.Client
             {
                 if (this.BuyTroop >= 1)
                 {     
-                    this.Device.Player.Avatar.UseDiamonds(1);
+                    if (this.Device.Player.Avatar.HasEnoughDiamonds(1))
+                        this.Device.Player.Avatar.UseDiamonds(1);
                 }
                 else
                 {

@@ -9,11 +9,11 @@ namespace UFD.Core.Helpers
 {
     class CSVEncryptor
     {
-        public static void Encrypt()
+        public static void Encrypt(string parameter="csv")
         {
             Encoder encoder = new Encoder();
-            string[] files = Directory.GetFiles(@"In\Decrypted - CSV", "*.csv");
-            string output = @"Out\Encrypted - CSV";
+            string[] files = Directory.GetFiles($@"{parameter}\Decrypted - CSV", "*.csv");
+            string output = $@"{parameter}\Encrypted - CSV";
 
             int filesAmount = 0;
             foreach (string file in files)

@@ -34,7 +34,7 @@ namespace UCS.Packets.Messages.Client
                 if (LevelId > 0 || LevelId < 1000000)
                 {
                     this.Device.PlayerState = State.IN_BATTLE;
-                    if (this.Device.Player.Avatar.minorversion >= 709)
+                    if (this.Device.Player.Avatar.minorversion >= 551)
                         new NpcDataMessage(Device, this.Device.Player, this).Send();
                     else
                         new NpcDataForOldClients(Device, this.Device.Player, this).Send();

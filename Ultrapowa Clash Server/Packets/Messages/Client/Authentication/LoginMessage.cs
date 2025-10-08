@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using System.Linq;
@@ -277,6 +278,20 @@ namespace UCS.Packets.Messages.Client
                 ObjectManager.getDatabaseManager().CreateAccount(level);
                 
             }
+
+            if (Convert.ToBoolean(ConfigurationManager.AppSettings["useCustomPatch"]) && this.level.updated == false)
+            {
+                new LoginFailedMessage(Device)
+                {
+                    ErrorCode = 7,
+                    ResourceFingerprintData = ObjectManager.FingerPrint.SaveToJson(),
+                    ContentUrl = Utils.ParseConfigString("patchingServer"),
+                    UpdateUrl = Utils.ParseConfigString("UpdateUrl")
+                }.Send();
+                Logger.Say("Client updated");
+                this.level.updated = true;
+                return;
+            }
             ResourcesManager.LogPlayerIn(level, Device);
             level.Avatar.m_vAndroid = this.Android;
             level.Avatar.Region = this.Region.Split('-')[0].ToUpper();
@@ -290,6 +305,8 @@ namespace UCS.Packets.Messages.Client
             this.Device.Player.Avatar.mayorversion = this.MajorVersion;
             this.Device.Player.Avatar.minorversion = this.MinorVersion;
             message.Send();
+            
+            //new EventMessage(this.Device).Send();
 
             if (level.Avatar.AllianceId > 0)
             {
@@ -307,7 +324,7 @@ namespace UCS.Packets.Messages.Client
                 }
             }
             new AvatarStreamMessage(this.Device, true).Send();
-            if (this.MinorVersion < 709)
+            if (this.MinorVersion < 551)
             {
                 new OwnHomeDataForOldClients(this.Device, level).Send();
                 level.Avatar.SendCLanMessagesToOldClient(this.Device);
@@ -315,6 +332,8 @@ namespace UCS.Packets.Messages.Client
             else
                 new OwnHomeDataMessage(this.Device, level).Send();
             new BookmarkMessage(this.Device).Send();
+            
+            HashSet<string> sentInvites = new HashSet<string>();
 
             foreach (AvatarStreamEntry amessage in Device.Player.Avatar.messages)
             {
@@ -336,6 +355,14 @@ namespace UCS.Packets.Messages.Client
                     if (this.Device.Player.Avatar.AllianceId > 0)
                         continue;
                     AllianceInviteStreamEntry ai = (AllianceInviteStreamEntry) amessage;
+                    
+                    string inviteKey = $"{ai.m_vSenderName}:{ai.AllianceId}";
+                    if (sentInvites.Contains(inviteKey))
+                        continue;
+                    
+                    sentInvites.Add(inviteKey);
+
+                    
                     AvatarStreamEntryMessage p = new AvatarStreamEntryMessage(level.Client);
                     p.SetAvatarStreamEntry(ai, false);
                     p.Send();

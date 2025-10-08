@@ -9,11 +9,11 @@ namespace UFD.Core.Helpers
 {
     class CSVDecryptor
     {
-        public static void Decrypt()
+        public static void Decrypt(string parameter = "csv")
         {
             Decoder decoder = new Decoder();
-            string[] files = Directory.GetFiles(@"In\Encrypted - CSV", "*.csv");
-            string output = @"Out\Decrypted - CSV";
+            string[] files = Directory.GetFiles($@"{parameter}\Encrypted - CSV", "*.csv");
+            string output = $@"{parameter}\Decrypted - CSV";
 
             
             int filesAmount = 0;

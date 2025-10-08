@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Windows.Forms;
 using Newtonsoft.Json.Linq;
 using UCS.Core;
 using UCS.Files.Logic;
@@ -189,6 +190,8 @@ namespace UCS.Logic.Manager
             }
             jsonData.Add("obstacles", JObstacles);
 
+            TownhallLevelData td = ((TownhallLevelData)CSVManager.DataTables.GetTable(14).GetItemById(m_vLevel.Avatar.m_vTownHallLevel));
+            Dictionary<string, int> myDict = new Dictionary<string, int>();
             JArray JBuildings = new JArray();
             int c = 0;
             foreach (GameObject go in new List<GameObject>(m_vGameObjects[0]))
@@ -207,6 +210,21 @@ namespace UCS.Logic.Manager
                     if (m_vLevel.Avatar.m_vTownHallLevel+1 < Convert.ToInt32(b.GetBuildingData().ReqTh[b.UpgradeLevel]))
                         b.UpgradeLevel--;
                 } catch (Exception) {}
+               /* var test67 = "DarkTower";
+                var test50 = td.GetType().GetProperty(test67);
+                Logger.Write(test50.GetValue(test50).ToString());
+                BuildingData test = (BuildingData)b.GetData();
+                var name = test.PlacingEffect.Replace(" ", "");
+                name = name.Replace("Placing", "");
+                name = name.Replace("Training", "");
+                name = name.Replace("BasicTurret", "Cannon");
+                name = name.Replace("TowerTurret", "ArcherTower");
+                name = name.Replace("Drill", "Pump");
+                name = name.Replace("Place", "");
+                name = name.Replace("Weak", "");
+                //if (myDict.ContainsKey(name) && myDict[name] < TownhallLevelData)
+                myDict.Add(name, c++);
+                //Logger.Write(name);*/
                 if (b.X == -1 || b.Y == -1)
 	                b.SetPositionXY(1, 1, this.m_vLevel.Avatar.m_vActiveLayout);
                 j.Add("data", b.GetBuildingData().GetGlobalID());
@@ -269,7 +287,7 @@ namespace UCS.Logic.Manager
                 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000
             };
             jsonData.Add("newShopBuildings", newShopBuildings);
-            var newShopTraps = new JArray { 8, 8, 8, 8, 8, 8, 8, 8, 8 };
+            var newShopTraps = new JArray { 8, 8, 8, 8, 8, 8, 8, 8, 8, 8 };
             jsonData.Add("newShopTraps", newShopTraps);
             var newShopDecos = new JArray
             {

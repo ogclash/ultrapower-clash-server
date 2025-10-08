@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using UCS.Core;
+using UCS.Files.Logic;
 using UCS.Helpers.Binary;
 using UCS.Logic;
 
@@ -26,9 +28,14 @@ namespace UCS.Packets.Commands.Client
             foreach (int buildingID in buildings)
             {
                 var go = this.Device.Player.GameObjectManager.GetGameObjectByID(buildingID);
-                ((TriggerComponent)go.GetComponent(8)).RepairTrap();
-                if (go?.GetComponent(8, true) != null)
-                    ((TriggerComponent) go.GetComponent(1, true)).RepairTrap();
+                if ((TriggerComponent)go?.GetComponent(8) != null)
+                {
+                    Trap t = (Trap)go;
+                    TrapData td = (TrapData)go.GetData();
+                    ResourceData goldLocation = CSVManager.DataTables.GetResourceByName("Gold");
+                    this.Device.Player.Avatar.SetResourceCount(goldLocation, this.Device.Player.Avatar.GetResourceCount(goldLocation)-td.RearmCost[t.UpgradeLevel]);
+                    ((TriggerComponent) go.GetComponent(8)).RepairTrap();
+                }
             }
         }
 

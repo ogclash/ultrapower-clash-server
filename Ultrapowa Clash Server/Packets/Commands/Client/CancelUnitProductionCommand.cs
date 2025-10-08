@@ -30,8 +30,10 @@ namespace UCS.Packets.Commands.Client
             if (UnitType.ToString().StartsWith("400"))
             {
                 CombatItemData _Troop = (CombatItemData)CSVManager.DataTables.GetDataById(UnitType);
-                if (this.Device.Player.Avatar.minorversion >= 709)
+                if (this.Device.Player.Avatar.minorversion >= 551)
                 {
+                    int unitLevel = this.Device.Player.Avatar.GetUnitUpgradeLevel(_Troop);
+                    this.Device.Player.Avatar.SetResourceCount(_Troop.GetTrainingResource(), this.Device.Player.Avatar.GetResourceCount(_Troop.GetTrainingResource())+_Troop.GetTrainingCost(unitLevel));
                     UnitProductionComponent barrack = (UnitProductionComponent)this.Device.Player.GameObjectManager.GetGameObjectByID(500000010).GetComponent(3, false);
                     for (int i = 0; i < Count; i++)
                         barrack.RemoveUnit(_Troop, SlotId);
@@ -49,7 +51,7 @@ namespace UCS.Packets.Commands.Client
             else if (UnitType.ToString().StartsWith("260"))
             {
                 SpellData _SpellData = (SpellData)CSVManager.DataTables.GetDataById(UnitType);
-                if (this.Device.Player.Avatar.minorversion >= 709)
+                if (this.Device.Player.Avatar.minorversion >= 551)
                 {
                     List<GameObject> buildings = this.Device.Player.GameObjectManager.GetAllGameObjects()[0];
                     List<GameObject> factories = new List<GameObject>();
@@ -60,6 +62,8 @@ namespace UCS.Packets.Commands.Client
                             factories.Add(gameObject);
                         }
                     }
+                    int spelllevel = this.Device.Player.Avatar.GetUnitUpgradeLevel(_SpellData);
+                    this.Device.Player.Avatar.SetResourceCount(_SpellData.GetTrainingResource(),  this.Device.Player.Avatar.GetResourceCount(_SpellData.GetTrainingResource())+_SpellData.GetTrainingCost(spelllevel));
                     UnitProductionComponent factory = (UnitProductionComponent)factories[0].GetComponent(3, false);
                     for (int i = 0; i < Count; i++)
                         factory.RemoveUnit(_SpellData, SlotId);

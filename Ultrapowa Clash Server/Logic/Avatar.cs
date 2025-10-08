@@ -250,6 +250,8 @@ namespace UCS.Logic
 
         public void SetResourceCount(ResourceData rd, int value)
         {
+            if (value < 0)
+                value = 0;
             int index = GetDataIndex(m_vResources, rd);
             if (index == -1)
             {

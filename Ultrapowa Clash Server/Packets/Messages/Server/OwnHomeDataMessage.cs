@@ -23,7 +23,7 @@ namespace UCS.Packets.Messages.Server
 
         internal override async void Encode()
         {
-            if (this.Device.Player.Avatar.minorversion < 709)
+            if (this.Device.Player.Avatar.minorversion < 551)
             {
                 new OwnHomeDataForOldClients(this.Device, this.Player).Send();
                 return;
