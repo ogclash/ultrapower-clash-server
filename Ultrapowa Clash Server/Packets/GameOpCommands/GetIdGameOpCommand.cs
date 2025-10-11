@@ -1,4 +1,5 @@
 using UCS.Core.Network;
+using UCS.Helpers;
 using UCS.Logic;
 using UCS.Packets.Messages.Server;
 
@@ -16,7 +17,7 @@ namespace UCS.Packets.GameOpCommands
 
         public override void Execute(Level level)
         {
-            if (GetRequiredAccountPrivileges())
+            if (level.Avatar.AccountPrivileges >= GetRequiredAccountPrivileges() || level.Avatar.UserId == Utils.ParseConfigInt("AdminAccount"))
             {
                 if (m_vArgs.Length >= 1)
                 {

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UCS.Core;
+using UCS.Helpers;
 using UCS.Logic;
 using UCS.Logic.AvatarStreamEntry;
 
@@ -17,7 +18,7 @@ namespace UCS.Packets.GameOpCommands
 
         public override void Execute(Level level)
         {
-            if (GetRequiredAccountPrivileges())
+            if (level.Avatar.AccountPrivileges >= GetRequiredAccountPrivileges() || level.Avatar.UserId == Utils.ParseConfigInt("AdminAccount"))
             {
                 level.Avatar.messages = new List<AvatarStreamEntry>();
                 ResourcesManager.DisconnectClient(level.Client);

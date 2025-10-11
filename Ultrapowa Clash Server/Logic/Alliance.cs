@@ -11,6 +11,7 @@ namespace UCS.Logic
 {
     internal class Alliance
     {
+        public List<long> bannedPlayers = new List<long>();
         const int m_vMaxAllianceMembers = 50;
         const int m_vMaxChatMessagesNumber = 100;
         internal readonly Dictionary<long, AllianceMemberEntry> m_vAllianceMembers;
@@ -135,6 +136,14 @@ namespace UCS.Logic
                 m_vDrawWars = jsonObject["draw_wars"].ToObject<int>();
                 m_vWarFrequency = jsonObject["war_frequency"].ToObject<int>();
                 m_vAllianceOrigin = jsonObject["alliance_origin"].ToObject<int>();
+                
+                JArray bannedIds = (JArray)jsonObject["banned_players"] ?? new JArray();
+                foreach (JToken jToken in bannedIds)
+                {
+                    JObject jsonId = (JObject)jToken;
+                    bannedPlayers.Add(jsonId["id"].ToObject<long>());
+                }
+                
                 JArray jsonMembers = (JArray)jsonObject["members"];
                 foreach (JToken jToken in jsonMembers)
                 {
@@ -261,6 +270,20 @@ namespace UCS.Logic
             jsonData.Add("draw_wars", m_vDrawWars);
             jsonData.Add("war_frequency", m_vWarFrequency);
             jsonData.Add("alliance_origin", m_vAllianceOrigin);
+            
+            JArray jsonBannedPlayersArray = new JArray();
+            foreach (int bannedId in bannedPlayers)
+            {
+                try
+                {
+                    JObject jsonObject = new JObject();
+                    jsonObject["id"] = bannedId;
+                    jsonBannedPlayersArray.Add(jsonObject);
+                }
+                catch (Exception) { }
+            }
+            jsonData.Add("banned_players", jsonBannedPlayersArray);
+            
             JArray jsonMembersArray = new JArray();
             foreach (AllianceMemberEntry member in m_vAllianceMembers.Values)
             {

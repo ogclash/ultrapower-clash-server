@@ -53,6 +53,7 @@ namespace UCS.Packets.Commands.Client
                     Command _Command =  Activator.CreateInstance(CommandFactory.Commands[CommandID], this.Reader, this.Device, CommandID) as Command;
                     if (_Command != null)
                     {
+                        Logger.Say($"{_Command.GetType().Name} (" + CommandID + $") is handled by {this.Device.Player.Avatar.AvatarName} [{this.Device.Player.Avatar.UserId}]");
                         _Command.Decode();
                         _Command.Process();
                     }

@@ -1,6 +1,7 @@
 using System;
 using UCS.Core;
 using UCS.Core.Network;
+using UCS.Helpers;
 using UCS.Logic;
 using UCS.Packets.Messages.Server;
 using UCS.Packets.Messages.Server.Support;
@@ -14,14 +15,14 @@ namespace UCS.Packets.GameOpCommands
         public AddGemsOpCommand(string[] args)
         {
             m_vArgs = args;
-            SetRequiredAccountPrivileges(1);
+            SetRequiredAccountPrivileges(0);
         }
         
         
 
         public override async void Execute(Level level)
         {
-            if (GetRequiredAccountPrivileges())
+            if (level.Avatar.AccountPrivileges >= GetRequiredAccountPrivileges() || level.Avatar.UserId == Utils.ParseConfigInt("AdminAccount"))
             {
                 try
                 {

@@ -214,6 +214,7 @@ namespace UCS.Packets.Messages.Client
                 result =  new JObject
                 {
                     ["new"] = 2,
+                    ["timestamp_s"] = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
                     ["score"] = score,
                     ["attacker"] = avatar.UserId,
                     ["defender"] = Device.AttackVictim.Avatar.UserId,
@@ -292,6 +293,7 @@ namespace UCS.Packets.Messages.Client
                 result =  new JObject
                 {
                     ["new"] = 2,
+                    ["timestamp_s"] = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
                     ["score"] = score,
                     ["attacker"] = avatar.UserId,
                     ["defender"] = Device.AttackVictim.Avatar.UserId,
@@ -299,8 +301,9 @@ namespace UCS.Packets.Messages.Client
                     {
                         ["loot"] = new JArray
                         {
-                            new JArray(3000002, goldvalue),
-                            new JArray(3000001, elexirvalue)
+                            new JArray(3000002, 0),
+                            new JArray(3000001, 0),
+                            new JArray(3000003, 0)
                         },
                         ["availableLoot"] = new JArray(),
                         ["units"] = Device.Player.Avatar.battle.units,

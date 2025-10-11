@@ -41,7 +41,11 @@ namespace UCS.Packets.Commands.Client
                 cm.SetType(1);
                 cm.SetMaxTroop(player.GetAllianceCastleTotalCapacity());
                 cm.m_vDonatedTroop = player.GetAllianceCastleUsedCapacity();
-                
+                if (player.GetAllianceCastleUsedCapacity() < 0)
+                {
+                    player.AllianceUnits.Clear();
+                    player.SetAllianceCastleUsedCapacity(0);
+                }
                 if (player.GetAllianceCastleTotalCapacity() > player.GetAllianceCastleUsedCapacity())
                 {
                     StreamEntry oldmessage = all.m_vChatMessages.Find(c => c.SenderID == this.Device.Player.Avatar.UserId && c.m_vType == 1);

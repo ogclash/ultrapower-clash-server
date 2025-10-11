@@ -291,6 +291,7 @@
     <Compile Include="Packets\GameOpCommands\AddGemsOpCommand.cs" />
     <Compile Include="Packets\GameOpCommands\ClearBattleLogGameOpCommand.cs" />
     <Compile Include="Packets\GameOpCommands\ClearInboxGameOpCommand.cs" />
+    <Compile Include="Packets\GameOpCommands\GiveGemsGameOpCommand.cs" />
     <Compile Include="Packets\GameOpCommands\MinRessourcesGameOpCommand.cs" />
     <Compile Include="Packets\GameOpCommands\NewAccountGameOpCommand.cs" />
     <Compile Include="Packets\GameOpCommands\ResetAccGameOpCommand.cs" />

@@ -83,8 +83,27 @@ namespace UCS.Packets.Commands.Client
                     if (buildingId == 0)
                         buildingId = 500000010;
                     UnitProductionComponent barrack = (UnitProductionComponent)this.Device.Player.GameObjectManager.GetGameObjectByID(buildingId).GetComponent(3, false);
-                    for (int i = 0; i < Count; i++)
-                        barrack.AddUnitToProductionQueue(_TroopData, true);
+                    if (!((Building)this.Device.Player.GameObjectManager.GetGameObjectByID(500000010)).IsConstructing() || barrack.GetTotalCount() > 0)
+                    {
+                        for (int i = 0; i < Count; i++)
+                            barrack.AddUnitToProductionQueue(_TroopData, true);
+                    }
+                    else
+                    {
+                        foreach (GameObject gameObject in this.Device.Player.GameObjectManager.GetAllGameObjects()[0])
+                        {
+                            if (gameObject.GlobalId == 500000010)
+                                continue;
+                            if (gameObject.GetData().GetGlobalID() == 1000006)
+                            {
+                                UnitProductionComponent barrackAdditional =
+                                    (UnitProductionComponent)gameObject.GetComponent(3);
+                                if (barrackAdditional.GetTotalCount() > 0)
+                                    for (int i = 0; i < Count; i++)
+                                        barrackAdditional.AddUnitToProductionQueue(_TroopData, true);
+                            }
+                        }
+                    }
                 }
             }
             else if (UnitType.ToString().StartsWith("260"))
@@ -136,7 +155,8 @@ namespace UCS.Packets.Commands.Client
                     List<GameObject> factories = new List<GameObject>();
                     foreach (GameObject gameObject in buildings)
                     {
-                        if (gameObject.GetData().GetGlobalID() == 1000020)
+                        Building b = (Building) gameObject;
+                        if (!b.IsConstructing() && gameObject.GetData().GetGlobalID() == 1000020)
                         {
                             factories.Add(gameObject);
                         }

@@ -31,6 +31,7 @@ namespace UCS.Packets.Commands.Client
             {
                 var b = (ConstructionItem)go;
                 var bd = b.GetConstructionItemData();
+                int cost = bd.GetBuildCost(b.GetUpgradeLevel() + 1);
                 if (this.Device.Player.HasFreeWorkers())
                 {
                     string name = this.Device.Player.GameObjectManager.GetGameObjectByID(BuildingId).GetData().GetName();
@@ -41,13 +42,12 @@ namespace UCS.Packets.Commands.Client
                 if (UpgradeWithEilixir == 1)
                 {
                     ResourceData elixirLocation = CSVManager.DataTables.GetResourceByName("Elixir");
-                    ca.SetResourceCount(elixirLocation, ca.GetResourceCount(elixirLocation) - bd.GetBuildCost(b.GetUpgradeLevel() + 1));
-                    b.StartUpgrading();
+                    ca.SetResourceCount(elixirLocation, ca.GetResourceCount(elixirLocation) - cost);
                 }
                 else
                 {
-                    var rd = bd.GetBuildResource(b.GetUpgradeLevel() + 1);
-                    ca.SetResourceCount(rd, ca.GetResourceCount(rd) - bd.GetBuildCost(b.GetUpgradeLevel() + 1));
+                    var rd = bd.GetBuildResource(b.GetUpgradeLevel());
+                    ca.SetResourceCount(rd, ca.GetResourceCount(rd) - cost);
                 }
             }
             else

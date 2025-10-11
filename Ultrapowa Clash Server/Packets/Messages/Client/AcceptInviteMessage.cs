@@ -56,6 +56,8 @@ namespace UCS.Packets.Messages.Client
                         eventStreamEntry.SetSender(this.Device.Player.Avatar);
                         eventStreamEntry.EventType = 3;
                         alliance.AddChatMessage(eventStreamEntry);
+                        if (alliance.bannedPlayers.Contains(this.Device.Player.Avatar.UserId))
+                            alliance.bannedPlayers.Remove(this.Device.Player.Avatar.UserId);
 
                         new AvailableServerCommandMessage(this.Device, b.Handle()).Send();
 

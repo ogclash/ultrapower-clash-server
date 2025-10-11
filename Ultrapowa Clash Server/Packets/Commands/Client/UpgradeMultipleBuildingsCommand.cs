@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UCS.Core;
 using UCS.Files.Logic;
 using UCS.Helpers.Binary;
@@ -33,6 +34,8 @@ namespace UCS.Packets.Commands.Client
             foreach (var buildingId in m_vBuildingIdList)
             {
                 var b = (Building) this.Device.Player.GameObjectManager.GetGameObjectByID(buildingId);
+                if (this.Device.Player.Avatar.m_vTownHallLevel+1 < Convert.ToInt32(b.GetBuildingData().ReqTh[b.UpgradeLevel+1]))
+                    continue;
                 if (b.CanUpgrade())
                 {
                     var bd = b.GetBuildingData();
@@ -43,14 +46,14 @@ namespace UCS.Packets.Commands.Client
                         if (UpgradeWithEilixir == 1)
                         {
                             ResourceData elixirLocation = CSVManager.DataTables.GetResourceByName("Elixir");
-                            ca.SetResourceCount(elixirLocation, ca.GetResourceCount(elixirLocation) - bd.GetBuildCost(b.GetUpgradeLevel() + 1));
-                            b.StartUpgrading();
+                            ca.SetResourceCount(elixirLocation, ca.GetResourceCount(elixirLocation) - cost);
                         }
                         else
                         {
-                            var rd = bd.GetBuildResource(b.GetUpgradeLevel() + 1);
-                            ca.SetResourceCount(rd, ca.GetResourceCount(rd) - bd.GetBuildCost(b.GetUpgradeLevel() + 1));
+                            var rd = bd.GetBuildResource(b.GetUpgradeLevel());
+                            ca.SetResourceCount(rd, ca.GetResourceCount(rd) - cost);
                         }
+                        Logger.Write("Upgrade with Eilixir: " + buildingId + " cost: " + cost);
                     }
                 }
             }

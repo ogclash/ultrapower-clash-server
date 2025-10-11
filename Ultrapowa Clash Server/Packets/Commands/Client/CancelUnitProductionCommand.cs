@@ -34,9 +34,18 @@ namespace UCS.Packets.Commands.Client
                 {
                     int unitLevel = this.Device.Player.Avatar.GetUnitUpgradeLevel(_Troop);
                     this.Device.Player.Avatar.SetResourceCount(_Troop.GetTrainingResource(), this.Device.Player.Avatar.GetResourceCount(_Troop.GetTrainingResource())+_Troop.GetTrainingCost(unitLevel));
-                    UnitProductionComponent barrack = (UnitProductionComponent)this.Device.Player.GameObjectManager.GetGameObjectByID(500000010).GetComponent(3, false);
-                    for (int i = 0; i < Count; i++)
-                        barrack.RemoveUnit(_Troop, SlotId);
+                    foreach (GameObject gameObject in this.Device.Player.GameObjectManager.GetAllGameObjects()[0])
+                    {
+                        if (gameObject.GetData().GetGlobalID() == 1000006)
+                        {
+                            UnitProductionComponent barrackAdditional =
+                                (UnitProductionComponent)gameObject.GetComponent(3);
+                            if (barrackAdditional.GetTotalCount() > 0)
+                                for (int i = 0; i < Count; i++)
+                                    barrackAdditional.RemoveUnit(_Troop, SlotId);
+                        }
+                    }
+                    
                 }
                 else
                 {
@@ -59,14 +68,14 @@ namespace UCS.Packets.Commands.Client
                     {
                         if (gameObject.GetData().GetGlobalID() == 1000020)
                         {
-                            factories.Add(gameObject);
+                            UnitProductionComponent factory = (UnitProductionComponent)gameObject.GetComponent(3);
+                            if (factory.GetTotalCount() > 0)
+                                for (int i = 0; i < Count; i++)
+                                    factory.RemoveUnit(_SpellData, SlotId);
                         }
                     }
                     int spelllevel = this.Device.Player.Avatar.GetUnitUpgradeLevel(_SpellData);
                     this.Device.Player.Avatar.SetResourceCount(_SpellData.GetTrainingResource(),  this.Device.Player.Avatar.GetResourceCount(_SpellData.GetTrainingResource())+_SpellData.GetTrainingCost(spelllevel));
-                    UnitProductionComponent factory = (UnitProductionComponent)factories[0].GetComponent(3, false);
-                    for (int i = 0; i < Count; i++)
-                        factory.RemoveUnit(_SpellData, SlotId);
                 }
                 else
                 {

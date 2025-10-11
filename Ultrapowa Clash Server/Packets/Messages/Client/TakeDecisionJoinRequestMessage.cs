@@ -43,6 +43,8 @@ namespace UCS.Packets.Messages.Client
                     }
                     if (!a.IsAllianceFull())
                     {
+                        if (a.bannedPlayers.Contains(requester.Avatar.UserId))
+                            a.bannedPlayers.Remove(requester.Avatar.UserId);
                         requester.Avatar.AllianceId = a.m_vAllianceId;
 
                         AllianceMemberEntry member = new AllianceMemberEntry(requester.Avatar.UserId);

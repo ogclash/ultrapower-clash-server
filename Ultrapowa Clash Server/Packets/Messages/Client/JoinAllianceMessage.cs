@@ -31,6 +31,8 @@ namespace UCS.Packets.Messages.Client
                 Alliance alliance = ObjectManager.GetAlliance(m_vAllianceId);
                 if (alliance != null)
                 {
+                    if (alliance.bannedPlayers.Contains(this.Device.Player.Avatar.UserId))
+                        return;
                     if (!alliance.IsAllianceFull())
                     {
                         this.Device.Player.Avatar.AllianceId = alliance.m_vAllianceId;

@@ -27,6 +27,11 @@ namespace UCS.Packets.Messages.Client
             }
             else
             {
+                if (this.Device.Player.Avatar.SoftBan)
+                {
+                    new OwnHomeDataMessage(this.Device, this.Device.Player).Send();
+                    return;
+                }
                 this.Device.Player.Avatar.SetName(PlayerName);
                 this.Device.Player.Avatar.m_vNameChangingLeft--;
                 AvatarNameChangeOkMessage p = new AvatarNameChangeOkMessage(this.Device)

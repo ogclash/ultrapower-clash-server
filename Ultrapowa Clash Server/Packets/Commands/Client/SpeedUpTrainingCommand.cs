@@ -32,11 +32,10 @@ namespace UCS.Packets.Commands.Client
                 {
                     if (gameObject.GetData().GetGlobalID() == 1000020)
                     {
-                        factories.Add(gameObject);
+                        UnitProductionComponent factory = (UnitProductionComponent)gameObject.GetComponent(3);
+                        factory.SpeedUp();
                     }
                 }
-                UnitProductionComponent factory = (UnitProductionComponent)factories[0].GetComponent(3, false);
-                factory.SpeedUp();
             }
             else
             {

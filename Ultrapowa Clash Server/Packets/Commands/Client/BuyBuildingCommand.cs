@@ -21,26 +21,21 @@ namespace UCS.Packets.Commands.Client
             this.BuildingId = this.Reader.ReadInt32();
             this.Unknown1 = this.Reader.ReadUInt32();
         }
-        private void TryBuildWithRetry(BuildingData bd, Building b, int attempt)
+
+
+
+        internal override void Process()
         {
+            if(this.Device.Player.GameObjectManager.removedObstacles != null && this.Device.Player.GameObjectManager.removedObstacles.Count > 0)
+                this.Device.Player.SaveToJSONforPlayer();
             var ca = this.Device.Player.Avatar;
+            var bd = (BuildingData)CSVManager.DataTables.GetDataById(BuildingId);
+            var b = new Building(bd, this.Device.Player);
+
 
             if (!bd.IsWorkerBuilding() && !this.Device.Player.HasFreeWorkers())
-            {
-                if (attempt >= 15)
-                {
-                    Logger.Say("Failed to find free worker after 10 attempts.");
-                    this.Device.Player.IsBuildingPending = false;
-                    return;
-                }
-
-                Task.Delay(1000).ContinueWith(_ =>
-                {
-                    TryBuildWithRetry(bd, b, attempt + 1);
-                });
-
                 return;
-            }
+            
 
             var rd = bd.GetBuildResource(0);
             ca.CommodityCountChangeHelper(0, rd, -bd.GetBuildCost(0));
@@ -57,31 +52,8 @@ namespace UCS.Packets.Commands.Client
             }
             b.StartConstructing(X, Y);
             this.Device.Player.GameObjectManager.AddGameObject(b);
-
-            this.Device.Player.IsBuildingPending = false;
             Logger.Say("Construction started successfully.");
-        }
-
-
-
-        internal override void Process()
-        {
-            if(this.Device.Player.GameObjectManager.removedObstacles != null && this.Device.Player.GameObjectManager.removedObstacles.Count > 0)
-                this.Device.Player.SaveToJSONforPlayer();
-            var ca = this.Device.Player.Avatar;
-            var bd = (BuildingData)CSVManager.DataTables.GetDataById(BuildingId);
-            var b = new Building(bd, this.Device.Player);
-
-            if (!ca.HasEnoughResources(bd.GetBuildResource(0), bd.GetBuildCost(0)))
-                return;
-
-            // Prevent duplicate scheduling
-            if (this.Device.Player.IsBuildingPending)
-                return;
-
-            this.Device.Player.IsBuildingPending = true;
-
-            TryBuildWithRetry(bd, b, 0);
+            
         }
 
 

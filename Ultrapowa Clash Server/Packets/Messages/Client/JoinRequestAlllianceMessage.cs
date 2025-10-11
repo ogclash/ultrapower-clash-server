@@ -40,7 +40,7 @@ namespace UCS.Packets.Messages.Client
 
                     foreach (StreamEntry VARIABLE in all.m_vChatMessages)
                     {
-                        if (VARIABLE.GetStreamEntryType() == 3 && VARIABLE.m_vSenderName.ToLower() == player.AvatarName.ToLower())
+                        if (VARIABLE.GetStreamEntryType() == 3 && VARIABLE.SenderID == player.UserId)
                         {
                             return;
                         }

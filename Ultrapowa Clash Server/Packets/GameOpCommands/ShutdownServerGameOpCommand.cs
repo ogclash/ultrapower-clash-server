@@ -1,5 +1,6 @@
 using UCS.Core;
 using UCS.Core.Network;
+using UCS.Helpers;
 using UCS.Logic;
 using UCS.Packets.Messages.Server;
 
@@ -12,12 +13,12 @@ namespace UCS.Packets.GameOpCommands
         public ShutdownServerGameOpCommand(string[] args)
         {
             m_vArgs = args;
-            SetRequiredAccountPrivileges(4);
+            SetRequiredAccountPrivileges(10);
         }
 
         public override void Execute(Level level)
         {
-            if (GetRequiredAccountPrivileges())
+            if (level.Avatar.AccountPrivileges >= GetRequiredAccountPrivileges() || level.Avatar.UserId == Utils.ParseConfigInt("AdminAccount"))
             {
                 foreach (var onlinePlayer in ResourcesManager.m_vOnlinePlayers)
                 {

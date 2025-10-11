@@ -14,12 +14,13 @@ namespace UCS.Packets.GameOpCommands
         public SwichAccGameOpCommand(string[] args)
         {
             m_vArgs = args;
+            SetRequiredAccountPrivileges(0);
         }
 
         public override async void Execute(Level level)
         {
             try {
-                if (GetRequiredAccountPrivileges())
+                if (level.Avatar.AccountPrivileges >= GetRequiredAccountPrivileges() || level.Avatar.UserId == Utils.ParseConfigInt("AdminAccount"))
                 {
                     bool switched = level.Avatar.old_account != level.Avatar.UserId;
                     if (m_vArgs.Length >= 3)
@@ -56,11 +57,8 @@ namespace UCS.Packets.GameOpCommands
                     }
                     else if (m_vArgs.Length >= 2)
                     {
-                        int adminaccount=  0;
-                        try {
-                          adminaccount = Utils.ParseConfigInt("AdminAccount");
-                        }catch (Exception){}
-                        if (level.Avatar.UserId == adminaccount)
+                        int adminaccount = Utils.ParseConfigInt("AdminAccount");
+                        if (level.Avatar.UserId == adminaccount || level.Avatar.AccountPrivileges >= 8)
                         {
                             long targetId = Convert.ToInt64(m_vArgs[1]);
                             var player = await ResourcesManager.GetPlayer(targetId);

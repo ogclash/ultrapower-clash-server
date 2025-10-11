@@ -1,5 +1,6 @@
 using System;
 using UCS.Core;
+using UCS.Helpers;
 using UCS.Logic;
 
 namespace UCS.Packets.GameOpCommands
@@ -16,7 +17,7 @@ namespace UCS.Packets.GameOpCommands
 
         public override async void Execute(Level level)
         {
-            if (GetRequiredAccountPrivileges())
+            if (level.Avatar.AccountPrivileges >= GetRequiredAccountPrivileges() || level.Avatar.UserId == Utils.ParseConfigInt("AdminAccount"))
             {
                 if (m_vArgs.Length >= 2)
                 {
@@ -27,6 +28,7 @@ namespace UCS.Packets.GameOpCommands
                         if (l != null)
                         {
                             l.Avatar.AccountBanned = false;
+                            l.Avatar.SoftBan = false;
                         }
                     }
                     catch

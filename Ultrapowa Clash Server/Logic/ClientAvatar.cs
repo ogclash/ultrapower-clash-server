@@ -84,7 +84,8 @@ namespace UCS.Logic
         // Boolean
         internal bool m_vPremium = false;
         internal bool m_vAndroid;
-        internal bool AccountBanned = false;
+        internal bool AccountBanned;
+        internal bool SoftBan;
 
         //Datetime
         internal DateTime m_vAccountCreationDate;
@@ -598,7 +599,8 @@ namespace UCS.Logic
             
             this.m_vAccountCreationDate = jsonObject["avatar_creation_date"].ToObject<DateTime>();
             this.AccountPrivileges = jsonObject["avatar_privilages"].ToObject<byte>();
-            this.AccountBanned = false;
+            this.AccountBanned = jsonObject["avatar_banned"].ToObject<bool>();
+            this.SoftBan = jsonObject["soft_ban"]?.ToObject<bool?>() ?? false;
             
             //this.m_vActiveLayout = jsonObject["active_layout"].ToObject<int>();
             this.m_vActiveLayout = 0;
@@ -622,8 +624,11 @@ namespace UCS.Logic
             this.m_vExperience = jsonObject["experience"].ToObject<int>();
             this.m_vCurrentGems = jsonObject["current_gems"].ToObject<int>();
             SetScore(jsonObject["score"].ToObject<int>());
-            
-            this.m_vNameChangingLeft = 0xFF;
+
+            if (this.SoftBan)
+                this.m_vNameChangingLeft = 0;
+            else
+                this.m_vNameChangingLeft = 0xFF;
             this.m_vnameChosenByUser = jsonObject["nameChosenByUser"].ToObject<byte>();
             
             long now = DateTimeOffset.UtcNow.ToUnixTimeSeconds(); // current timestamp
@@ -1042,7 +1047,8 @@ namespace UCS.Logic
                 {"IPAddress", this.IPAddress},
                 {"avatar_creation_date", this.m_vAccountCreationDate},
                 {"avatar_privilages", this.AccountPrivileges},
-                {"avatar_banned", false},
+                {"avatar_banned", this.AccountBanned},
+                {"soft_ban", this.SoftBan},
                 {"active_layout", 1},
                 {"last_tick_save", this.LastTickSaved},
                 {"android", this.m_vAndroid},

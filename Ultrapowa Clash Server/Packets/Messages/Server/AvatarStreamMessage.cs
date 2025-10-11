@@ -71,8 +71,16 @@ namespace UCS.Packets.Messages.Server
                 this.Data.AddInt(avatar.LowID);      
                 this.Data.AddString(avatar.AvatarName);
                 this.Data.AddInt(avatar.m_vAvatarLevel);
-                this.Data.AddInt(0);
-                this.Data.AddInt(0);
+                if (BattleResult["timestamp_s"] != null)
+                {
+                    this.Data.AddInt(0);
+                    this.Data.AddInt((int)DateTimeOffset.UtcNow.ToUnixTimeSeconds() - (int)BattleResult["timestamp_s"]);
+                }
+                else
+                {
+                    this.Data.AddInt(0);
+                    this.Data.AddInt(0);
+                }
                 if ((int)BattleResult["new"] == 2)
                 {
                     this.Data.Add(2);

@@ -132,12 +132,30 @@ namespace UCS.Packets.Commands.Client
 					
 					if (i.Value < traincount)
 						traincount = i.Value;
-					for (int j = 0; j < traincount; j++)
+					if (!((Building)this.Device.Player.GameObjectManager.GetGameObjectByID(500000010)).IsConstructing() || barrack.GetTotalCount() >1)
 					{
-						barrack.AddUnitToProductionQueue(cd, true);
+						for (int j = 0; j < traincount; j++)
+							barrack.AddUnitToProductionQueue(cd, true);
+					}
+					else
+					{
+						foreach (GameObject gameObject in this.Device.Player.GameObjectManager.GetAllGameObjects()[0])
+						{
+							if (gameObject.GlobalId == 500000010)
+								continue;
+							if (gameObject.GetData().GetGlobalID() == 1000006)
+							{
+								UnitProductionComponent barrackAdditional =
+									(UnitProductionComponent)gameObject.GetComponent(3);
+								if (barrackAdditional.GetTotalCount() > 0)
+									for (int j = 0; j < traincount; j++)
+										barrackAdditional.AddUnitToProductionQueue(cd, true);
+							}
+						}
 					}
 					ResourceData _TrainingResource = cd.GetTrainingResource();
-					this.Device.Player.Avatar.SetResourceCount(_TrainingResource, this.Device.Player.Avatar.GetResourceCount(_TrainingResource) - cd.GetTrainingCost(this.Device.Player.Avatar.GetUnitUpgradeLevel(cd)));
+					for (int j = 0; j < traincount; j++)
+						this.Device.Player.Avatar.SetResourceCount(_TrainingResource, this.Device.Player.Avatar.GetResourceCount(_TrainingResource) - cd.GetTrainingCost(this.Device.Player.Avatar.GetUnitUpgradeLevel(cd)));
 					continue;
 					if (_DataSlot != null)
 					{
@@ -172,7 +190,8 @@ namespace UCS.Packets.Commands.Client
 					List<GameObject> factories = new List<GameObject>();
 					foreach (GameObject gameObject in buildings)
 					{
-						if (gameObject.GetData().GetGlobalID() == 1000020)
+						Building b = (Building) gameObject;
+						if (!b.IsConstructing() && gameObject.GetData().GetGlobalID() == 1000020)
 						{
 							factories.Add(gameObject);
 						}
@@ -190,7 +209,8 @@ namespace UCS.Packets.Commands.Client
 						factory.AddUnitToProductionQueue(cd, true);
 					}
 					ResourceData _CastResource = cd.GetTrainingResource();
-					this.Device.Player.Avatar.SetResourceCount(_CastResource, this.Device.Player.Avatar.GetResourceCount(_CastResource) - cd.GetTrainingCost(this.Device.Player.Avatar.GetUnitUpgradeLevel(cd)));
+					for (int j = 0; j < traincount; j++)
+						this.Device.Player.Avatar.SetResourceCount(_CastResource, this.Device.Player.Avatar.GetResourceCount(_CastResource) - cd.GetTrainingCost(this.Device.Player.Avatar.GetUnitUpgradeLevel(cd)));
 					continue;
 					if (_DataSlot != null)
 					{

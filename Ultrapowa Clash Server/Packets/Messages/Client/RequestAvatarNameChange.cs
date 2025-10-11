@@ -27,8 +27,12 @@ namespace UCS.Packets.Messages.Client
         {
             try
             {
-                long id = this.Device.Player.Avatar.UserId;
-                Level l = await ResourcesManager.GetPlayer(id);
+                if (this.Device.Player.Avatar.SoftBan)
+                {
+                    new OwnHomeDataMessage(this.Device, this.Device.Player).Send();
+                    return;
+                }
+                Level l = this.Device.Player;
                 if (l != null)
                 {
                     if (PlayerName.Length > 15)

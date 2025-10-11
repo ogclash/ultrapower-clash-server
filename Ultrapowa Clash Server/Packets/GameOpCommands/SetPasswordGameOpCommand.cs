@@ -1,4 +1,5 @@
 using UCS.Core.Network;
+using UCS.Helpers;
 using UCS.Logic;
 using UCS.Packets.Messages.Server;
 
@@ -11,11 +12,12 @@ namespace UCS.Packets.GameOpCommands
         public SetPasswordGameOpCommand(string[] args)
         {
             m_vArgs = args;
+            SetRequiredAccountPrivileges(0);
         }
 
         public override async void Execute(Level level)
         {
-            if (GetRequiredAccountPrivileges())
+            if (level.Avatar.AccountPrivileges >= GetRequiredAccountPrivileges() || level.Avatar.UserId == Utils.ParseConfigInt("AdminAccount"))
             {
                 if (m_vArgs.Length >= 3)
                 {

@@ -74,11 +74,17 @@ namespace UCS.Packets.Commands.Client
                             eventStreamEntry.EventType = 1;
                             alliance.AddChatMessage(eventStreamEntry);
 
+                            StreamEntry oldmessage = alliance.m_vChatMessages.Find(c => c.SenderID == m_vAvatarId && c.m_vType == 1);
+                            alliance.bannedPlayers.Add(m_vAvatarId);
                             foreach (AllianceMemberEntry op in alliance.GetAllianceMembers())
                             {
                                 Level alliancemembers = await ResourcesManager.GetPlayer(op.AvatarId);
                                 if (alliancemembers.Client != null)
                                 {
+                                    if (oldmessage != null && oldmessage.m_vSenderName == targetAccount.Avatar.AvatarName)
+                                    {
+                                        new AllianceStreamEntryRemovedMessage(alliancemembers.Client, oldmessage.ID).Send();
+                                    }
                                     new AllianceStreamEntryMessage(alliancemembers.Client) {StreamEntry = eventStreamEntry}.Send();
                                 }
                             }

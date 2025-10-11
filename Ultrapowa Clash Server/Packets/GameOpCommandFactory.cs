@@ -15,10 +15,10 @@ namespace UCS.Packets
         {
             try {
                 m_vCommands = new Dictionary<string, Type>();
-                m_vCommands.Add("/rename", typeof(RenameAvatarGameOpCommand));
                 m_vCommands.Add("/visit", typeof(VisitGameOpCommand));
                 m_vCommands.Add("/id", typeof(GetIdGameopCommand));
                 m_vCommands.Add("/help", typeof(HelpGameOpCommand));
+                m_vCommands.Add("/givegems", typeof(GiveGemsOpCommand));
                 m_vCommands.Add("/switchacc", typeof(SwichAccGameOpCommand));
                 m_vCommands.Add("/newaccount", typeof(NewAccountGameOpCommand));
                 m_vCommands.Add("/setpassword", typeof(SetPasswordGameOpCommand));
@@ -26,21 +26,23 @@ namespace UCS.Packets
                 m_vCommands.Add("/clearinbox", typeof(ClearInboxGameOpCommand));
                 m_vCommands.Add("/clearbattles", typeof(ClearBattleLogGameOpCommand));
                 m_vCommands.Add("/accinfo", typeof(AccountInformationGameOpCommand));
+                m_vCommands.Add("/ban", typeof(BanGameOpCommand));
+                m_vCommands.Add("/softban", typeof(BanIpGameOpCommand));
+                m_vCommands.Add("/unban", typeof(UnbanGameOpCommand));
+                m_vCommands.Add("/kick", typeof(KickGameOpCommand));
+                m_vCommands.Add("/rename", typeof(RenameAvatarGameOpCommand));
+                m_vCommands.Add("/op", typeof(SetPrivilegesGameOpCommand));
+                m_vCommands.Add("/status", typeof(ServerStatusGameOpCommand));
                 
                 m_vCommandsDeveloper = new Dictionary<string, Type>();
-                m_vCommandsDeveloper.Add("/ban", typeof(BanGameOpCommand));
-                m_vCommandsDeveloper.Add("/kick", typeof(KickGameOpCommand));
                 m_vCommandsDeveloper.Add("/addgems", typeof(AddGemsOpCommand));
-                m_vCommandsDeveloper.Add("/op", typeof(SetPrivilegesGameOpCommand));
                 m_vCommandsDeveloper.Add("/shutdown", typeof(ShutdownServerGameOpCommand));
-                m_vCommandsDeveloper.Add("/unban", typeof(UnbanGameOpCommand));
                 m_vCommandsDeveloper.Add("/sysmsg", typeof(SystemMessageGameOpCommand));
                 m_vCommandsDeveloper.Add("/max", typeof(MaxRessourcesCommand));
                 m_vCommandsDeveloper.Add("/min", typeof(MinRessourcesCommand));
                 m_vCommandsDeveloper.Add("/maxbase", typeof(MaxBaseGameOpCommand)); // just for testing!
                 m_vCommandsDeveloper.Add("/reload", typeof(SaveAccountGameOpCommand));
                 m_vCommandsDeveloper.Add("/becomeleader", typeof(BecomeLeaderGameOpCommand));
-                m_vCommandsDeveloper.Add("/status", typeof(ServerStatusGameOpCommand));
             } catch (Exception) {}
         }
 

@@ -46,6 +46,8 @@ namespace UCS.Logic.Manager
             {
                 if (go.ClassId == 3)
                 {
+	                var o = (Obstacle)go;
+	                o.SpeedUpClearing();
                 }
                 else
                 {
@@ -78,6 +80,8 @@ namespace UCS.Logic.Manager
 				currentGOTime = -1;
 				if (go.ClassId == 3)
 				{
+					var o = (Obstacle)go;
+					currentGOTime = o.GetRemainingClearingTime();
 				}
 				else
 				{

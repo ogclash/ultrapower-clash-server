@@ -89,6 +89,7 @@ namespace UCS.Packets.Messages.Client
                 avatar.AllianceId = 0;
                 avatar.m_vDonated = 0;
                 avatar.m_vReceived = 0;
+                StreamEntry oldmessage = alliance.m_vChatMessages.Find(c => c.SenderID == avatar.UserId && c.m_vType == 1);
 
                 if (alliance.GetAllianceMembers().Count > 0)
                 {
@@ -99,6 +100,10 @@ namespace UCS.Packets.Messages.Client
                     alliance.AddChatMessage(eventStreamEntry);
                     foreach (Level onlinePlayer in ResourcesManager.m_vOnlinePlayers)
                     {
+                        if (oldmessage != null && oldmessage.m_vSenderName == avatar.AvatarName)
+                        {
+                            new AllianceStreamEntryRemovedMessage(onlinePlayer.Client, oldmessage.ID).Send();
+                        }
                         if (onlinePlayer.Avatar.AllianceId == alliance.m_vAllianceId)
                         {
                             new AllianceStreamEntryMessage(onlinePlayer.Client) { StreamEntry = eventStreamEntry }.Send();

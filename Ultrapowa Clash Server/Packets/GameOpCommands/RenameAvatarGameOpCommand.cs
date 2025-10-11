@@ -1,6 +1,7 @@
 using System;
 using UCS.Core;
 using UCS.Core.Network;
+using UCS.Helpers;
 using UCS.Logic;
 using UCS.Packets.Messages.Server;
 
@@ -18,7 +19,7 @@ namespace UCS.Packets.GameOpCommands
 
         public override async void Execute(Level level)
         {
-            if (GetRequiredAccountPrivileges())
+            if (level.Avatar.AccountPrivileges >= GetRequiredAccountPrivileges() || level.Avatar.UserId == Utils.ParseConfigInt("AdminAccount"))
             {
                 if (m_vArgs.Length >= 3)
                 {
@@ -34,9 +35,6 @@ namespace UCS.Packets.GameOpCommands
                                 var p = new AvatarNameChangeOkMessage(l.Client) {AvatarName = m_vArgs[2]};
                                 Processor.Send(p);
                             }
-                        }
-                        else
-                        {
                         }
                     }
                     catch (Exception)

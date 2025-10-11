@@ -55,6 +55,24 @@ namespace UCS.Packets.Commands.Client
                     {
                         _DataSlot.Value = _DataSlot.Value - _Unit.Count;
                     }
+
+                    
+                    // to be disabled after enough testing
+                    if (!((Building)this.Device.Player.GameObjectManager.GetGameObjectByID(500000010)).IsConstructing())
+                    {
+                        foreach (GameObject gameObject in this.Device.Player.GameObjectManager.GetAllGameObjects()[0])
+                        {
+                            if (gameObject.GlobalId == 500000010)
+                                continue;
+                            if (gameObject.GetData().GetGlobalID() == 1000006)
+                            {
+                                UnitProductionComponent barrackAdditional =
+                                    (UnitProductionComponent)gameObject.GetComponent(3);
+                                if (barrackAdditional.GetTotalCount() > 0)
+                                    barrackAdditional.RemoveAllUnits();
+                            }
+                        }
+                    }
                 }
                 else if (_Unit.Data.ToString().StartsWith("260"))
                 {

@@ -408,7 +408,7 @@ namespace UCS.Packets.Messages.Client
                     NewUser(true);
                     return;
                 }
-                if (Android == false)
+                if (Android)
                 {
                     var lines = File.ReadAllLines("auth");
                     foreach (var line in lines)

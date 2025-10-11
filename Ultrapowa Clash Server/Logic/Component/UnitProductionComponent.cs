@@ -23,7 +23,7 @@ namespace UCS.Logic
 
         public override int Type => 3;
 
-        readonly List<DataSlot> m_vUnits;
+        public readonly List<DataSlot> m_vUnits;
         readonly List<DataSlot> cookedUnits;
         private CombatItemData lastUnitData;
         private int lastIndex;
@@ -337,7 +337,12 @@ namespace UCS.Logic
                 RemoveUnit((CombatItemData) m_vUnits[0].Data);
             }
         }
-        
+
+        public void RemoveAllUnits()
+        {
+            m_vUnits.Clear();
+        }
+
 
         public void RemoveUnit(CombatItemData cd, int input_index = -1)
         {

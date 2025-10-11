@@ -44,10 +44,18 @@ namespace UCS.Logic
 			var constructionTime = GetObstacleData().ClearTimeSeconds;
 			var exp = (int)Math.Sqrt(constructionTime);
 			Avatar.Avatar.AddExperience(exp);
-			
-			var rd = CSVManager.DataTables.GetResourceByName(GetObstacleData().LootResource);
-			var count = GetObstacleData().LootCount;
-			Avatar.Avatar.CommodityCountChangeHelper(0, rd, GetObstacleData().LootCount);
+			int count = GetObstacleData().LootCount;
+			if (GetObstacleData().LootResource.ToLower() == "diamonds")
+			{
+				if (count < 0)
+					count = 1;
+				Avatar.Avatar.AddDiamonds(count);
+			}
+			else
+			{
+				ResourceData elixirLocation = CSVManager.DataTables.GetResourceByName("Elixir");
+				Avatar.Avatar.SetResourceCount(elixirLocation, count);
+			}
 		}
 
         public ObstacleData GetObstacleData() => (ObstacleData)GetData();

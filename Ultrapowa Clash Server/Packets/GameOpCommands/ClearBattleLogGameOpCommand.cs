@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
 using UCS.Core;
+using UCS.Helpers;
 using UCS.Logic;
 
 namespace UCS.Packets.GameOpCommands
@@ -17,7 +18,7 @@ namespace UCS.Packets.GameOpCommands
 
         public override void Execute(Level level)
         {
-            if (GetRequiredAccountPrivileges())
+            if (level.Avatar.AccountPrivileges >= GetRequiredAccountPrivileges() || level.Avatar.UserId == Utils.ParseConfigInt("AdminAccount"))
             {
                 level.Avatar.battles = new List<JObject>();
                 ResourcesManager.DisconnectClient(level.Client);

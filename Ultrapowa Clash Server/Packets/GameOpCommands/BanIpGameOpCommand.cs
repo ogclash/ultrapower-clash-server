@@ -1,6 +1,8 @@
 using System;
 using UCS.Core;
 using UCS.Core.Network;
+using UCS.Core.Settings;
+using UCS.Helpers;
 using UCS.Logic;
 using UCS.Packets.Messages.Server;
 
@@ -13,12 +15,12 @@ namespace UCS.Packets.GameOpCommands
         public BanIpGameOpCommand(string[] args)
         {
             m_vArgs = args;
-            SetRequiredAccountPrivileges(3);
+            SetRequiredAccountPrivileges(1);
         }
 
         public override async void Execute(Level level)
         {
-            if (GetRequiredAccountPrivileges())
+            if (level.Avatar.AccountPrivileges >= GetRequiredAccountPrivileges() || level.Avatar.UserId == Utils.ParseConfigInt("AdminAccount"))
                 if (m_vArgs.Length >= 1)
                     try
                     {
@@ -27,19 +29,10 @@ namespace UCS.Packets.GameOpCommands
                         if (l != null)
                             if (l.Avatar.AccountPrivileges < level.Avatar.AccountPrivileges)
                             {
-                                l.Avatar.AccountBanned = true;
-                                l.Avatar.AccountPrivileges = 0; ;
-                                if (ResourcesManager.IsPlayerOnline(l))
-                                {
-                                    Processor.Send(new OutOfSyncMessage(l.Client));
-                                }
+                                l.Avatar.SoftBan = true;
+                                l.Avatar.AccountBanned = false;
+                                l.Avatar.m_vNameChangingLeft = 0;
                             }
-                            else
-                            {
-                            }
-                        else
-                        {
-                        }
                     }
                     catch 
                     {

@@ -1,6 +1,7 @@
 using System;
 using UCS.Core;
 using UCS.Core.Network;
+using UCS.Helpers;
 using UCS.Logic;
 using UCS.Packets.Messages.Server;
 
@@ -13,12 +14,12 @@ namespace UCS.Packets.GameOpCommands
         public BanGameOpCommand(string[] args)
         {
             m_vArgs = args;
-            SetRequiredAccountPrivileges(2);
+            SetRequiredAccountPrivileges(5);
         }
 
         public override async void Execute(Level level)
         {
-            if (GetRequiredAccountPrivileges())
+            if (level.Avatar.AccountPrivileges >= GetRequiredAccountPrivileges() || level.Avatar.UserId == Utils.ParseConfigInt("AdminAccount"))
             {
                 if (m_vArgs.Length >= 2)
                 {
@@ -37,12 +38,6 @@ namespace UCS.Packets.GameOpCommands
                                     Processor.Send(new OutOfSyncMessage(l.Client));
                                 }
                             }
-                            else
-                            {
-                            }
-                        }
-                        else
-                        {
                         }
                     }
                     catch 

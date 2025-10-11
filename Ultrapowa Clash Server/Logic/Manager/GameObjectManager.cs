@@ -39,9 +39,6 @@ namespace UCS.Logic.Manager
 
             if (!removedObstacles.Contains(go))
                 removedObstacles.Add(go);
-            
-            if (go.GetData().GetGlobalID() == 8000030)
-                this.m_vLevel.Avatar.AddDiamonds(25);
         }
 
 		public void AddGameObject(GameObject go)
