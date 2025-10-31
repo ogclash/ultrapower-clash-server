@@ -1,4 +1,5 @@
-﻿using UCS.Helpers.Binary;
+﻿using UCS.Core;
+using UCS.Helpers.Binary;
 using UCS.Logic;
 
 namespace UCS.Packets.Commands.Client
@@ -21,6 +22,7 @@ namespace UCS.Packets.Commands.Client
         internal override void Process()
         {
             GameObject go = this.Device.Player.GameObjectManager.GetGameObjectByID(BuildingId);
+            //Logger.Say($@"{this.Device.Player.Avatar.AvatarName} moved building with id: {BuildingId}");
             go.SetPositionXY(X, Y, this.Device.Player.Avatar.m_vActiveLayout);
         }
 

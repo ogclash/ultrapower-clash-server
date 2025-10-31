@@ -20,13 +20,13 @@ namespace UCS.Packets.Messages.Server
             List<byte> packet1 = new List<byte>();
             int i = 0;
 
-            foreach (Alliance alliance in ObjectManager.GetInMemoryAlliances().OrderByDescending(t => t.m_vScore))
+            foreach (Alliance alliance in ObjectManager.GetInMemoryAlliances().OrderByDescending(t => t.m_vScore).Take(200))
             {
                 try
                 {
-                    if (alliance.m_vAllianceMembers.Count() == 0)
+                    if (!alliance.m_vAllianceMembers.Any())
                         continue;
-                    if (i >= 100)
+                    if (i >= 200)
                         break;
                     packet1.AddLong(alliance.m_vAllianceId);
                     packet1.AddString(alliance.m_vAllianceName);
@@ -45,7 +45,10 @@ namespace UCS.Packets.Messages.Server
             this.Data.AddInt(i);
             this.Data.AddRange(packet1);
 
-            this.Data.AddInt((int) TimeSpan.FromDays(1).TotalSeconds);
+            DateTime now = DateTime.Now;
+            DateTime nextMonth = new DateTime(now.Year, now.Month, 1).AddMonths(1);
+            TimeSpan timeUntilNextMonth = nextMonth - now;
+            this.Data.AddInt((int)timeUntilNextMonth.TotalSeconds);
             this.Data.AddInt(3);
             this.Data.AddInt(50000);
             this.Data.AddInt(30000);

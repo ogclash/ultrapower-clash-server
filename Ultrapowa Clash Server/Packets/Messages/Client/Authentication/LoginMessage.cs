@@ -154,7 +154,7 @@ namespace UCS.Packets.Messages.Client
                 {
                     this.adminaccount=  0;
                     try {
-                        this.adminaccount = Utils.ParseConfigInt("AdminAccount");
+                        this.adminaccount = Constants.SuperAdmin;
                     }catch (Exception){}
                     if (this.UserID == this.adminaccount)
                     {
@@ -276,7 +276,6 @@ namespace UCS.Packets.Messages.Client
                 level.Avatar.UserId = this.UserID;
                 level.Avatar.UserToken = this.UserToken;
                 ObjectManager.getDatabaseManager().CreateAccount(level);
-                
             }
 
             if (Convert.ToBoolean(ConfigurationManager.AppSettings["useCustomPatch"]) && this.level.updated == false)
@@ -292,6 +291,9 @@ namespace UCS.Packets.Messages.Client
                 this.level.updated = true;
                 return;
             }
+
+            level.Avatar.attackedPlayers.Clear();
+            level.Avatar.time_out_timestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
             ResourcesManager.LogPlayerIn(level, Device);
             level.Avatar.m_vAndroid = this.Android;
             level.Avatar.Region = this.Region.Split('-')[0].ToUpper();
@@ -310,18 +312,15 @@ namespace UCS.Packets.Messages.Client
 
             if (level.Avatar.AllianceId > 0)
             {
-
                 Alliance alliance = ObjectManager.GetAlliance(level.Avatar.AllianceId);
-                if (alliance != null)
+                if (alliance != null && alliance.m_vAllianceMembers.ContainsKey(level.Avatar.UserId))
                 {
                     new AllianceFullEntryMessage(this.Device, alliance).Send();
                     new AllianceStreamMessage(this.Device, alliance).Send();
                     new AllianceWarHistoryMessage(this.Device, alliance).Send();
                 }
                 else
-                {
                     this.level.Avatar.AllianceId = 0;
-                }
             }
             new AvatarStreamMessage(this.Device, true).Send();
             if (this.MinorVersion < 551)
@@ -387,11 +386,19 @@ namespace UCS.Packets.Messages.Client
                 String amessage = Utils.ParseConfigString("AdminMessage").Replace("/n:", "\n");
                 AllianceMailStreamEntry server_update = new AllianceMailStreamEntry();
                 Level admin = await ResourcesManager.GetPlayer(this.adminaccount);
-                var admin_alliance = ObjectManager.GetAlliance(admin.Avatar.AllianceId);
+                Alliance admin_alliance = ObjectManager.GetAlliance(admin.Avatar.AllianceId);
                 server_update.SetSender(admin.Avatar);
-                server_update.AllianceId = admin_alliance.m_vAllianceId;
-                server_update.AllianceBadgeData = admin_alliance.m_vAllianceBadgeData;
-                server_update.AllianceName = admin_alliance.m_vAllianceName;
+                if (admin.Avatar.AllianceId > 0)
+                {
+                    server_update.AllianceId = admin_alliance.m_vAllianceId;
+                    server_update.AllianceBadgeData = admin_alliance.m_vAllianceBadgeData;
+                    server_update.AllianceName = admin_alliance.m_vAllianceName;
+                }
+                else
+                {
+                    server_update.AllianceId = 0;
+                    server_update.AllianceBadgeData = 1526738773;
+                }
                 server_update.Message = amessage;
                 AvatarStreamEntryMessage sys_message = new AvatarStreamEntryMessage(level.Client);
                 sys_message.SetAvatarStreamEntry(server_update, false);
@@ -408,7 +415,7 @@ namespace UCS.Packets.Messages.Client
                     NewUser(true);
                     return;
                 }
-                if (Android)
+                if (!Android)
                 {
                     var lines = File.ReadAllLines("auth");
                     foreach (var line in lines)
@@ -454,11 +461,19 @@ namespace UCS.Packets.Messages.Client
                             level.Avatar.UserToken = UserToken;
                         else
                         {
-                            new LoginFailedMessage(Device)
+                            if (!Android)
                             {
-                                ErrorCode = 12,
-                                Reason = "We have some Problems with your Account. Please contact Server Support."
-                            }.Send();
+                                UserID = Seed;
+                                CheckClient();
+                            }
+                            else
+                            {
+                                new LoginFailedMessage(Device)
+                                {
+                                    ErrorCode = 12,
+                                    Reason = "We have some Problems with your Account. Please contact Server Support."
+                                }.Send();
+                            }
                             return;
                         }
                     }
@@ -524,7 +539,7 @@ namespace UCS.Packets.Messages.Client
 
         private void NewUser(bool empty_login = false, long user_id = 0)
         {
-            Level oldlevel = level;
+            var oldlevel = level;
             level = ObjectManager.CreateAvatar(user_id, null);
             if (oldlevel != null)
                 oldlevel.Avatar.account_switch = (int)level.Avatar.UserId;
@@ -558,7 +573,7 @@ namespace UCS.Packets.Messages.Client
             string randomPart;
             using (var rng = RandomNumberGenerator.Create())
             {
-                var bytes = new byte[16]; // 8 bytes → enough for 10 Base64 chars
+                var bytes = new byte[16];
                 rng.GetBytes(bytes);
                 randomPart = Convert.ToBase64String(bytes)
                     .Replace("+", "")
@@ -569,7 +584,7 @@ namespace UCS.Packets.Messages.Client
 
             // Combine
             string token = deterministicPart + randomPart;
-            return token; // 20 chars
+            return token;
         }
     }
 }

@@ -1,7 +1,7 @@
 using System;
 using UCS.Core;
 using UCS.Core.Network;
-using UCS.Helpers;
+using UCS.Core.Settings;
 using UCS.Logic;
 using UCS.Packets.Messages.Server;
 using UCS.Packets.Messages.Server.Support;
@@ -22,7 +22,7 @@ namespace UCS.Packets.GameOpCommands
 
         public override async void Execute(Level level)
         {
-            if (level.Avatar.AccountPrivileges >= GetRequiredAccountPrivileges() || level.Avatar.UserId == Utils.ParseConfigInt("AdminAccount"))
+            if (level.Avatar.AccountPrivileges >= GetRequiredAccountPrivileges() || level.Avatar.UserId == Constants.SuperAdmin)
             {
                 try
                 {

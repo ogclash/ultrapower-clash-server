@@ -4,7 +4,7 @@ using System.Linq;
 using System.Management;
 using UCS.Core;
 using UCS.Core.Network;
-using UCS.Helpers;
+using UCS.Core.Settings;
 using UCS.Logic;
 using UCS.Packets.Messages.Server;
 
@@ -28,7 +28,7 @@ namespace UCS.Packets.GameOpCommands
 
         public override void Execute(Level level)
         {
-            if (level.Avatar.AccountPrivileges >= GetRequiredAccountPrivileges() || level.Avatar.UserId == Utils.ParseConfigInt("AdminAccount"))
+            if (level.Avatar.AccountPrivileges >= GetRequiredAccountPrivileges() || level.Avatar.UserId == Constants.SuperAdmin)
             {
                 if (m_vArgs.Length >= 1)
                 {
@@ -62,19 +62,6 @@ namespace UCS.Packets.GameOpCommands
                                    "\nTotal Server Ram Usage: " + RAMUsage + "MB / " + Performances.GetTotalMemory() + "MB" +
                                    "\nServer Disk Space Used: " + Math.Round(DiskspaceUsed, 2) + "GB / " + Math.Round(TotalDiskSize, 2) + "GB";
                     _MSG.Send();
-                    /*
-                    var mail = new AllianceMailStreamEntry();
-                    mail.ID = (int)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
-                    mail.SetSender(avatar);
-                    mail.IsNew = 2;
-                    mail.AllianceId = 0;
-                    mail.AllianceBadgeData = 1526735450;
-                    mail.AllianceName = "UCS Server Information";
-
-                    //var p = new AvatarStreamEntryMessage(level.Client);
-                    //p.SetAvatarStreamEntry(mail);
-                    //Processor.Send(p);
-                    */
                 }
             }
             else

@@ -2,8 +2,8 @@
 {
     public static class Key
     {
-       // public static KeyPairUCS Crypto
-         //   => new KeyPairUCS((byte[])_standardPublicKey.Clone(), (byte[])_standardPrivateKey.Clone());
+        /*public static KeyPairUCS Crypto
+            => new KeyPairUCS((byte[])_standardPublicKey.Clone(), (byte[])_standardPrivateKey.Clone());*/
 
         internal static readonly byte[] PrivateKey =
         {

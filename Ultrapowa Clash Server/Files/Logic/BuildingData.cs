@@ -315,13 +315,13 @@ namespace UCS.Files.Logic
 
         public List<int> GetMaxStoredResourceCounts(int level)
         {
-            var maxStoredResourceCounts = new List<int>();
-            var resourceDataTable = CSVManager.DataTables.GetTable(2);
+            List<int> maxStoredResourceCounts = new List<int>();
+            DataTable resourceDataTable = CSVManager.DataTables.GetTable(2);
             for (var i = 0; i < resourceDataTable.GetItemCount(); i++)
             {
                 var value = 0;
-                var resourceData = (ResourceData) resourceDataTable.GetItemAt(i);
-                var propertyName = "MaxStored" + resourceData.GetName();
+                ResourceData resourceData = (ResourceData) resourceDataTable.GetItemAt(i);
+                string propertyName = "MaxStored" + resourceData.GetName();
                 if (GetType().GetProperty(propertyName) != null)
                 {
                     var obj = GetType().GetProperty(propertyName).GetValue(this, null);

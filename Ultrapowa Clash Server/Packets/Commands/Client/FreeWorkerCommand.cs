@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Net;
 using UCS.Core;
 using UCS.Core.Checker;
 using UCS.Helpers.Binary;
@@ -28,7 +27,6 @@ namespace UCS.Packets.Commands.Client
                     Console.WriteLine("Detected UCS.Exploit");
                     return;
                 }
-                Depth = Depth;
             }
 
         }
@@ -36,11 +34,7 @@ namespace UCS.Packets.Commands.Client
         internal override void Process()
         {
             if (Depth >= MaxEmbeddedDepth)
-            {
-                IPEndPoint r = this.Device.Socket.RemoteEndPoint as IPEndPoint;
-                ConnectionBlocker.AddNewIpToBlackList(r.Address.ToString());
-                ResourcesManager.DropClient(this.Device.Socket.Handle);
-            }
+                ConnectionBlocker.AddNewIpToBlackList(this.Device);
 
             if (this.Device.Player.WorkerManager.GetFreeWorkers() == 0)
 

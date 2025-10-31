@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Net;
+using UCS.Packets;
 using static UCS.Core.Logger;
 
 namespace UCS.Core.Checker
@@ -20,6 +22,8 @@ namespace UCS.Core.Checker
 
                     foreach (string st in s)
                     {
+                        if (st.Contains("127.0.0.1"))
+                            continue;
                         Banned_IPs.Add(st);
                     }
 
@@ -31,9 +35,10 @@ namespace UCS.Core.Checker
                 using (StreamReader sr = new StreamReader("Banned_IP's.ini"))
                 {
                     string[] s = sr.ReadToEnd().Split('*');
-
+                    
                     foreach (string st in s)
                     {
+                        
                         Banned_IPs.Add(st);
                     }
 
@@ -44,6 +49,8 @@ namespace UCS.Core.Checker
 
         public static void AddNewIpToBlackList(string s)
         {
+            if (s.Contains("127.0.0.1"))
+                return;
             if (!s.Contains("."))
             {
                 Say("The IP '" + s + "' is not valid. (Example: '127.0.0.1')");
@@ -59,6 +66,14 @@ namespace UCS.Core.Checker
 
                 Say("The IP '" + s + "' has been added to the Blacklist.");
             }
+        }
+        
+        public static void AddNewIpToBlackList(Device d)
+        {
+            AddNewIpToBlackList(d.IPAddress);
+            IPEndPoint r = d.Socket.RemoteEndPoint as IPEndPoint;
+            AddNewIpToBlackList(r.Address.ToString());
+            ResourcesManager.DropClient(d);
         }
 
         public static bool IsAddressBanned(string s)

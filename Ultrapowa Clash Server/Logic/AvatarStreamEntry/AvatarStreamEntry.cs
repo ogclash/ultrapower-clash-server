@@ -1,9 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Management.Instrumentation;
-using UCS.Core;
 using UCS.Helpers.List;
-using UCS.Logic.StreamEntry;
 
 namespace UCS.Logic.AvatarStreamEntry
 {
@@ -33,11 +30,8 @@ namespace UCS.Logic.AvatarStreamEntry
             data.AddString(m_vSenderName);
             data.AddInt(m_vSenderLevel);
             data.AddInt(m_vSenderLeagueId);
-            if (GetType() != typeof(AllianceInviteStreamEntry))
-            {
-                data.AddInt((int)(DateTime.UtcNow - m_vCreationTime).TotalSeconds);
-                data.Add(IsNew);
-            }
+            data.AddInt((int)(DateTime.UtcNow - m_vCreationTime).TotalSeconds);
+            data.Add(IsNew);
             return data.ToArray();
         }
 

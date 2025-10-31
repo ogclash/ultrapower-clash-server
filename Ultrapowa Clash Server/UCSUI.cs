@@ -20,7 +20,7 @@ namespace UCS
         public UCSUI()
         {
             InitializeComponent();
-            var sm = MaterialSkinManager.Instance;
+            MaterialSkinManager sm = MaterialSkinManager.Instance;
             sm.AddFormToManage(this);
             sm.Theme = MaterialSkinManager.Themes.DARK;
             sm.ColorScheme = new ColorScheme(Primary.Blue800, Primary.Blue900, Primary.Grey500, Accent.Blue200, TextShade.WHITE);
@@ -71,7 +71,7 @@ namespace UCS
 
             listView1.Items.Clear();
             int count = 0;
-            foreach (var acc in ResourcesManager.m_vOnlinePlayers)
+            foreach (Level acc in ResourcesManager.m_vOnlinePlayers)
             {
                 ListViewItem item = new ListViewItem(acc.Avatar.AvatarName);
                 item.SubItems.Add(Convert.ToString(acc.Avatar.UserId));
@@ -81,9 +81,7 @@ namespace UCS
                 listView1.Items.Add(item);
                 count++;
                 if(count >= 100)
-                {
                     break;
-                }
             }
 
             listView2.Items.Clear();

@@ -34,7 +34,7 @@ namespace UCS.Packets.Commands.Client
             foreach (var buildingId in m_vBuildingIdList)
             {
                 var b = (Building) this.Device.Player.GameObjectManager.GetGameObjectByID(buildingId);
-                if (this.Device.Player.Avatar.m_vTownHallLevel+1 < Convert.ToInt32(b.GetBuildingData().ReqTh[b.UpgradeLevel+1]))
+                if (b.GetBuildingData().ReqTh[b.UpgradeLevel+1] != "" && this.Device.Player.Avatar.m_vTownHallLevel+1 < Convert.ToInt32(b.GetBuildingData().ReqTh[b.UpgradeLevel+1]))
                     continue;
                 if (b.CanUpgrade())
                 {

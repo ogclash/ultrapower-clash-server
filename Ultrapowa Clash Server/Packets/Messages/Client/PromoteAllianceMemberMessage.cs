@@ -38,9 +38,9 @@ namespace UCS.Packets.Messages.Client
                     if (player.AllianceId == target.Avatar.AllianceId)
                     {
                         int oldrole = await target.Avatar.GetAllianceRole();
-                        target.Avatar.SetAllianceRole(m_vRole);
-                        if (m_vRole == 2)
+                        if (m_vRole == 2 && await player.GetAllianceRole() == 2)
                         {
+                            target.Avatar.SetAllianceRole(m_vRole);
                             player.SetAllianceRole(4);
 
                             AllianceEventStreamEntry demote = new AllianceEventStreamEntry();
@@ -62,10 +62,8 @@ namespace UCS.Packets.Messages.Client
                             alliance.AddChatMessage(promote);
 
                             AllianceRoleUpdateCommand p = new AllianceRoleUpdateCommand(this.Device);
-                            //AvailableServerCommandMessage pa = new AvailableServerCommandMessage(Device, p.Handle());
 
                             AllianceRoleUpdateCommand t = new AllianceRoleUpdateCommand(target.Client);
-                            //AvailableServerCommandMessage ta = new AvailableServerCommandMessage(target.Client, t.Handle());
 
                             PromoteAllianceMemberOkMessage rup = new PromoteAllianceMemberOkMessage(Device)
                             {
@@ -86,12 +84,8 @@ namespace UCS.Packets.Messages.Client
                             p.Tick(this.Device.Player);
 
                             if (ResourcesManager.IsPlayerOnline(target))
-                            {
-                                //ta.Send();
                                 rub.Send();
-                            }
                             rup.Send();
-                            //pa.Send();
 
                             foreach (AllianceMemberEntry op in alliance.GetAllianceMembers())
                             {
@@ -107,11 +101,12 @@ namespace UCS.Packets.Messages.Client
                                 new OwnHomeDataMessage(this.Device, this.Device.Player).Send();
                             else
                                 new OwnHomeDataForOldClients(this.Device, this.Device.Player).Send();
+                            
                         }
-                        else
+                        else if (m_vRole != 2)
                         {
+                            target.Avatar.SetAllianceRole(m_vRole);
                             AllianceRoleUpdateCommand t = new AllianceRoleUpdateCommand(target.Client);
-                            //AvailableServerCommandMessage ta = new AvailableServerCommandMessage(target.Client, t.Handle());
 
                             t.SetAlliance(alliance);
                             t.SetRole(m_vRole);
@@ -124,9 +119,7 @@ namespace UCS.Packets.Messages.Client
                             };
 
                             if (ResourcesManager.IsPlayerOnline(target))
-                            {
                                 ru.Send();
-                            }
 
                             AllianceEventStreamEntry stream = new AllianceEventStreamEntry();
 
@@ -141,9 +134,7 @@ namespace UCS.Packets.Messages.Client
                             {
                                 Level aplayer = await ResourcesManager.GetPlayer(op.AvatarId);
                                 if (aplayer.Client != null)
-                                {
                                     new AllianceStreamEntryMessage(aplayer.Client) { StreamEntry = stream }.Send();
-                                }
                             }
                         }
                     }

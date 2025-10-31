@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.Windows.Forms;
 using Newtonsoft.Json.Linq;
 using UCS.Core;
+using UCS.Core.Settings;
 using UCS.Files.Logic;
 
 namespace UCS.Logic.Manager
@@ -186,27 +186,38 @@ namespace UCS.Logic.Manager
                 o++;
             }
             jsonData.Add("obstacles", JObstacles);
-
-            TownhallLevelData td = ((TownhallLevelData)CSVManager.DataTables.GetTable(14).GetItemById(m_vLevel.Avatar.m_vTownHallLevel));
-            Dictionary<string, int> myDict = new Dictionary<string, int>();
+            
             JArray JBuildings = new JArray();
             int c = 0;
             foreach (GameObject go in new List<GameObject>(m_vGameObjects[0]))
             {
                 Building b = (Building)go;
+                if (b.GetData().GetGlobalID() == 1000014)
+                {
+                    if (!b.Locked)
+                        m_vLevel.Avatar.CastleUnlocked = true;
+                    else
+                        m_vLevel.Avatar.AllianceId = 0;
+                    if (reload)
+                        m_vLevel.Avatar.SetAllianceCastleLevel(b.UpgradeLevel, b.GetBuildingData());
+                } else if (reload && b.GetData().GetGlobalID() == 1000001)
+                    m_vLevel.Avatar.SetTownHallLevel(b.UpgradeLevel);
+                
                 if (b.GetData().GetGlobalID() == 1000027 || b.GetData().GetGlobalID() == 1000021 || b.GetData().GetGlobalID() == 1000031)
                 {
                     if (go?.GetComponent(1, true) != null)
                         ((CombatComponent) go.GetComponent(1, true)).useAmmo(true);
                 }
-                b = (Building)go;
                 JObject j = new JObject();
+                
                 if (challange == 1 && b.GetData().GetGlobalID() == 1000019)
                     continue;
+                
                 try {
                     if (m_vLevel.Avatar.m_vTownHallLevel+1 < Convert.ToInt32(b.GetBuildingData().ReqTh[b.UpgradeLevel]))
                         b.UpgradeLevel--;
                 } catch (Exception) {}
+                
                /* var test67 = "DarkTower";
                 var test50 = td.GetType().GetProperty(test67);
                 Logger.Write(test50.GetValue(test50).ToString());
@@ -222,8 +233,10 @@ namespace UCS.Logic.Manager
                 //if (myDict.ContainsKey(name) && myDict[name] < TownhallLevelData)
                 myDict.Add(name, c++);
                 //Logger.Write(name);*/
+               
                 if (b.X == -1 || b.Y == -1)
 	                b.SetPositionXY(1, 1, this.m_vLevel.Avatar.m_vActiveLayout);
+                
                 j.Add("data", b.GetBuildingData().GetGlobalID());
                 j.Add("id", 500000000 + c);
                 b.Save(j);
@@ -240,6 +253,13 @@ namespace UCS.Logic.Manager
             {
                 Trap t = (Trap)go;
                 JObject j = new JObject();
+                if (!Constants.DeveloperBuild)
+                {
+                    if (t.GetTrapData().GetGlobalID() == 12000003 && DateTime.Now.Month != 10 && DateTime.Now.Month != 11)
+                        continue;
+                    if (t.GetTrapData().GetGlobalID() == 12000009 && DateTime.Now.Month != 12 && DateTime.Now.Month != 1)
+                        continue;
+                }
                 j.Add("data", t.GetTrapData().GetGlobalID());
                 if (go?.GetComponent(8, true) != null)
                     ((TriggerComponent) go.GetComponent(1, true)).SetEnabled(true);
@@ -354,6 +374,30 @@ namespace UCS.Logic.Manager
             }
             return jsonData;
         }
+        
+        public Building GetMainProduction(bool factory = false)
+        {
+            int id = factory ? 1000020 : 1000006;
+            Building productionBuilding = null;
+                
+            foreach (GameObject gameObject in m_vGameObjects[0])
+            {
+                if (gameObject.GetData().GetGlobalID() != id)
+                    continue;
+
+                var building = (Building)gameObject;
+                
+                if (((UnitProductionComponent)gameObject.GetComponent(3)).GetTotalCount() > 0)
+                    return building;
+                
+                if (building.IsConstructing())
+                    continue;
+                
+                if (productionBuilding == null)
+                    productionBuilding = building;
+            }
+            return productionBuilding;
+        }
 
         public void Tick(bool offline = false)
         {
@@ -373,6 +417,16 @@ namespace UCS.Logic.Manager
                     }
                 }
 
+                foreach (GameObject gameObject in m_vGameObjects[0])
+                {
+                    if (gameObject.GetData().GetGlobalID() == 1000006 && !((Building)gameObject).IsConstructing())
+                    {
+                        UnitProductionComponent barrack =
+                            (UnitProductionComponent)gameObject.GetComponent(3);
+                        barrack.OfflineTick();
+                        break;
+                    }
+                }
                 var go2 = GetGameObjectByID(500000010) as Building;
                 if (go2 != null && go2.GetBuildingData()?.BuildingClass?.ToLower() == "army")
                 {

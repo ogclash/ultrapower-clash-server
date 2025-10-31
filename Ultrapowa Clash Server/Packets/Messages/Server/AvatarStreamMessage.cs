@@ -38,6 +38,8 @@ namespace UCS.Packets.Messages.Server
                 }
                 else
                 {
+                    if (BattleResult["timestamp_s"] != null && DateTimeOffset.UtcNow.ToUnixTimeSeconds() - (long)BattleResult["timestamp_s"] <= 16 * 60 * 60)
+                        Device.Player.Avatar.attackedPlayers.Add(defenderId);
                     pl = await ResourcesManager.GetPlayer(defenderId);
                 }
                 if (pl == null)

@@ -2,7 +2,7 @@
 using System.IO;
 using UCS.Core;
 using UCS.Core.Network;
-using UCS.Helpers;
+using UCS.Core.Settings;
 using UCS.Logic;
 using UCS.Packets.Messages.Server;
 
@@ -10,14 +10,14 @@ namespace UCS.Packets.GameOpCommands
 {
     class MaxBaseGameOpCommand : GameOpCommand
     {
-        public MaxBaseGameOpCommand(string[] Args)
+        public MaxBaseGameOpCommand(string[] args)
         {
             SetRequiredAccountPrivileges(0);
         }
 
         public override void Execute(Level level)
         {
-            if (level.Avatar.AccountPrivileges >= GetRequiredAccountPrivileges() || level.Avatar.UserId == Utils.ParseConfigInt("AdminAccount"))
+            if (level.Avatar.AccountPrivileges >= GetRequiredAccountPrivileges() || level.Avatar.UserId == Constants.SuperAdmin)
             {
                 string Home;
 

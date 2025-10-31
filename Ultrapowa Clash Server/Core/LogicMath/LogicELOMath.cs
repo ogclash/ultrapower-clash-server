@@ -98,7 +98,7 @@
 
             if (eloOffsetDampeningFactor > 0 && eloOffsetDampeningLimit > 0 && eloOffsetDampeningScoreLimit > 0)
             {
-                diffScore = diffScore * LogicMath.Max(eloOffsetDampeningLimit, 100 - eloOffsetDampeningFactor * (attackerScore + defenderScore) / eloOffsetDampeningScoreLimit) /
+                diffScore = diffScore * Max(eloOffsetDampeningLimit, 100 - eloOffsetDampeningFactor * (attackerScore + defenderScore) / eloOffsetDampeningScoreLimit) /
                             100;
             }
 
@@ -115,6 +115,15 @@
             }
 
             return attackerScore + multiplier * ((gain ? 10000 : 0) - LogicELOMath.WIN_CHANCE_TABLE[winChanceOffset]) / 10000;
+        }
+        public static int Max(int valueA, int valueB)
+        {
+            if (valueA >= valueB)
+            {
+                return valueA;
+            }
+
+            return valueB;
         }
     }
 }

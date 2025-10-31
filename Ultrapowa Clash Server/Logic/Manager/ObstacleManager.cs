@@ -2,26 +2,12 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using UCS.Core;
 using UCS.Files.Logic;
 
 namespace UCS.Logic
 {
-	public static class ThreadSafeRandom
-	{
-		[ThreadStatic] private static Random Local;
-
-		public static Random ThisThreadsRandom
-		{
-			get
-			{
-				return Local ??
-					   (Local = new Random(unchecked(Environment.TickCount * 31 + Thread.CurrentThread.ManagedThreadId)));
-			}
-		}
-	}
-
+	
 	internal static class Extensions
 	{
 		public static void Shuffle<T>(this IList<T> list)
@@ -30,7 +16,7 @@ namespace UCS.Logic
 			while (n > 1)
 			{
 				n--;
-				var k = ThreadSafeRandom.ThisThreadsRandom.Next(n + 1);
+				var k = ThreadSafeRandom.Range.Next(n + 1);
 				var value = list[k];
 				list[k] = list[n];
 				list[n] = value;
@@ -111,7 +97,7 @@ namespace UCS.Logic
 				m_vSpecialTimer.StartTimer(m_vObstacleRespawnSeconds, fallbackTime);
 			}
 			m_vObstacleClearCount = 0;
-			m_vRespawnSeed = new Random().Next();
+			m_vRespawnSeed = ThreadSafeRandom.Range.Next();
 		}
 
 		public void IncreaseObstacleClearCount()
@@ -185,9 +171,9 @@ namespace UCS.Logic
 
 			if (m_vGemBoxTimer.GetRemainingSeconds(m_vLevel.Avatar.LastTickSaved) > 0) return;
 			{
-				if (new Random().Next(0, 4) == 0)
+				if (ThreadSafeRandom.Range.Next(0, 4) == 0)
 				{
-					var ob = m_vGemBoxes[new Random().Next(0, m_vGemBoxes.Count)];
+					var ob = m_vGemBoxes[ThreadSafeRandom.Range.Next(0, m_vGemBoxes.Count)];
 					var pos = GetFreePlace(ob);
 					if (pos != null)
 					{
@@ -293,14 +279,14 @@ namespace UCS.Logic
 
 		private ObstacleData GetRandomObstacle()
 		{
-			var randomValue = new Random().Next(0, SumWeights);
+			m_vSpawnAbleObstacles.Shuffle();
+			var randomValue = ThreadSafeRandom.Range.Next(0, SumWeights);
 			foreach (var ob in m_vSpawnAbleObstacles)
 			{
 				randomValue -= ob.RespawnWeight;
 				if (randomValue <= 0)
-				{
 					return ob;
-				}
+				
 			}
 			return m_vSpawnAbleObstacles[0];
 		}

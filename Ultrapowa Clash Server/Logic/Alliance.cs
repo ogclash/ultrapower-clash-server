@@ -150,8 +150,8 @@ namespace UCS.Logic
                     try {
                         JObject jsonMember = (JObject)jToken;
                         long id = jsonMember["avatar_id"].ToObject<long>();
-                        Level pl = await ResourcesManager.GetPlayer(id);
-                        if (pl.Avatar.AllianceId == 0)
+                        Level pl = await ResourcesManager.GetPlayer(id, true);
+                        if (pl.Avatar.AllianceId == 0 || pl.Avatar.AccountBanned)
                             continue;
                         AllianceMemberEntry member = new AllianceMemberEntry(id);
                         m_vScore += pl.Avatar.GetScore();
@@ -290,8 +290,7 @@ namespace UCS.Logic
                 try
                 {
                     JObject jsonObject = new JObject();
-                    member.Save(jsonObject);
-                    jsonMembersArray.Add(jsonObject);
+                    jsonMembersArray.Add(member.Save(jsonObject));
                 }
                 catch (Exception) { }
             }

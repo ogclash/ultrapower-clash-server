@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net;
 using System.Net.Sockets;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using UCS.Core.Settings;
@@ -66,10 +67,13 @@ namespace UCS.Core.Network.TCP
         internal void StartAccept(SocketAsyncEventArgs AcceptEvent)
         {
             AcceptEvent.AcceptSocket = null;
-
+            
             if (!this.Listener.AcceptAsync(AcceptEvent))
             {
-                this.ProcessAccept(AcceptEvent);
+                if (Constants.ProxyProtocolV1)
+                    this.ProcessAcceptWithReverseProxy(AcceptEvent);
+                else
+                    this.ProcessAccept(AcceptEvent);
             }
         }
 
@@ -92,7 +96,7 @@ namespace UCS.Core.Network.TCP
                             IPAddress = ((IPEndPoint)Socket.RemoteEndPoint).Address.ToString()
                         };
 
-                        Token Token = new Token(ReadEvent, device);
+                        Token unused = new Token(ReadEvent, device);
                         Interlocked.Increment(ref this.ConnectedSockets);
                         ResourcesManager.AddClient(device);
 
@@ -118,7 +122,86 @@ namespace UCS.Core.Network.TCP
                 Logger.Write("Not connected or error at ProcessAccept.");
                 Socket.Close(5);
             }
+            this.StartAccept(AsyncEvent);
+        }
+        
+        internal void ProcessAcceptWithReverseProxy(SocketAsyncEventArgs AsyncEvent)
+        {
+            Socket Socket = AsyncEvent.AcceptSocket;
+            if (Socket.Connected && AsyncEvent.SocketError == SocketError.Success)
+            {
+                try
+                {
+                    string realIp = ((IPEndPoint)Socket.RemoteEndPoint).Address.ToString();
+                    byte[] buffer = new byte[108];
+                    string headerLine = "";
+                    int totalPeeked = 0;
 
+                    // Peek loop to handle partial headers (iOS may split packets)
+                    int bytesRead = Socket.Receive(buffer, 0, buffer.Length, SocketFlags.Peek);
+                    while (true)
+                    {
+                        totalPeeked += bytesRead;
+                        headerLine = Encoding.ASCII.GetString(buffer, 0, bytesRead);
+
+                        if (headerLine.Contains("\r\n") || totalPeeked >= buffer.Length) break; // full header or limit
+                    }
+
+                    // Parse PROXY header if present
+                    if (headerLine.StartsWith("PROXY "))
+                    {
+                        string[] parts = headerLine.Split(' ');
+                        if (parts.Length >= 3)
+                            realIp = parts[2];
+
+                        int headerLength = headerLine.IndexOf("\r\n", StringComparison.Ordinal) + 2;
+                        byte[] tmp = new byte[headerLength];
+                        Socket.Receive(tmp, 0, headerLength, SocketFlags.None);
+                    }
+
+                    // Check IP ban
+                    if (!ConnectionBlocker.Banned_IPs.Contains(realIp))
+                    {
+                        Logger.Write($"New client connected -> {realIp}");
+
+                        SocketAsyncEventArgs ReadEvent = this.ReadPool.Dequeue();
+                        if (ReadEvent != null)
+                        {
+                            Device device = new Device(Socket)
+                            {
+                                IPAddress = realIp
+                            };
+
+                            // Assign token before starting receive
+                            ReadEvent.UserToken = new Token(ReadEvent, device);
+
+                            Interlocked.Increment(ref this.ConnectedSockets);
+                            ResourcesManager.AddClient(device);
+
+                            Task.Run(() =>
+                            {
+                                try
+                                {
+                                    if (!Socket.ReceiveAsync(ReadEvent))
+                                    {
+                                        this.ProcessReceive(ReadEvent);
+                                    }
+                                }
+                                catch (Exception)
+                                {
+                                    this.Disconnect(ReadEvent);
+                                }
+                            });
+                        }
+                    }
+                }
+                catch (Exception) { Socket.Close(5); }
+            }
+            else
+            {
+                Logger.Write("Not connected or error at ProcessAccept.");
+                Socket.Close(5);
+            }
             this.StartAccept(AsyncEvent);
         }
 
@@ -128,6 +211,12 @@ namespace UCS.Core.Network.TCP
             {
                 Token Token = AsyncEvent.UserToken as Token;
 
+                if (Token == null)
+                {
+                    // Either ignore this receive (early handshake) or disconnect
+                    Logger.Write("ProcessReceive called but UserToken is null. Ignoring.");
+                    return;
+                }
                 Token.SetData();
 
                 try
@@ -180,7 +269,10 @@ namespace UCS.Core.Network.TCP
 
         internal void OnAcceptCompleted(object Sender, SocketAsyncEventArgs AsyncEvent)
         {
-            this.ProcessAccept(AsyncEvent);
+            if (Constants.ProxyProtocolV1)
+                this.ProcessAcceptWithReverseProxy(AsyncEvent);
+            else
+                this.ProcessAccept(AsyncEvent);
         }
 
         internal void Send(Message Message)

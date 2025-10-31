@@ -12,7 +12,7 @@ namespace UCS.Files
         {
 
             files           = new List<GameFile>();
-            string fpstring = null;
+            string fpstring;
 
             if (File.Exists(@"Gamefiles/fingerprint.json"))
             {
@@ -22,7 +22,7 @@ namespace UCS.Files
             }
             else
                 Console.WriteLine(
-                    "[UCS]    LoadFingerPrint: error! tried to load FingerPrint without file, run gen_patch first");
+                    @"[UCS]    LoadFingerPrint: error! tried to load FingerPrint without file, run gen_patch first");
         }
 
         public List<GameFile> files { get; set; }

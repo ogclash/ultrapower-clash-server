@@ -1,19 +1,18 @@
 using System;
 using UCS.Core;
-using UCS.Core.Checker;
 using UCS.Core.Settings;
 using UCS.Logic;
 
 namespace UCS.Packets.GameOpCommands
 {
-    internal class BanIpGameOpCommand : GameOpCommand
+    internal class SoftBanGameOpCommand : GameOpCommand
     {
         readonly string[] m_vArgs;
 
-        public BanIpGameOpCommand(string[] args)
+        public SoftBanGameOpCommand(string[] args)
         {
             m_vArgs = args;
-            SetRequiredAccountPrivileges(8);
+            SetRequiredAccountPrivileges(1);
         }
 
         public override async void Execute(Level level)
@@ -25,19 +24,12 @@ namespace UCS.Packets.GameOpCommands
                         var id = Convert.ToInt64(m_vArgs[1]);
                         var l = await ResourcesManager.GetPlayer(id);
                         if (l != null)
-                        {   
-                            if (l.Client != null)
-                                ConnectionBlocker.AddNewIpToBlackList(l.Client);
-                            else
-                            {
-                                ConnectionBlocker.AddNewIpToBlackList(l.Avatar.IPAddress);
-                            }
                             if (l.Avatar.AccountPrivileges < level.Avatar.AccountPrivileges)
                             {
                                 l.Avatar.SoftBan = true;
-                                l.Avatar.AccountBanned = true;
+                                l.Avatar.AccountBanned = false;
+                                l.Avatar.m_vNameChangingLeft = 0;
                             }
-                        }
                     }
                     catch 
                     {

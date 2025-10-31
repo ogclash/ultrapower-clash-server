@@ -53,10 +53,9 @@ namespace UCS.Packets.Messages.Client
                     if (!done)
                     {
                         int count = alliance.GetAllianceMembers().Count;
-                        Random rnd = new Random();
-                        int id = rnd.Next(1, count);
+                        int id = ThreadSafeRandom.Range.Next(1, count);
                         while (id != this.Device.Player.Avatar.UserId)
-                            id = rnd.Next(1, count);
+                            id = ThreadSafeRandom.Range.Next(1, count);
                         int loop = 0;
                         foreach (AllianceMemberEntry player in members)
                         {

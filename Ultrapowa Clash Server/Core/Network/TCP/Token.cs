@@ -4,7 +4,7 @@ using System.Net.Sockets;
 using UCS.Core.Settings;
 using UCS.Packets;
 
-namespace UCS.Core.Network
+namespace UCS.Core.Network.TCP
 {
     internal class Token
     {

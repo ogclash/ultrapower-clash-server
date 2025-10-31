@@ -1,7 +1,7 @@
 ﻿using System;
 using UCS.Core;
 using UCS.Core.Network;
-using UCS.Helpers;
+using UCS.Core.Settings;
 using UCS.Logic;
 using UCS.Packets.Messages.Server;
 
@@ -19,7 +19,7 @@ namespace UCS.Packets.GameOpCommands
 
         public override async void Execute(Level level)
         {
-            if (level.Avatar.UserId != Utils.ParseConfigInt("AdminAccount"))
+            if (level.Avatar.UserId != Constants.SuperAdmin)
             {
                 if (level.Avatar.AccountPrivileges < GetRequiredAccountPrivileges())
                 {
@@ -46,7 +46,7 @@ namespace UCS.Packets.GameOpCommands
                 long targetId = Convert.ToInt64(m_vArgs[1]);
                 byte newPrivileges = Convert.ToByte(m_vArgs[2]);
 
-                if (level.Avatar.UserId != Utils.ParseConfigInt("AdminAccount") && newPrivileges >= level.Avatar.AccountPrivileges)
+                if (level.Avatar.UserId != Constants.SuperAdmin && newPrivileges >= level.Avatar.AccountPrivileges)
                 {
                     Logger.Write("SetPrivileges command failed: Cannot assign privileges equal to or higher than the executor's.");
                     SendCommandFailedMessage(level.Client, "Cannot assign privileges equal to or higher than your own.");

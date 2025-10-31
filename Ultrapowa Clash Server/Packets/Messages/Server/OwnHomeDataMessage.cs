@@ -39,22 +39,21 @@ namespace UCS.Packets.Messages.Server
                 elapsed = (int)(now - this.Player.Avatar.m_vProtectionTimeStamp);
                 shieldTimeRemaining = Math.Max(0, this.Player.Avatar.m_vProtectionTimeValue - elapsed);
                 this.Device.Player.Avatar.m_vProtectionTime = shieldTimeRemaining;
+                this.Player.Avatar.matchedPlayers.Clear();
                 this.Player.Avatar.setBuidlings(new List<int[]>());
-                
                 var _Home =
                     new ClientHome
                     {
                         Id = this.Player.Avatar.UserId,
                         ShieldTime = this.Device.Player.Avatar.m_vShieldTime,
                         ProtectionTime = this.Device.Player.Avatar.m_vProtectionTime,
+                        TimeOut =  7200 - (int)(now - this.Device.Player.Avatar.time_out_timestamp),
                         Village = this.Player.SaveToJSONforPlayer()
                     };
 
                 this.Data.AddInt(0);
                 this.Data.AddInt(-1);
-                //this.Data.AddInt((int)Player.Avatar.LastTickSaved.Subtract(new DateTime(1970, 1, 1)).TotalSeconds);
                 this.Data.AddInt((int)DateTimeOffset.UtcNow.ToUnixTimeSeconds());
-                Logger.Write("Current Server Time: "+ (int)DateTimeOffset.UtcNow.ToUnixTimeSeconds());
                 this.Data.AddRange(_Home.Encode);
                 this.Data.AddRange(await this.Player.Avatar.Encode());
                 this.Data.AddInt(this.Device.PlayerState == State.WAR_EMODE ? 1 : 0);

@@ -32,11 +32,9 @@ namespace UCS.Helpers
             {
                 while (true)
                 {
-                    string entry = Console.ReadLine().ToLower();
+                    string entry = Console.ReadLine()?.ToLower();
                     if (entry == null)
-                    {
-                        continue;
-                    }
+                        Environment.Exit(0);
                     switch (entry)
                     {
                         case "/help":
@@ -279,7 +277,7 @@ namespace UCS.Helpers
             foreach(Level p in ResourcesManager.m_vInMemoryLevels.Values.ToList())
             {
                 Processor.Send(new OutOfSyncMessage(p.Client));
-                ResourcesManager.DropClient(p.Client.SocketHandle);
+                ResourcesManager.DropClient(p.Client);
             }
             Resources.DatabaseManager.Save(ResourcesManager.GetInMemoryAlliances());
         }

@@ -12,34 +12,30 @@ namespace UCS.Files.CSV
             m_vColumnTypes = new List<string>();
             m_vCSVColumns = new List<CSVColumn>();
 
-            using (var sr = new StreamReader(filePath))
+            using (StreamReader sr = new StreamReader(filePath))
             {
-                var columns = sr.ReadLine().Replace("\"", "").Replace(" ", "").Split(',');
-                foreach (var column in columns)
-                {
-                    m_vColumnHeaders.Add(column);
-                    m_vCSVColumns.Add(new CSVColumn());
-                }
+                string[] columns = sr.ReadLine()?.Replace("\"", "").Replace(" ", "").Split(',');
+                if (columns != null)
+                    foreach (string column in columns)
+                    {
+                        m_vColumnHeaders.Add(column);
+                        m_vCSVColumns.Add(new CSVColumn());
+                    }
 
-                var types = sr.ReadLine().Replace("\"", "").Split(',');
-                foreach (var type in types)
-                {
-                    m_vColumnTypes.Add(type);
-                }
+                string[] types = sr.ReadLine()?.Replace("\"", "").Split(',');
+                if (types != null)
+                    foreach (string type in types)
+                        m_vColumnTypes.Add(type);
 
                 while (!sr.EndOfStream)
                 {
-                    var values = sr.ReadLine().Replace("\"", "").Split(',');
+                    string[] values = sr.ReadLine()?.Replace("\"", "").Split(',');
 
-                    if (values[0] != string.Empty)
-                    {
+                    if (values != null && values[0] != string.Empty)
                         CreateRow();
-                    }
 
-                    for (var i = 0; i < m_vColumnHeaders.Count; i++)
-                    {
-                        m_vCSVColumns[i].Add(values[i]);
-                    }
+                    for (int i = 0; i < m_vColumnHeaders.Count; i++)
+                        if (values != null) m_vCSVColumns[i].Add(values[i]);
                 }
             }
         }
@@ -54,7 +50,7 @@ namespace UCS.Files.CSV
             m_vCSVRows.Add(row);
         }
 
-        public void CreateRow()
+        private void CreateRow()
         {
             new CSVRow(this);
         }

@@ -31,7 +31,7 @@ namespace UCS.Core.Web
 
         public static string LatestSupportedVersion()
         {
-            return "8.709.16";
+            return "8.709.24";
         }
     }
 }

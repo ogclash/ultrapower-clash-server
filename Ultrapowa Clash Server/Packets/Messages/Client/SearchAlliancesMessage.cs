@@ -48,7 +48,7 @@ namespace UCS.Packets.Messages.Client
             {
                 if (_Alliance.m_vAllianceName.Contains(m_vSearchString, StringComparison.OrdinalIgnoreCase))
                 {
-                    if (_Alliance.m_vAllianceMembers.Count() == 0)
+                    if (!_Alliance.m_vAllianceMembers.Any())
                         continue;
                     joinableAlliances.Add(_Alliance);
                 }

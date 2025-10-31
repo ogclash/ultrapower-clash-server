@@ -1,4 +1,6 @@
-﻿namespace UCS.Core.Events
+﻿using MaxMind.GeoIP2.Responses;
+
+namespace UCS.Core.Events
 {
     using System;
     using System.IO;
@@ -42,7 +44,7 @@
         {
             try
             {
-                var city = this.Reader.City(ipAddress);
+                CityResponse city = this.Reader.City(ipAddress);
                 return city?.Country?.Name ?? "Unknown";
             }
             catch (AddressNotFoundException)
@@ -63,8 +65,8 @@
 
             try
             {
-                var city = this.Reader.City(ipAddress);
-                var sb = new StringBuilder();
+                CityResponse city = this.Reader.City(ipAddress);
+                StringBuilder sb = new StringBuilder();
 
                 sb.AppendLine("IP Country ISO: " + city.Country.IsoCode);
                 sb.AppendLine("IP Country Name: " + city.Country.Name);

@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using UCS.Core;
+using UCS.Core.Settings;
 using UCS.Files.Logic;
 using UCS.Helpers.Binary;
 using UCS.Logic;
@@ -34,7 +36,9 @@ namespace UCS.Packets.Commands.Client
 
         internal override void Process()
         {
-            int id = (int)slotId;
+            if (!Constants.DeveloperBuild)
+                if ((UnitType == 4000030 || UnitType == 26000004) && DateTime.Now.Month != 12 && DateTime.Now.Month != 1)
+                    return;
             ClientAvatar _Player = this.Device.Player.Avatar;
             if (UnitType.ToString().StartsWith("400"))
             {
@@ -43,30 +47,22 @@ namespace UCS.Packets.Commands.Client
                 ResourceData _TrainingResource = _TroopData.GetTrainingResource();
                 if (this.Device.Player.Avatar.minorversion < 551)
                 {
-                    var gameobjects = this.Device.Player.GameObjectManager.GetComponentManager();
-                    var troops = 0;
+                    int troops = 0;
                     foreach (var unit in _PlayerUnits)
                     {
                         if (unit.Value < 0)
                             unit.Value = 0;
-                        var unitData = (CharacterData) unit.Data;
-                        var housingSpace = unitData.HousingSpace;
+                        CharacterData unitData = (CharacterData) unit.Data;
+                        int housingSpace = unitData.HousingSpace;
                         troops += unit.Value * housingSpace;
                     }
-
-                    if (_TroopData != null)
-                    {
-                        var unitData = (CharacterData)_TroopData;
-                        var housingSpace = unitData.HousingSpace;
-                        troops += Count * housingSpace;
-                    }
-                    if (troops <= gameobjects.GetTotalMaxHousing())
+                    
+                    troops += Count * ((CharacterData)_TroopData).HousingSpace;
+                    if (troops <= this.Device.Player.GameObjectManager.GetComponentManager().GetTotalMaxHousing())
                     {
                         DataSlot _DataSlot = _PlayerUnits.Find(t => t.Data.GetGlobalID() == _TroopData.GetGlobalID());
                         if (_DataSlot != null)
-                        {
-                            _DataSlot.Value = _DataSlot.Value + this.Count;
-                        }
+                            _DataSlot.Value += this.Count;
                         else
                         {
                             DataSlot ds = new DataSlot(_TroopData, this.Count);
@@ -80,30 +76,14 @@ namespace UCS.Packets.Commands.Client
                 {
                     int unitLevel = this.Device.Player.Avatar.GetUnitUpgradeLevel(_TroopData);
                     this.Device.Player.Avatar.SetResourceCount(_TroopData.GetTrainingResource(), this.Device.Player.Avatar.GetResourceCount(_TroopData.GetTrainingResource())-_TroopData.GetTrainingCost(unitLevel));
+                    UnitProductionComponent barrack = null;
+                    
                     if (buildingId == 0)
-                        buildingId = 500000010;
-                    UnitProductionComponent barrack = (UnitProductionComponent)this.Device.Player.GameObjectManager.GetGameObjectByID(buildingId).GetComponent(3, false);
-                    if (!((Building)this.Device.Player.GameObjectManager.GetGameObjectByID(500000010)).IsConstructing() || barrack.GetTotalCount() > 0)
-                    {
-                        for (int i = 0; i < Count; i++)
-                            barrack.AddUnitToProductionQueue(_TroopData, true);
-                    }
+                        barrack = (UnitProductionComponent) this.Device.Player.GameObjectManager.GetMainProduction().GetComponent(3);
                     else
-                    {
-                        foreach (GameObject gameObject in this.Device.Player.GameObjectManager.GetAllGameObjects()[0])
-                        {
-                            if (gameObject.GlobalId == 500000010)
-                                continue;
-                            if (gameObject.GetData().GetGlobalID() == 1000006)
-                            {
-                                UnitProductionComponent barrackAdditional =
-                                    (UnitProductionComponent)gameObject.GetComponent(3);
-                                if (barrackAdditional.GetTotalCount() > 0)
-                                    for (int i = 0; i < Count; i++)
-                                        barrackAdditional.AddUnitToProductionQueue(_TroopData, true);
-                            }
-                        }
-                    }
+                        barrack = (UnitProductionComponent) this.Device.Player.GameObjectManager.GetGameObjectByID(buildingId).GetComponent(3);
+                    for (int i = 0; i < Count; i++)
+                        barrack.AddUnitToProductionQueue(_TroopData, true);
                 }
             }
             else if (UnitType.ToString().StartsWith("260"))
@@ -113,30 +93,25 @@ namespace UCS.Packets.Commands.Client
                 {
                     List<DataSlot> _PlayerSpells = this.Device.Player.Avatar.GetSpells();
                     ResourceData _CastResource = _SpellData.GetTrainingResource();
-
-                    var gameobjects = this.Device.Player.GameObjectManager.GetComponentManager();
-                    var spells = 0;
+                    
+                    int spells = 0;
                     foreach (var unit in _PlayerSpells)
                     {
                         if (unit.Value < 0)
                             unit.Value = 0;
-                        var unitData = (UCS.Files.Logic.SpellData) unit.Data;
-                        var housingSpace = unitData.HousingSpace;
+                        SpellData unitData = (SpellData) unit.Data;
+                        int housingSpace = unitData.HousingSpace;
                         spells += unit.Value * housingSpace;
                     }
-                    if (_SpellData != null)
-                    {
-                        var spellData = (SpellData)_SpellData;
-                        var housingSpace = spellData.HousingSpace;
-                        spells += Count * housingSpace;
-                    }
+                    
+                    spells += Count * _SpellData.HousingSpace;
                 
-                    if (spells < gameobjects.GetTotalMaxHousing(true))
+                    if (spells < this.Device.Player.GameObjectManager.GetComponentManager().GetTotalMaxHousing(true))
                     {
                         DataSlot _DataSlot = _PlayerSpells.Find(t => t.Data.GetGlobalID() == _SpellData.GetGlobalID());
                         if (_DataSlot != null)
                         {
-                            _DataSlot.Value = _DataSlot.Value + this.Count;
+                            _DataSlot.Value += this.Count;
                         }
                         else
                         {
@@ -151,17 +126,11 @@ namespace UCS.Packets.Commands.Client
                 {
                     int spelllevel = this.Device.Player.Avatar.GetUnitUpgradeLevel(_SpellData);
                     this.Device.Player.Avatar.SetResourceCount(_SpellData.GetTrainingResource(),  this.Device.Player.Avatar.GetResourceCount(_SpellData.GetTrainingResource())-_SpellData.GetTrainingCost(spelllevel));
-                    List<GameObject> buildings = this.Device.Player.GameObjectManager.GetAllGameObjects()[0];
-                    List<GameObject> factories = new List<GameObject>();
-                    foreach (GameObject gameObject in buildings)
-                    {
-                        Building b = (Building) gameObject;
-                        if (!b.IsConstructing() && gameObject.GetData().GetGlobalID() == 1000020)
-                        {
-                            factories.Add(gameObject);
-                        }
-                    }
-                    UnitProductionComponent factory = (UnitProductionComponent)factories[0].GetComponent(3, false);
+                    UnitProductionComponent factory = null;
+                    if (buildingId == 0)
+                        factory = (UnitProductionComponent) this.Device.Player.GameObjectManager.GetMainProduction(true).GetComponent(3);
+                    else
+                        factory = (UnitProductionComponent) this.Device.Player.GameObjectManager.GetGameObjectByID(buildingId).GetComponent(3);
                     for (int i = 0; i < Count; i++)
                         factory.AddUnitToProductionQueue(_SpellData, true);
                 }

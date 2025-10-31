@@ -43,20 +43,13 @@ namespace UCS.Core
             m_vClients.TryAdd(Client.Socket.Handle, Client);
         }
 
-        public static void DropClient(IntPtr socketHandle)
+        public static void DropClient(IntPtr socketHandle, Device _Client)
         {
             try
             {
-                Device _Client = null;
                 m_vClients.TryRemove(socketHandle, out _Client);
-                if (_Client.Player != null)
-                {
-                    LogPlayerOut(_Client.Player);
-                }
             }
-            catch (Exception e)
-            {
-            }
+            catch (Exception) {}
         }
 
         public static void DropClient(Device client)
@@ -65,39 +58,24 @@ namespace UCS.Core
             {
                 m_vClients.TryRemove(client.SocketHandle);
                 if (client.Player != null)
-                {
                     LogPlayerOut(client.Player);
-                }
             }
-            catch (Exception e)
-            {
-            }
+            catch (Exception) {}
         }
 
         public static async void loadAllResources()
         {
-            var allAccounts = await Resources.DatabaseManager.GetAllAccountsFromDb();
-            var allAlliances = await Resources.DatabaseManager.GetAllAlliancesFromDbAsync();
-            foreach(var account in allAccounts)
+            foreach(Level account in await Resources.DatabaseManager.GetAllAccountsFromDb())
             {
-                if (account.Avatar.m_vCastleLevel == -1 && account.Avatar.TutorialStepsCount < 10)
-                {
+                if (account.Avatar.TutorialStepsCount < 10 || account.Avatar.AccountBanned)
                     continue;
-                }
+                
                 if (account.Avatar.AvatarName != "NoNameYet")
-                {
                     LoadLevel(account);
-                }
             }
-
-            foreach(var alliance in allAlliances)
-            {
-                if (alliance.m_vAllianceMembers.Count() != 0)
-                {
-                    AddAllianceInMemory(alliance);
-                }
-
-            }
+            
+            foreach(Alliance alliance in await Resources.DatabaseManager.GetAllAlliancesFromDbAsync())
+                AddAllianceInMemory(alliance);
         }
 
         public static List<long> GetAllPlayerIds() => m_vDatabase.GetAllPlayerIds();
@@ -112,10 +90,8 @@ namespace UCS.Core
             if (result == null)
             {
                 result = await m_vDatabase.GetAccount(id);
-                if (persistent)
-                {
+                if (persistent && result != null && !result.Avatar.AccountBanned)
                     LoadLevel(result);
-                }
             }
             return result;
         }
@@ -124,11 +100,9 @@ namespace UCS.Core
         {
             if (_Client != null)
             {
-                //Resources.DatabaseManager.Save(_Client.Player);
-                if (_Client.Player.Client != null)
-                    _Client.Player.Client = null;
                 Processor.Send(new OutOfSyncMessage(_Client));
-                DropClient(_Client.SocketHandle);
+                _Client.Player.Client = null;
+                DropClient(_Client);
             }
         }
 
@@ -143,6 +117,7 @@ namespace UCS.Core
 
         public static void LogPlayerIn(Level l, Device c)
         {
+            l.Avatar.IPAddress = c.IPAddress;
             l.Client = c;
             c.Player = l;
 
@@ -163,7 +138,6 @@ namespace UCS.Core
         {
             Resources.DatabaseManager.Save(level);
             m_vOnlinePlayers.Remove(level);
-            //m_vInMemoryLevels.TryRemove(level.Avatar.UserId);
             m_vClients.TryRemove(level.Client.SocketHandle);
             Program.TitleD();
         }
@@ -185,15 +159,6 @@ namespace UCS.Core
         public static void AddAllianceInMemory(Alliance all)
         {
             m_vInMemoryAlliances.TryAdd(all.m_vAllianceId, all);
-        }
-
-        public static void AddAllianceInMemory(List<Alliance> all)
-        {
-            for (int i = 0, allCount = all.Count; i < allCount; i++)
-            {
-                Alliance a = all[i];
-                m_vInMemoryAlliances.TryAdd(a.m_vAllianceId, a);
-            }
         }
 
         public static bool InMemoryAlliancesContain(long key) => m_vInMemoryAlliances.Keys.Contains(key);

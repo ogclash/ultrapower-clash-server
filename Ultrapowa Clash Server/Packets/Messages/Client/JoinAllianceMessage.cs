@@ -28,7 +28,11 @@ namespace UCS.Packets.Messages.Client
         {
             try
             {
+                if (!this.Device.Player.Avatar.CastleUnlocked)
+                    return;
                 Alliance alliance = ObjectManager.GetAlliance(m_vAllianceId);
+                if (alliance.m_vAllianceType == 3)
+                    return;
                 if (alliance != null)
                 {
                     if (alliance.bannedPlayers.Contains(this.Device.Player.Avatar.UserId))

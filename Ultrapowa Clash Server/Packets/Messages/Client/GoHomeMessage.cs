@@ -38,40 +38,31 @@ namespace UCS.Packets.Messages.Client
                         ResourcesMultiplayer(Device.Player);
                         new AvatarStreamMessage(this.Device).Send();
                     } else if (this.Device.AttackInfo == "npc" && this.Device.NpcAttacked)
-                    {
                         ResourcesNpc(Device.Player);
-                    }
                     this.Device.Player.Avatar.battle = new BattleResult();
                 }
                 else if (State == 1)
-                {
                     this.Device.PlayerState = Logic.Enums.State.WAR_EMODE;
-                }
             } catch (Exception) { }
             
             this.Device.AttackInfo = null;
             this.Device.PlayerState = Logic.Enums.State.LOGGED;
             this.Device.Player.Tick();
-            Alliance alliance = ObjectManager.GetAlliance(this.Device.Player.Avatar.AllianceId);
+            Alliance alliance = ResourcesManager.GetInMemoryAlliance(this.Device.Player.Avatar.AllianceId);
             if (this.Device.Player.Avatar.minorversion >= 551)
             {
                 new OwnHomeDataMessage(Device, this.Device.Player).Send();
                 if (alliance != null)
-                {
                     new AllianceStreamMessage(Device, alliance).Send();
-                }
             }
             else
             {
                 new OwnHomeDataForOldClients(this.Device, this.Device.Player).Send();
                 if (alliance != null)
-                {
                     new AllianceStreamMessage(Device, alliance).Send();
-                }
+                
                 if (this.Device.Player.Avatar.AllianceId > 0)
-                {
                     this.Device.Player.Avatar.SendCLanMessagesToOldClient(this.Device);
-                }
             }
         }
 
@@ -97,33 +88,25 @@ namespace UCS.Packets.Messages.Client
                 elixirvalue = avatar.GetResourceCap(elixirLocation);
             
             if (currentGold+goldvalue <= avatar.GetResourceCap(goldLocation))
-            {
                 avatar.SetResourceCount(goldLocation, currentGold + goldvalue);
-            }
             else
-            {
                 avatar.SetResourceCount(goldLocation, avatar.GetResourceCap(goldLocation));
-            }
 
             if (currentElixir+elixirvalue <= avatar.GetResourceCap(elixirLocation))
-            {
                 avatar.SetResourceCount(elixirLocation, currentElixir + elixirvalue);
-            }
             else
-            {
                 avatar.SetResourceCount(elixirLocation, avatar.GetResourceCap(elixirLocation));
-            }
+            
             this.Device.NpcAttacked = false;
         }
 
         public void ResourcesMultiplayer(Level level)
         {
             ClientAvatar avatar = level.Avatar;
-            Random random = new Random();
             int goldvalue = 0;
             int elexirvalue = 0;
             int darkelixirvalue = 0;
-            int chance = random.Next(100); // 0-99
+            int chance = ThreadSafeRandom.Range.Next(100); // 0-99
             int score;
             
             bool win = false;
@@ -152,62 +135,47 @@ namespace UCS.Packets.Messages.Client
                 
                 if (chance < 50) // 50%
                 {
-                    darkelixirvalue = random.Next(500, 1000);
-                    goldvalue = random.Next(10000, 420000);
-                    elexirvalue = random.Next(10000, 420000);
+                    darkelixirvalue = ThreadSafeRandom.Range.Next(500, 1000);
+                    goldvalue = ThreadSafeRandom.Range.Next(10000, 420000);
+                    elexirvalue = ThreadSafeRandom.Range.Next(10000, 420000);
                 }
                 else if (chance < 80) // 30% (50-79)
                 {
-                    darkelixirvalue = random.Next(500, 4200);
-                    goldvalue = random.Next(10000, 750000);
-                    elexirvalue = random.Next(10000, 750000);
+                    darkelixirvalue = ThreadSafeRandom.Range.Next(500, 4200);
+                    goldvalue = ThreadSafeRandom.Range.Next(10000, 750000);
+                    elexirvalue = ThreadSafeRandom.Range.Next(10000, 750000);
                 }
                 else if (chance < 95) // 15% (80-94)
                 {
-                    darkelixirvalue = random.Next(1000, 4200);
-                    goldvalue = random.Next(10000, 800000);
-                    elexirvalue = random.Next(10000, 800000);
+                    darkelixirvalue = ThreadSafeRandom.Range.Next(1000, 4200);
+                    goldvalue = ThreadSafeRandom.Range.Next(10000, 800000);
+                    elexirvalue = ThreadSafeRandom.Range.Next(10000, 800000);
                 }
                 else // 5% (95-99)
                 {
-                    darkelixirvalue = random.Next(1500, 4200);
-                    goldvalue = random.Next(10000, 1000000);
-                    elexirvalue = random.Next(10000, 1000000);
+                    darkelixirvalue = ThreadSafeRandom.Range.Next(1500, 4200);
+                    goldvalue = ThreadSafeRandom.Range.Next(10000, 1000000);
+                    elexirvalue = ThreadSafeRandom.Range.Next(10000, 1000000);
                 }
 
                 if (currentGold+goldvalue <= avatar.GetResourceCap(goldLocation))
-                {
                     avatar.SetResourceCount(goldLocation, currentGold + goldvalue);
-                }
                 else
-                {
                     avatar.SetResourceCount(goldLocation, avatar.GetResourceCap(goldLocation));
-                }
 
                 if (currentElixir+elexirvalue <= avatar.GetResourceCap(elixirLocation))
-                {
                     avatar.SetResourceCount(elixirLocation, currentElixir + elexirvalue);
-                }
                 else
-                {
                     avatar.SetResourceCount(elixirLocation, avatar.GetResourceCap(elixirLocation));
-                }
 
                 if (avatar.m_vTownHallLevel >= 6)
-                {
                     if (currentDarkElixir+darkelixirvalue <= avatar.GetResourceCap(darkelixirLocation))
-                    {
                         avatar.SetResourceCount(darkelixirLocation, currentDarkElixir + darkelixirvalue);
-                    }
                     else
-                    {
                         avatar.SetResourceCount(darkelixirLocation, avatar.GetResourceCap(darkelixirLocation));
-                    }
-                }
                 else
-                {
                     darkelixirvalue = 0;
-                }
+                
                 var oldscore = avatar.GetScore();
                 var newAttackerScore = LogicELOMath.CalculateNewRating(true, avatar.GetScore(), Device.AttackVictim.Avatar.GetScore(), 20 * 3);
                 score = newAttackerScore - oldscore;
@@ -222,8 +190,8 @@ namespace UCS.Packets.Messages.Client
                     {
                         ["loot"] = new JArray
                         {
-                            new JArray(3000002, goldvalue),
-                            new JArray(3000001, elexirvalue),
+                            new JArray(3000001, goldvalue),
+                            new JArray(3000002, elexirvalue),
                             new JArray(3000003, darkelixirvalue)
                         },
                         ["availableLoot"] = new JArray(),
@@ -301,8 +269,8 @@ namespace UCS.Packets.Messages.Client
                     {
                         ["loot"] = new JArray
                         {
+                            new JArray(3000001, 5),
                             new JArray(3000002, 0),
-                            new JArray(3000001, 0),
                             new JArray(3000003, 0)
                         },
                         ["availableLoot"] = new JArray(),
@@ -332,6 +300,7 @@ namespace UCS.Packets.Messages.Client
                 avatar.SetScore(avatar.GetScore() - score);
             }
             Device.AttackVictim.Avatar.battles.Add(result);
+            avatar.attackedPlayers.Add(Device.AttackVictim.Avatar.UserId);
             avatar.battles.Add(result);
             if (ResourcesManager.IsPlayerOnline(Device.AttackVictim))
                 new GoHomeMessage(Device.AttackVictim.Client, Reader).Send();

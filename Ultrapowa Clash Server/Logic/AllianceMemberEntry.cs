@@ -1,8 +1,8 @@
+using System;
 using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
 using UCS.Core;
 using System.Threading.Tasks;
-using UCS.Helpers.Binary;
 using UCS.Helpers.List;
 
 namespace UCS.Logic
@@ -20,10 +20,12 @@ namespace UCS.Logic
             ReceivedTroops = 100;
             WarCooldown    = 0;
             WarOptInStatus = 1;
+            createdTime = DateTime.Now;
         }
 
         internal int DonatedTroops;
         internal byte IsNewMember;
+        internal DateTime createdTime;
         internal int ReceivedTroops;
         internal int[] RoleTable = { 1, 1, 4, 2, 3 };
         internal int WarCooldown;
@@ -32,16 +34,7 @@ namespace UCS.Logic
         internal int Order;
         internal int PreviousOrder;
         internal int Role;
-
-        public static void Decode(byte[] avatarData)
-        {
-            using (var br = new Reader(avatarData))
-            {
-            }
-        }
-
-        public static int GetDonations() => 150;
-
+        
         public async Task<byte[]> Encode()
         {
             List<byte> data = new List<byte>();
@@ -66,10 +59,10 @@ namespace UCS.Logic
                 data.AddInt(400);
                 data.AddInt(0);
                 data.AddInt(0);
-            }          
+            } 
             data.AddInt(Order);
             data.AddInt(PreviousOrder);
-            data.AddInt(IsNewMember);
+            data.AddInt((int)(DateTime.UtcNow - (DateTime)createdTime).TotalSeconds);
             data.AddInt(WarCooldown);
             data.AddInt(WarOptInStatus);
             data.Add(1);
@@ -92,6 +85,9 @@ namespace UCS.Logic
         {
             AvatarId = jsonObject["avatar_id"].ToObject<long>();
             Role = jsonObject["role"].ToObject<int>();
+            createdTime = jsonObject["created_time"]?.ToObject<DateTime>() ?? DateTime.Now;
+            if (createdTime.ToString() == "1/1/0001 12:00:00 AM")
+                createdTime = DateTime.Now;
             WarOptInStatus = jsonObject["war_opt_in"].ToObject<int>() == 1 ? 1 : 0;
         }
 
@@ -100,11 +96,10 @@ namespace UCS.Logic
             jsonObject.Add("avatar_id", AvatarId);
             jsonObject.Add("role", Role);
             jsonObject.Add("war_opt_in", WarOptInStatus);
+            jsonObject.Add("created_time", createdTime);
             return jsonObject;
         }
 
         public void ToggleStatus() => WarOptInStatus = WarOptInStatus == 1 ? 0 : 1;
-
-        public void SetStatus(bool x) => WarOptInStatus = (byte)(x ? 0x01 : 0x00);
     }
 }

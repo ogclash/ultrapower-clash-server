@@ -20,9 +20,9 @@ namespace UCS.Packets.Commands.Client
 
         internal override void Decode()
         {
-            var unknown1 = this.Reader.ReadUInt32();
-            var unknown2 = this.Reader.ReadInt32();
-            var unknown3 = this.Reader.ReadInt32();
+            this.Reader.ReadUInt32();
+            this.Reader.ReadInt32();
+            this.Reader.ReadInt32();
         }
 
         internal override async void Process()
@@ -56,20 +56,26 @@ namespace UCS.Packets.Commands.Client
 
             Level defender = ObjectManager.GetRandomOfflinePlayer();
 
+            int threshold = 0;
             // Search loop
-            while (Device.Player.Avatar.UserId == defender.Avatar.UserId || defender.Avatar.GetScore() + 720 < Device.Player.Avatar.GetScore())
+            while (Device.Player.Avatar.UserId == defender.Avatar.UserId || defender.Avatar.GetScore() + 720 < Device.Player.Avatar.GetScore() || this.Device.Player.Avatar.matchedPlayers.Contains(defender.Avatar.UserId) || this.Device.Player.Avatar.attackedPlayers.Contains(defender.Avatar.UserId))
             {
-                
-                defender = ObjectManager.GetRandomOfflinePlayer();
-                await Task.Delay(1); 
                 if (this.Device.PlayerState != State.SEARCH_BATTLE)
-                {
                     return;
+                if (threshold > ResourcesManager.m_vInMemoryLevels.Count)
+                {
+                    this.Device.Player.Avatar.matchedPlayers.Shuffle();
+                    defender = await ResourcesManager.GetPlayer(this.Device.Player.Avatar.matchedPlayers[0]);
+                    break;
                 }
+                defender = ObjectManager.GetRandomOfflinePlayer();
+                await Task.Delay(1);
+                threshold++;
             }
-
+            
             // Assign victim and start battle
             this.Device.AttackVictim = defender;
+            this.Device.Player.Avatar.matchedPlayers.Add(defender.Avatar.UserId);
             defender.Tick();
             if (this.Device.Player.Avatar.minorversion >= 551)
                 new EnemyHomeDataMessage(this.Device, defender, this.Device.Player).Send();

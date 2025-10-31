@@ -18,15 +18,18 @@ namespace UCS.Packets.Messages.Server
         internal override async void Encode()
         {
             List<byte> data = new List<byte>();
-            var i = 0;
+            int i = 0;
+            int c = 0;
             
             List<Level> localPlayers = new List<Level>();
             localPlayers.Add(this.Device.Player);
 
             string playerRegion = this.Device.Player.Avatar.Region;  // Get current player's region
 
-            foreach (Level player in ResourcesManager.m_vInMemoryLevels.Values)
+            foreach (Level player in ResourcesManager.m_vInMemoryLevels.Values.OrderByDescending(t => t.Avatar.GetScore()).Take(200))
             {
+                if (c >= 200)
+                    break;
                 if (player == null || player.Avatar == null)
                     continue;
 
@@ -35,6 +38,7 @@ namespace UCS.Packets.Messages.Server
                 if (pl.Region == playerRegion && player != this.Device.Player  && player.Avatar.AvatarName != "NoNameYet")
                 {
                     localPlayers.Add(player);
+                    c++;
                 }
             }
 
@@ -43,7 +47,7 @@ namespace UCS.Packets.Messages.Server
                 try
                 {
                     ClientAvatar pl = player.Avatar;
-                    if (i >= 100)
+                    if (i >= 200)
                         break;
                     data.AddLong(pl.UserId);
                     data.AddString(pl.AvatarName);

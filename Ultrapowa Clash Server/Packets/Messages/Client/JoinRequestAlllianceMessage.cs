@@ -1,11 +1,9 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using UCS.Core;
 using UCS.Core.Network;
 using UCS.Helpers.Binary;
 using UCS.Logic;
-using UCS.Logic.AvatarStreamEntry;
 using UCS.Logic.StreamEntry;
 using UCS.Packets.Messages.Server;
 
@@ -33,17 +31,19 @@ namespace UCS.Packets.Messages.Client
         {
             try
             {
+                if (!this.Device.Player.Avatar.CastleUnlocked)
+                    return;
                 if (Message.Length > 0 && Message.Length < 100)
                 {
                     ClientAvatar player = this.Device.Player.Avatar;
                     Alliance all = ObjectManager.GetAlliance(ID);
+                    if (all.m_vAllianceType == 3)
+                        return;
 
                     foreach (StreamEntry VARIABLE in all.m_vChatMessages)
                     {
                         if (VARIABLE.GetStreamEntryType() == 3 && VARIABLE.SenderID == player.UserId)
-                        {
                             return;
-                        }
                     }
                     InvitationStreamEntry cm = new InvitationStreamEntry {ID = all.m_vChatMessages.Count > 0 ? all.m_vChatMessages.Last().ID + 1 : 1};
                     cm.SetSender(player);

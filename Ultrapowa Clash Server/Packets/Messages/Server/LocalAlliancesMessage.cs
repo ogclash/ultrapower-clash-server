@@ -19,11 +19,11 @@ namespace UCS.Packets.Messages.Server
             List<byte> packet1 = new List<byte>();
             int i = 0;
 
-            foreach(Alliance alliance in ObjectManager.GetInMemoryAlliances().OrderByDescending(t => t.m_vScore))
+            foreach(Alliance alliance in ObjectManager.GetInMemoryAlliances().OrderByDescending(t => t.m_vScore).Take(200))
             {
-                if (alliance.m_vAllianceMembers.Count() == 0)
+                if (!alliance.m_vAllianceMembers.Any())
                     continue;
-                if (i >= 100)
+                if (i >= 200)
                     break;
                 packet1.AddLong(alliance.m_vAllianceId);
                 packet1.AddString(alliance.m_vAllianceName);

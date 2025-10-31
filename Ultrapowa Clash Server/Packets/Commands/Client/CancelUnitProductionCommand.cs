@@ -33,7 +33,7 @@ namespace UCS.Packets.Commands.Client
                 if (this.Device.Player.Avatar.minorversion >= 551)
                 {
                     int unitLevel = this.Device.Player.Avatar.GetUnitUpgradeLevel(_Troop);
-                    this.Device.Player.Avatar.SetResourceCount(_Troop.GetTrainingResource(), this.Device.Player.Avatar.GetResourceCount(_Troop.GetTrainingResource())+_Troop.GetTrainingCost(unitLevel));
+                    this.Device.Player.Avatar.SetResourceCount(_Troop.GetTrainingResource(), this.Device.Player.Avatar.GetResourceCount(_Troop.GetTrainingResource())+_Troop.GetTrainingCost(unitLevel)*Count);
                     foreach (GameObject gameObject in this.Device.Player.GameObjectManager.GetAllGameObjects()[0])
                     {
                         if (gameObject.GetData().GetGlobalID() == 1000006)
@@ -62,9 +62,7 @@ namespace UCS.Packets.Commands.Client
                 SpellData _SpellData = (SpellData)CSVManager.DataTables.GetDataById(UnitType);
                 if (this.Device.Player.Avatar.minorversion >= 551)
                 {
-                    List<GameObject> buildings = this.Device.Player.GameObjectManager.GetAllGameObjects()[0];
-                    List<GameObject> factories = new List<GameObject>();
-                    foreach (GameObject gameObject in buildings)
+                    foreach (GameObject gameObject in this.Device.Player.GameObjectManager.GetAllGameObjects()[0])
                     {
                         if (gameObject.GetData().GetGlobalID() == 1000020)
                         {
@@ -75,7 +73,7 @@ namespace UCS.Packets.Commands.Client
                         }
                     }
                     int spelllevel = this.Device.Player.Avatar.GetUnitUpgradeLevel(_SpellData);
-                    this.Device.Player.Avatar.SetResourceCount(_SpellData.GetTrainingResource(),  this.Device.Player.Avatar.GetResourceCount(_SpellData.GetTrainingResource())+_SpellData.GetTrainingCost(spelllevel));
+                    this.Device.Player.Avatar.SetResourceCount(_SpellData.GetTrainingResource(),  this.Device.Player.Avatar.GetResourceCount(_SpellData.GetTrainingResource())+_SpellData.GetTrainingCost(spelllevel)*Count);
                 }
                 else
                 {

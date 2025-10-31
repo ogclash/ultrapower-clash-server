@@ -32,6 +32,7 @@ namespace UCS.Core
                         {
                             Battles = l.Avatar.saveBattlesToJson(),
                             PlayerId = l.Avatar.UserId,
+                            IPAddress = l.Avatar.IPAddress,
                             Avatar = l.Avatar.SaveToJSON(),
                             GameObjects = l.SaveToJSON()
                         }
@@ -133,9 +134,9 @@ namespace UCS.Core
             List<Level> accounts = new List<Level>();
             using (Mysql db = new Mysql())
             {
-                var players = await db.Player.ToListAsync(); // Make sure ToListAsync is available
+                List<Player> players = await db.Player.ToListAsync(); // Make sure ToListAsync is available
 
-                foreach (var p in players)
+                foreach (Player p in players)
                 {
                     try
                     {
@@ -225,9 +226,9 @@ namespace UCS.Core
 
                 using (Mysql db = new Mysql())
                 {
-                    var clans = db.Clan.ToList();
+                    List<Clan> clans = db.Clan.ToList();
 
-                    foreach (var c in clans)
+                    foreach (Clan c in clans)
                     {
                         Alliance alliance = new Alliance();
                         alliance.LoadFromJSON(c.Data);
@@ -432,8 +433,9 @@ namespace UCS.Core
                     Player p = await context.Player.FindAsync(avatar.Avatar.UserId);
                     if (p != null)
                     {
-                        //p.LastUpdateTime = DateTime.Now;
+                        p.LastUpdateTime = DateTime.Now;
                         p.Battles = avatar.Avatar.saveBattlesToJson();
+                        p.IPAddress = avatar.Avatar.IPAddress;
                         p.Avatar = avatar.Avatar.SaveToJSON();
                         p.GameObjects = avatar.SaveToJSON();
                     }
@@ -442,7 +444,7 @@ namespace UCS.Core
             }
             catch (Exception ex)
             {
-                Logger.Write($"Cant save player with id {avatar.Avatar.UserId}: "+ex);
+                Write($"Cant save player with id {avatar.Avatar.UserId}: " + ex);
             }
         }
 
@@ -462,8 +464,7 @@ namespace UCS.Core
                                     pl.Avatar.SaveToJSON() + "#:#:#:#" + pl.SaveToJSON(), TimeSpan.FromHours(4));
                             }
                             catch (Exception) { }
-                        }
-                        break;
+                        } break;
                     }
 
                     case Save.Mysql:
@@ -477,26 +478,27 @@ namespace UCS.Core
                                     Player p = context.Player.Find(pl.Avatar.UserId);
                                     if (p != null)
                                     {
-                                        //p.LastUpdateTime = DateTime.Now;
+                                        p.AccountPrivileges = pl.Avatar.AccountPrivileges;
+                                        p.AccountStatus = Convert.ToInt32(pl.Avatar.AccountBanned);
+                                        p.LastUpdateTime = DateTime.Now;
                                         p.Battles = pl.Avatar.saveBattlesToJson();
+                                        p.IPAddress = pl.Avatar.IPAddress;
                                         p.Avatar = pl.Avatar.SaveToJSON();
                                         p.GameObjects = pl.SaveToJSON();
                                     }
                                 }
                                 catch (Exception ex)
-                                {
-                                    Logger.Write($"Cant save player with id {pl.Avatar.UserId}: "+ex);
+                                { 
+                                    Write($"Cant save player with id {pl.Avatar.UserId}: " + ex);
                                 }
                             }
                             await context.SaveChangesAsync();
-                            //context.SaveChanges();
-                        }
-                        break;
+                        } break;
                     }
                     case Save.Both:
                     {
                         await this.Save(avatars, Save.Redis);
-                        await this.Save(avatars, Save.Mysql);
+                        await this.Save(avatars);
                         break;
                     }
                 }
@@ -523,8 +525,7 @@ namespace UCS.Core
                         catch (Exception)
                         {
                         }
-                    }
-                    break;
+                    } break;
                 }
                 case Save.Mysql:
                 {
@@ -541,13 +542,11 @@ namespace UCS.Core
                                     c.Data = alliance.SaveToJSON();
                                 }
                             }
-                            catch (Exception) { }
+                            catch (Exception e) { Write(e.Message); }
 
                         }
                         await context.SaveChangesAsync();
-                        //context.SaveChanges();
-                    }
-                    break;
+                    } break;
                 }
                 case Save.Both:
                 {

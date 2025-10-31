@@ -35,12 +35,12 @@ namespace UCS.Packets.Messages.Client
                 Alliance a = ObjectManager.GetAlliance(this.Device.Player.Avatar.AllianceId);
                 StreamEntry message = a.m_vChatMessages.Find(c => c.ID == MessageID);
                 Level requester = await ResourcesManager.GetPlayer(message.SenderID);
+                if (!requester.Avatar.CastleUnlocked)
+                    return;
                 if (Choice == 1)
                 {
                     if (requester.Avatar.AllianceId != 0)
-                    {
                         return;
-                    }
                     if (!a.IsAllianceFull())
                     {
                         if (a.bannedPlayers.Contains(requester.Avatar.UserId))

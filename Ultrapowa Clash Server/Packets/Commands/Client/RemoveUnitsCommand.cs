@@ -53,25 +53,7 @@ namespace UCS.Packets.Commands.Client
                     DataSlot _DataSlot = _PlayerUnits.Find(t => t.Data.GetGlobalID() == _Troop.GetGlobalID());
                     if (_DataSlot != null)
                     {
-                        _DataSlot.Value = _DataSlot.Value - _Unit.Count;
-                    }
-
-                    
-                    // to be disabled after enough testing
-                    if (!((Building)this.Device.Player.GameObjectManager.GetGameObjectByID(500000010)).IsConstructing())
-                    {
-                        foreach (GameObject gameObject in this.Device.Player.GameObjectManager.GetAllGameObjects()[0])
-                        {
-                            if (gameObject.GlobalId == 500000010)
-                                continue;
-                            if (gameObject.GetData().GetGlobalID() == 1000006)
-                            {
-                                UnitProductionComponent barrackAdditional =
-                                    (UnitProductionComponent)gameObject.GetComponent(3);
-                                if (barrackAdditional.GetTotalCount() > 0)
-                                    barrackAdditional.RemoveAllUnits();
-                            }
-                        }
+                        _DataSlot.Value -= _Unit.Count;
                     }
                 }
                 else if (_Unit.Data.ToString().StartsWith("260"))
@@ -80,7 +62,7 @@ namespace UCS.Packets.Commands.Client
                     DataSlot _DataSlot = _PlayerSpells.Find(t => t.Data.GetGlobalID() == _Spell.GetGlobalID());
                     if (_DataSlot != null)
                     {
-                        _DataSlot.Value = _DataSlot.Value - _Unit.Count;
+                        _DataSlot.Value -= _Unit.Count;
                     }
                 }
             }

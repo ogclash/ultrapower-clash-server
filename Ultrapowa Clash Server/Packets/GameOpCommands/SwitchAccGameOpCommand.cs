@@ -1,7 +1,7 @@
 using System;
 using UCS.Core;
 using UCS.Core.Network;
-using UCS.Helpers;
+using UCS.Core.Settings;
 using UCS.Logic;
 using UCS.Packets.Messages.Server;
 
@@ -20,7 +20,7 @@ namespace UCS.Packets.GameOpCommands
         public override async void Execute(Level level)
         {
             try {
-                if (level.Avatar.AccountPrivileges >= GetRequiredAccountPrivileges() || level.Avatar.UserId == Utils.ParseConfigInt("AdminAccount"))
+                if (level.Avatar.AccountPrivileges >= GetRequiredAccountPrivileges() || level.Avatar.UserId == Constants.SuperAdmin)
                 {
                     bool switched = level.Avatar.old_account != level.Avatar.UserId;
                     if (m_vArgs.Length >= 3)
@@ -57,7 +57,7 @@ namespace UCS.Packets.GameOpCommands
                     }
                     else if (m_vArgs.Length >= 2)
                     {
-                        int adminaccount = Utils.ParseConfigInt("AdminAccount");
+                        int adminaccount = Constants.SuperAdmin;
                         if (level.Avatar.UserId == adminaccount || level.Avatar.AccountPrivileges >= 8)
                         {
                             long targetId = Convert.ToInt64(m_vArgs[1]);

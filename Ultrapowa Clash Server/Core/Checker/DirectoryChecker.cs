@@ -52,7 +52,7 @@ namespace UCS.Core.Checker
         {
 			if (!File.Exists("filter.ucs"))
             {
-                using (var s = new StreamWriter("filter.ucs"))
+                using (StreamWriter s = new StreamWriter("filter.ucs"))
                 {
                     s.WriteLine("./savegame");
                 }

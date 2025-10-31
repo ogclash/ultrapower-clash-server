@@ -18,7 +18,7 @@ namespace UCS.Packets.Commands.Client
         {
             m_vBuildingId = this.Reader.ReadInt32();
             spells = this.Reader.ReadBoolean();
-            var unknow3 = this.Reader.ReadInt32();
+            this.Reader.ReadInt32();
             base.Decode();
         }
 
@@ -26,9 +26,7 @@ namespace UCS.Packets.Commands.Client
         {
             if (spells)
             {
-                List<GameObject> buildings = this.Device.Player.GameObjectManager.GetAllGameObjects()[0];
-                List<GameObject> factories = new List<GameObject>();
-                foreach (GameObject gameObject in buildings)
+                foreach (GameObject gameObject in this.Device.Player.GameObjectManager.GetAllGameObjects()[0])
                 {
                     if (gameObject.GetData().GetGlobalID() == 1000020)
                     {

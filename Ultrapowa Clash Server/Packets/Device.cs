@@ -3,7 +3,8 @@ using UCS.Logic;
 using UCS.Helpers;
 using System;
 using UCS.Core;
-using UCS.Core.Network;
+using UCS.Core.Checker;
+using UCS.Core.Network.TCP;
 using UCS.Helpers.Binary;
 using UCS.Logic.Enums;
 
@@ -106,6 +107,7 @@ namespace UCS.Packets
                             if (this.Model == null && this.OSVersion == null && this.Interface == null &&
                                 Player == null)
                             {
+                                ConnectionBlocker.AddNewIpToBlackList(this);
                                 Logger.Write("DDOS-Attempt");
                                 try
                                 {

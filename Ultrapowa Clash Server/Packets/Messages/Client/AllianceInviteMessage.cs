@@ -1,9 +1,6 @@
 ﻿using System;
-using System.IO;
-using System.Threading.Tasks;
 using UCS.Core;
 using UCS.Core.Network;
-using UCS.Helpers;
 using UCS.Helpers.Binary;
 using UCS.Logic;
 using UCS.Logic.AvatarStreamEntry;
@@ -27,10 +24,9 @@ namespace UCS.Packets.Messages.Client
         internal override async void Process()
         {
             Level targetAccount = await ResourcesManager.GetPlayer(invited_userid);
-            if (targetAccount.Avatar.GetAllianceCastleLevel() == -1)
-            {
+            if (!targetAccount.Avatar.CastleUnlocked)
                 return;
-            }
+            
             foreach (AvatarStreamEntry message in targetAccount.Avatar.messages)
             {
                 if (message.GetStreamEntryType() == 4)

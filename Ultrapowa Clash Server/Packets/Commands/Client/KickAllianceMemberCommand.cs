@@ -38,7 +38,7 @@ namespace UCS.Packets.Commands.Client
                     var requesterAllianceId = requesterAvatar.AllianceId;
                     if (requesterAllianceId > 0 && targetAllianceId == requesterAllianceId)
                     {
-                        var alliance = ObjectManager.GetAlliance(requesterAllianceId);
+                        var alliance = ResourcesManager.GetInMemoryAlliance(requesterAllianceId);
                         var requesterMember = alliance.m_vAllianceMembers[requesterAvatar.UserId];
                         var targetMember = alliance.m_vAllianceMembers[m_vAvatarId];
                         if (targetMember.HasLowerRoleThan(requesterMember.Role))

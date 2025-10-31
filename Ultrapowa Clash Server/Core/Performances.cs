@@ -31,7 +31,7 @@ namespace UCS.Core
 
         public static long GetPhysicalAvailableMemoryInMiB()
         {
-            var pi = new PerformanceInformation();
+            PerformanceInformation pi = new PerformanceInformation();
             if (GetPerformanceInfo(out pi, Marshal.SizeOf(pi)))
                 return Convert.ToInt64(pi.PhysicalAvailable.ToInt64() * pi.PageSize.ToInt64() / 1048576);
             return -1;
@@ -39,7 +39,7 @@ namespace UCS.Core
 
         public static long GetTotalMemoryInMiB()
         {
-            var pi = new PerformanceInformation();
+            PerformanceInformation pi = new PerformanceInformation();
             if (GetPerformanceInfo(out pi, Marshal.SizeOf(pi)))
                 return Convert.ToInt64(pi.PhysicalTotal.ToInt64() * pi.PageSize.ToInt64() / 1048576);
             return -1;
@@ -50,9 +50,9 @@ namespace UCS.Core
     {
         public static string GetFreeMemory()
         {
-            var phav = PerformanceInfo.GetPhysicalAvailableMemoryInMiB();
-            var tot = PerformanceInfo.GetTotalMemoryInMiB();
-            var percentFree = phav / (decimal) tot * 100;
+            long phav = PerformanceInfo.GetPhysicalAvailableMemoryInMiB();
+            long tot = PerformanceInfo.GetTotalMemoryInMiB();
+            decimal percentFree = phav / (decimal) tot * 100;
             return percentFree.ToString("##.##");
         }
 
@@ -62,10 +62,10 @@ namespace UCS.Core
 
         public static string GetUsedMemory()
         {
-            var phav = PerformanceInfo.GetPhysicalAvailableMemoryInMiB();
-            var tot = PerformanceInfo.GetTotalMemoryInMiB();
-            var percentFree = phav / (decimal) tot * 100;
-            var percentOccupied = 100 - percentFree;
+            long phav = PerformanceInfo.GetPhysicalAvailableMemoryInMiB();
+            long tot = PerformanceInfo.GetTotalMemoryInMiB();
+            decimal percentFree = phav / (decimal) tot * 100;
+            decimal percentOccupied = 100 - percentFree;
             return percentOccupied.ToString("##.##");
         }
     }

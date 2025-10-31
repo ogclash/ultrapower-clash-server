@@ -27,7 +27,8 @@ namespace UCS.Packets
                 m_vCommands.Add("/clearbattles", typeof(ClearBattleLogGameOpCommand));
                 m_vCommands.Add("/accinfo", typeof(AccountInformationGameOpCommand));
                 m_vCommands.Add("/ban", typeof(BanGameOpCommand));
-                m_vCommands.Add("/softban", typeof(BanIpGameOpCommand));
+                m_vCommands.Add("/softban", typeof(SoftBanGameOpCommand));
+                m_vCommands.Add("/banip", typeof(BanIpGameOpCommand));
                 m_vCommands.Add("/unban", typeof(UnbanGameOpCommand));
                 m_vCommands.Add("/kick", typeof(KickGameOpCommand));
                 m_vCommands.Add("/rename", typeof(RenameAvatarGameOpCommand));
@@ -40,7 +41,7 @@ namespace UCS.Packets
                 m_vCommandsDeveloper.Add("/sysmsg", typeof(SystemMessageGameOpCommand));
                 m_vCommandsDeveloper.Add("/max", typeof(MaxRessourcesCommand));
                 m_vCommandsDeveloper.Add("/min", typeof(MinRessourcesCommand));
-                m_vCommandsDeveloper.Add("/maxbase", typeof(MaxBaseGameOpCommand)); // just for testing!
+                m_vCommandsDeveloper.Add("/maxbase", typeof(MaxBaseGameOpCommand));
                 m_vCommandsDeveloper.Add("/reload", typeof(SaveAccountGameOpCommand));
                 m_vCommandsDeveloper.Add("/becomeleader", typeof(BecomeLeaderGameOpCommand));
             } catch (Exception) {}

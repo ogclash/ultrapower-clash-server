@@ -18,12 +18,6 @@ namespace UCS.Packets.Messages.Server
 
         internal override void Encode()
         {
-            /*try
-            {
-                AllianceInviteStreamEntry ai = (AllianceInviteStreamEntry)m_vAvatarStreamEntry;
-                this.Data.AddRange(ai.Encode());
-                return;
-            } catch (Exception) {}*/
             this.Data.AddRange(m_vAvatarStreamEntry.Encode());
         }
 

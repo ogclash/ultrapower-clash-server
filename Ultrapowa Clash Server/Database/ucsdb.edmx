@@ -20,6 +20,10 @@
           <Key>
             <PropertyRef Name="PlayerId" />
           </Key>
+          <Property Name="AccountPrivileges" Type="int" Nullable="false" />
+          <Property Name="AccountStatus" Type="int" Nullable="false" />
+          <Property Name="LastUpdateTime" Type="datetime" Precision="0" Nullable="true" />
+          <Property Name="IPAddress" Type="varchar" Nullable="true" />
           <Property Name="PlayerId" Type="bigint" Nullable="false" />
           <Property Name="Avatar" Type="longtext" Nullable="false" />
           <Property Name="GameObjects" Type="longtext" Nullable="false" />
@@ -48,6 +52,10 @@
           <Key>
             <PropertyRef Name="PlayerId" />
           </Key>
+          <Property Name="AccountPrivileges" Type="Int32" Nullable="false" />
+          <Property Name="AccountStatus" Type="Int32" Nullable="false" />
+          <Property Name="LastUpdateTime" Type="DateTime" Nullable="true" />
+          <Property Name="IPAddress" Type="String" Nullable="true" Unicode="false" />
           <Property Name="PlayerId" Type="Int64" Nullable="false" />
           <Property Name="Avatar" Type="String" Nullable="false" FixedLength="false" Unicode="false" />
           <Property Name="GameObjects" Type="String" Nullable="false" FixedLength="false"
@@ -77,6 +85,10 @@
           <EntitySetMapping Name="Player">
             <EntityTypeMapping TypeName="ucsdbModel.Player">
               <MappingFragment StoreEntitySet="Player">
+                <ScalarProperty Name="AccountStatus" ColumnName="AccountStatus" />
+                <ScalarProperty Name="AccountPrivileges" ColumnName="AccountPrivileges" />
+                <ScalarProperty Name="LastUpdateTime" ColumnName="LastUpdateTime" />
+                <ScalarProperty Name="IPAddress" ColumnName="IPAddress" />
                 <ScalarProperty Name="PlayerId" ColumnName="PlayerId" />
                 <ScalarProperty Name="GameObjects" ColumnName="GameObjects" />
                 <ScalarProperty Name="Avatar" ColumnName="Avatar" />

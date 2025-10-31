@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using UCS.Core;
 using UCS.Helpers.List;
@@ -15,19 +16,19 @@ namespace UCS.Packets.Messages.Server
             this.Identifier = 24403;
         }
 
-        internal override async void Encode()
+        internal override void Encode()
         {
             List<byte> packet1 = new List<byte>();
             int i = 0;
 
-            foreach (var player in ResourcesManager.m_vInMemoryLevels.Values.ToList().OrderByDescending(t => t.Avatar.GetScore()))
+            foreach (Level player in ResourcesManager.m_vInMemoryLevels.Values.ToList().OrderByDescending(t => t.Avatar.GetScore()).Take(200))
             {
                 try
                 {
                     if (player.Avatar.m_vAvatarLevel >= 1 && player.Avatar.AvatarName != "NoNameYet")
                     {
-                        var pl = player.Avatar;
-                        if (i >= 100)
+                        ClientAvatar pl = player.Avatar;
+                        if (i >= 200)
                             break;
                         packet1.AddLong(pl.UserId);
                         packet1.AddString(pl.AvatarName);
@@ -48,11 +49,19 @@ namespace UCS.Packets.Messages.Server
                         packet1.AddInt(1);
                         if (pl.AllianceId > 0)
                         {
-                            packet1.Add(1); // 1 = Have an alliance | 0 = No alliance
-                            packet1.AddLong(pl.AllianceId);
                             Alliance _Alliance = ObjectManager.GetAlliance(pl.AllianceId);
-                            packet1.AddString(_Alliance.m_vAllianceName);
-                            packet1.AddInt(_Alliance.m_vAllianceBadgeData);
+                            if (_Alliance.m_vAllianceMembers.ContainsKey(pl.UserId))
+                            {
+                                packet1.Add(1); // 1 = Have an alliance | 0 = No alliance
+                                packet1.AddLong(pl.AllianceId);
+                                packet1.AddString(_Alliance.m_vAllianceName);
+                                packet1.AddInt(_Alliance.m_vAllianceBadgeData);
+                            }
+                            else
+                            {
+                                packet1.Add(0);
+                                pl.AllianceId = 0;
+                            }
                         }
                         else
                             packet1.Add(0);
@@ -64,14 +73,22 @@ namespace UCS.Packets.Messages.Server
 
             this.Data.AddInt(i);
             this.Data.AddRange(packet1);
-            this.Data.AddInt(i);
-            this.Data.AddRange(packet1);
-
-            this.Data.AddInt((int) TimeSpan.FromDays(7).TotalSeconds);
-            this.Data.AddInt(DateTime.Now.Year);
-            this.Data.AddInt(DateTime.Now.Month);
-            this.Data.AddInt(DateTime.Now.Year);
-            this.Data.AddInt(DateTime.Now.Month - 1);
+            if (File.Exists(ObjectManager.filePathPrevius))
+            {
+                this.Data.AddInt(Convert.ToInt32(File.ReadAllText(ObjectManager.filePathPreviusNumber)));
+                this.Data.AddRange(File.ReadAllBytes(ObjectManager.filePathPrevius));
+            }
+            else
+                this.Data.AddInt(0);
+            
+            DateTime now = DateTime.Now;
+            DateTime nextMonth = new DateTime(now.Year, now.Month, 1).AddMonths(1);
+            TimeSpan timeUntilNextMonth = nextMonth - now;
+            this.Data.AddInt((int)timeUntilNextMonth.TotalSeconds);
+            this.Data.AddInt(now.Year);
+            this.Data.AddInt(now.Month);
+            this.Data.AddInt(now.Year);
+            this.Data.AddInt(now.Month - 1);
         }
     }
 }

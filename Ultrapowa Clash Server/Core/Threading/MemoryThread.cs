@@ -8,8 +8,8 @@ namespace UCS.Core.Threading
 {
     internal class MemoryThread : IDisposable
     {
-        private System.Timers.Timer _Timer = null;
-        private Thread _Thread             = null;
+        private System.Timers.Timer _Timer;
+        private Thread _Thread;
 
         public MemoryThread()
         {
@@ -35,7 +35,7 @@ namespace UCS.Core.Threading
                     if (!_Player.Client.IsClientSocketConnected())
                     {
                         _Player.Client.Socket.Close();
-                        ResourcesManager.DropClient(_Player.Client.SocketHandle);
+                        ResourcesManager.DropClient(_Player.Client);
                     }
                 }
 
@@ -46,10 +46,7 @@ namespace UCS.Core.Threading
                 GC.Collect(GC.MaxGeneration);
                 GC.WaitForPendingFinalizers();
             }
-            catch (Exception)
-            {
-                
-            }
+            catch (Exception) {}
         }
 
         public void Dispose()

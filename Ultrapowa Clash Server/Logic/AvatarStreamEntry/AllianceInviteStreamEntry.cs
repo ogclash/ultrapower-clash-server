@@ -16,8 +16,6 @@ namespace UCS.Logic.AvatarStreamEntry
         {
             List<byte> data = new List<byte>();
             data.AddRange(base.Encode());
-            data.AddInt((int)(DateTime.UtcNow - m_vCreationTime).TotalSeconds);
-            data.AddBool(false);
             
             data.AddLong(AllianceId);
             data.AddString(AllianceName);

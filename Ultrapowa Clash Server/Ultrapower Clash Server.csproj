@@ -242,7 +242,6 @@
     <Compile Include="Core\CSVManager.cs" />
     <Compile Include="Core\Events\Region.cs" />
     <Compile Include="Core\LogicMath\LogicELOMath.cs" />
-    <Compile Include="Core\LogicMath\LogicMath.cs" />
     <Compile Include="Core\Network\Pool.cs" />
     <Compile Include="Core\Network\Processor.cs" />
     <Compile Include="Core\Network\TCP\Gateway.cs" />
@@ -289,6 +288,7 @@
     <Compile Include="Packets\Commands\Server\ReceivedAllianceUnitCommand.cs" />
     <Compile Include="Packets\Crypto.cs" />
     <Compile Include="Packets\GameOpCommands\AddGemsOpCommand.cs" />
+    <Compile Include="Packets\GameOpCommands\BanIpGameOpCommand.cs" />
     <Compile Include="Packets\GameOpCommands\ClearBattleLogGameOpCommand.cs" />
     <Compile Include="Packets\GameOpCommands\ClearInboxGameOpCommand.cs" />
     <Compile Include="Packets\GameOpCommands\GiveGemsGameOpCommand.cs" />
@@ -309,6 +309,7 @@
     <Compile Include="Packets\Messages\Server\Clash_Friend_Request_Sent_Message.cs" />
     <Compile Include="Packets\Messages\Server\DeviceAlreadyBoundMessage.cs" />
     <Compile Include="Packets\Messages\Server\Friend_Request_Failed_Message.cs" />
+    <Compile Include="Packets\Messages\Server\RemoveAvatarStreamMessage.cs" />
     <Compile Include="Packets\Messages\Server\RetributionDataMessage.cs" />
     <Compile Include="Packets\Messages\Server\Support\AllianceDataForOldClients.cs" />
     <Compile Include="Packets\Messages\Server\Support\AvatarProfileForOldClients.cs" />
@@ -399,7 +400,7 @@
     <Compile Include="Packets\Messages\Server\PlayerWarStatusMessage.cs" />
     <Compile Include="Packets\Commands\Client\RotateDefenseCommand.cs" />
     <Compile Include="Packets\Commands\Client\UnknownCommand.cs" />
-    <Compile Include="Packets\GameOpCommands\BanIpGameOpCommand.cs" />
+    <Compile Include="Packets\GameOpCommands\SoftBanGameOpCommand.cs" />
     <Compile Include="Packets\GameOpCommands\BecomeLeaderGameOpCommand.cs" />
     <Compile Include="Packets\GameOpCommands\SaveAccountGameOpCommand.cs" />
     <Compile Include="Packets\GameOpCommands\SaveAllGameOpCommand.cs" />
@@ -1110,6 +1111,7 @@
   <ItemGroup>
     <Content Include="bin\Debug\auth" />
     <Content Include="bin\Debug\bckupauth" />
+    <Content Include="bin\Debug\Gamefiles\logic\characters.csv" />
     <Content Include="bin\Debug\Gamefiles\starting_home.json" />
     <Content Include="bin\Debug\Gamefiles\starting_home_test.json" />
     <Content Include="bin\Debug\WebAPI\HTML\Manager.html" />

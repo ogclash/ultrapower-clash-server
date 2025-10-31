@@ -1,6 +1,5 @@
 ﻿using UCS.Core.Network;
 using UCS.Core.Settings;
-using UCS.Helpers;
 using UCS.Logic;
 using UCS.Packets.Messages.Server;
 
@@ -18,7 +17,7 @@ namespace UCS.Packets.GameOpCommands
 
         public override void Execute(Level level)
         {
-            bool superadmin = level.Avatar.UserId == Utils.ParseConfigInt("AdminAccount");
+            bool superadmin = level.Avatar.UserId == Constants.SuperAdmin;
             if (level.Avatar.AccountPrivileges >= GetRequiredAccountPrivileges() || superadmin)
             {
                 if (m_vArgs.Length >= 1)
@@ -30,7 +29,6 @@ namespace UCS.Packets.GameOpCommands
                                    "\n/visit" +
                                    "\n/accinfo" +
                                    "\n/resetacc" +
-                                   "\n/clearbattles" +
                                    "\n/clearinbox" +
                                    "\n/newaccount" +
                                    "\n/setpassword <password>" +
@@ -44,6 +42,7 @@ namespace UCS.Packets.GameOpCommands
                     if (level.Avatar.AccountPrivileges >= 1 ||superadmin)
                     {
                         _MSG.Message += "\n/rename " +
+                                        "\n/clearbattles" +
                                         "\n/softban " +
                                         "\n/status";
                         if (Constants.DeveloperBuild)
@@ -56,8 +55,12 @@ namespace UCS.Packets.GameOpCommands
                     }
                     if (level.Avatar.AccountPrivileges >= 5||superadmin)
                     {
-                        _MSG.Message += "\n/ban " +
-                                        "\n/op";
+                        _MSG.Message += "\n/op " +
+                                        "\n/ban";
+                    }
+                    if (level.Avatar.AccountPrivileges >= 8||superadmin)
+                    {
+                        _MSG.Message += "\n/banip";
                     }
                     if (Constants.DeveloperBuild && (level.Avatar.AccountPrivileges >= 10 ||superadmin))
                     {

@@ -21,26 +21,23 @@ namespace UCS.Packets.Commands.Client
 
         internal override void Process()
         {
-            var ca = this.Device.Player.Avatar;
-            var go = this.Device.Player.GameObjectManager.GetGameObjectByID(BuildingId);
-
-            var b = (ConstructionItem) go;
-
+            var b = (ConstructionItem) this.Device.Player.GameObjectManager.GetGameObjectByID(BuildingId);
             var bd = (BuildingData) b.GetConstructionItemData();
 
             string name = this.Device.Player.GameObjectManager.GetGameObjectByID(BuildingId).GetData().GetName();
             
-            ca.SetAllianceCastleLevel(0);
-            Building a = (Building)this.Device.Player.GameObjectManager.GetGameObjectByID(BuildingId);
-            BuildingData al = a.GetBuildingData();
-            ca.SetAllianceCastleTotalCapacity(al.GetUnitStorageCapacity(ca.GetAllianceCastleLevel()));
-            Logger.Write("Unlocking Building: " + name + " (" + BuildingId + ')');
-            b.Unlock();
             var rd = bd.GetBuildResource(b.GetUpgradeLevel());
-            if (ca.GetResourceCount(rd)-bd.GetBuildCost(b.GetUpgradeLevel()) < 0)
-                ca.SetResourceCount(rd, 0);
-            else 
-                ca.SetResourceCount(rd, ca.GetResourceCount(rd) - bd.GetBuildCost(b.GetUpgradeLevel()));
+            if (this.Device.Player.Avatar.HasEnoughResources(rd, bd.GetBuildCost(0)))
+            {
+                Logger.Write("Unlocking Building: " + name + " (" + BuildingId + ')');
+                b.Unlock();
+                this.Device.Player.Avatar.CastleUnlocked = true;
+                
+                if (this.Device.Player.Avatar.GetResourceCount(rd)-bd.GetBuildCost(b.GetUpgradeLevel()) < 0)
+                    this.Device.Player.Avatar.SetResourceCount(rd, 0);
+                else 
+                    this.Device.Player.Avatar.SetResourceCount(rd, this.Device.Player.Avatar.GetResourceCount(rd) - bd.GetBuildCost(b.GetUpgradeLevel()));
+            }
         }
 
         public int BuildingId;

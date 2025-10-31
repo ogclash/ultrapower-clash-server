@@ -17,7 +17,7 @@ namespace UCS.Logic
             UpgradeLevel      = -1;
         }
 
-        protected bool Locked;
+        public bool Locked;
         protected DateTime m_vBoostEndTime;
         protected bool m_vIsConstructing;
         protected Level m_vLevel;
@@ -82,17 +82,6 @@ namespace UCS.Logic
 
         public void FinishConstruction(int id = 0)
         {
-            if (id != 0 && string.Equals(this.GetData().GetName(), "Alliance Castle"))
-            {
-                Avatar.Avatar.IncrementAllianceCastleLevel();
-                Building a = (Building)Avatar.GameObjectManager.GetGameObjectByID(id);
-                BuildingData al = a.GetBuildingData();
-                Avatar.Avatar.SetAllianceCastleTotalCapacity(
-                    al.GetUnitStorageCapacity(Avatar.Avatar.GetAllianceCastleLevel()));
-            }
-            else if (string.Equals(this.GetData().GetName(), "Town Hall"))
-                Avatar.Avatar.IncrementTownHallLevel();
-
             SetUpgradeLevel(GetUpgradeLevel() + 1);
             m_vIsConstructing = false;
             m_vLevel.WorkerManager.DeallocateWorker(this);

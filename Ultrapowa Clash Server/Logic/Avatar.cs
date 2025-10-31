@@ -29,6 +29,7 @@ namespace UCS.Logic
         protected List<DataSlot> m_vUnitCount;
         protected List<DataSlot> m_vUnitUpgradeLevel;
 
+        public bool CastleUnlocked = false;
         public int m_vCastleLevel = -1;
         int m_vCastleTotalCapacity;
         int m_vCastleUsedCapacity;
@@ -167,18 +168,11 @@ namespace UCS.Logic
             return Math.Max(resourceCap - resourceCount, 0);
         }
 
-        public void SetAllianceCastleLevel(int level)
+        public void SetAllianceCastleLevel(int level, BuildingData bd = null)
         {
             m_vCastleLevel = level;
-        }
-
-        public void IncrementAllianceCastleLevel()
-        {
-            m_vCastleLevel++;
-        }
-        public void DeIncrementAllianceCastleLevel()
-        {
-            m_vCastleLevel--;
+            if (bd != null)
+                m_vCastleTotalCapacity = bd.GetUnitStorageCapacity(level);
         }
 
         public void SetTownHallLevel(int level)

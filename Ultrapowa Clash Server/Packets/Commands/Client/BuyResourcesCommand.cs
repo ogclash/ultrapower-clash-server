@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Net;
 using UCS.Core;
 using UCS.Core.Checker;
 using UCS.Files.Logic;
@@ -38,7 +37,6 @@ namespace UCS.Packets.Commands.Client
                     Console.WriteLine("Detected UCS Exploit.");
                     Logger.Say("Detected UCS Exploit. Banning IP.");
                 }
-                Depth = Depth;
             }
             this.Unknown1 = this.Reader.ReadInt32();
         }
@@ -46,11 +44,7 @@ namespace UCS.Packets.Commands.Client
         internal override void Process()
         {
             if (Depth >= MaxEmbeddedDepth)
-            {
-                IPEndPoint r = this.Device.Socket.RemoteEndPoint as IPEndPoint;
-                ConnectionBlocker.AddNewIpToBlackList(r.Address.ToString());
-                ResourcesManager.DropClient(this.Device.Socket.Handle);
-            }
+                ConnectionBlocker.AddNewIpToBlackList(this.Device);
             else
             {
                 var rd = (ResourceData) CSVManager.DataTables.GetDataById(m_vResourceId);

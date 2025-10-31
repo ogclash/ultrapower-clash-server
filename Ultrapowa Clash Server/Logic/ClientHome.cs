@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UCS.Helpers.List;
 
@@ -9,6 +10,7 @@ namespace UCS.Logic
         internal string Village;
         internal int ShieldTime;
         internal int ProtectionTime;
+        internal int TimeOut;
 
         public ClientHome()
         {
@@ -25,7 +27,7 @@ namespace UCS.Logic
                 data.AddInt(this.ShieldTime); // Shield
                 data.AddInt(this.ProtectionTime); // Protection
 
-                data.AddInt(0);
+                data.AddInt(TimeOut);
                 data.AddCompressed(Village);
                 data.AddCompressed("{\"event\":[]}");
                 return data.ToArray();

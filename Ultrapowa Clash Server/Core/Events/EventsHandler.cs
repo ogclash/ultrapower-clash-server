@@ -34,9 +34,7 @@
                     Parallel.ForEach(ResourcesManager.m_vInMemoryLevels.Values.ToList(), (_Player) =>
                     {
                         if (_Player != null)
-                        {
-                            ResourcesManager.LogPlayerOut(_Player);
-                        }
+                            ResourcesManager.reloadPlayer(_Player);
                     });
                 }
 
@@ -46,9 +44,7 @@
                     Parallel.ForEach(ResourcesManager.GetInMemoryAlliances(), (_Player) =>
                     {
                         if (_Player != null)
-                        {
                             ResourcesManager.RemoveAllianceFromMemory(_Player.m_vAllianceId);
-                        }
                     });
                 }
             }

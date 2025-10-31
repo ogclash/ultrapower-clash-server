@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Net.Sockets;
 
-namespace UCS.Core.Network
+namespace UCS.Core.Network.TCP
 {
   internal class SocketAsyncEventArgsPool
     {
@@ -19,9 +19,7 @@ namespace UCS.Core.Network
             lock (this.Gate)
             {
                 if (this.Pool.Count > 0)
-                {
                     return this.Pool.Pop();
-                }
 
                 return null;
             }
@@ -29,21 +27,14 @@ namespace UCS.Core.Network
 
         internal void Enqueue(SocketAsyncEventArgs Args)
         {
-             lock (this.Gate)
-            {
-                // if (this.Pool.Count < Constants.MaxPlayers)
-                {
-                    this.Pool.Push(Args);
-                }
-            }
+            lock (this.Gate)
+                this.Pool.Push(Args);
         }
 
         internal void Dispose()
         {
             lock (this.Gate)
-            {
                 this.Pool.Clear();
-            }
         }
     }
 }
