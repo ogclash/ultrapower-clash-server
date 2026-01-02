@@ -456,7 +456,7 @@
       <SubType>Code</SubType>
     </Compile>
     <None Include="app.manifest" />
-    <None Include="bin\Debug\Gamefiles\logic\buildings.csv">
+    <None Include="Gamefiles\logic\buildings.csv">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Gamefiles\csv\animations.csv">
@@ -1521,3 +1521,4 @@ del *.xml</PostBuildEvent>
   -->
 
 </Project>
+
