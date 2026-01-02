@@ -32,10 +32,6 @@ jobs:
         uses: microsoft/setup-msbuild@v1
       - run: msbuild "Ultrapower Community.sln" /p:Configuration=Release /p:Platform="Any CPU"
 
-      # Build only the server project
-      - name: Build server
-        run: msbuild "Ultrapowa Clash Server\Ultrapower Clash Server.csproj" /p:Configuration=Release /p:Platform="Any CPU"
-
       # Upload the compiled EXE as an artifact
       - name: Upload server EXE
         uses: actions/upload-artifact@v4
