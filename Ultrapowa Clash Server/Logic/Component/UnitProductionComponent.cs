@@ -463,6 +463,8 @@ namespace UCS.Logic
 
         public void SpeedUp()
         {
+            if (!GetParent().Avatar.Avatar.HasEnoughDiamons(cost))
+                return;
             IsSpeedUp = true;
             TotalRemainingSeconds = 0;
             if (m_vTimer != null)
