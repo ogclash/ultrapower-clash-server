@@ -39,6 +39,10 @@ namespace UCS.Packets.Messages.Client
 
         internal override void Process()
         {
+            if (this.Device.Player.Avatar.AllianceID != 0)
+            {
+                return;
+            }
             if (m_vAllianceName == null)
                 m_vAllianceName = "Clan";
 
@@ -86,3 +90,4 @@ namespace UCS.Packets.Messages.Client
         }
     }
 }
+
