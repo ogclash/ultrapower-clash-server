@@ -464,7 +464,7 @@ namespace UCS.Logic
         public void SpeedUp()
         {
             int cost = GamePlayUtil.GetSpeedUpCost(TotalRemainingSeconds*4);
-            if (!GetParent().Avatar.Avatar.HasEnoughDiamons(cost))
+            if (!GetParent().Avatar.Avatar.HasEnoughDiamonds(cost))
                 return;
             IsSpeedUp = true;
             TotalRemainingSeconds = 0;
