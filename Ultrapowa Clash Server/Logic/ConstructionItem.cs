@@ -330,7 +330,7 @@ namespace UCS.Logic
             ClientAvatar ca      = Avatar.Avatar;
             int remainingSeconds = m_vTimer.GetRemainingSeconds(m_vLevel.Avatar.LastTickSaved);
             int cost             = GamePlayUtil.GetSpeedUpCost(remainingSeconds);
-            if (ca.HasEnoughDiamonds(cost)
+            if (ca.HasEnoughDiamonds(cost))
             {
                 FinishConstruction();
                 ca.UseDiamonds(cost);
