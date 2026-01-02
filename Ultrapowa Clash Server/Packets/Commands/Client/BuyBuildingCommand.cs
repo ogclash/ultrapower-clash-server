@@ -49,7 +49,7 @@ namespace UCS.Packets.Commands.Client
                     return;
                 this.Device.Player.Avatar.UseDiamonds(nextWorkerCost);
             }
-            if (ca.HasEnoughResources(rd, cost))
+            if (ca.HasEnoughResources(rd, bd.GetBuildCost(0)))
             {
                 b.StartConstructing(X, Y);
                 ca.CommodityCountChangeHelper(0, rd, -bd.GetBuildCost(0));
