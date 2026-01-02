@@ -327,11 +327,14 @@ namespace UCS.Logic
 
         public void SpeedUpConstruction()
         {
-            //FinishConstruction();
             ClientAvatar ca      = Avatar.Avatar;
             int remainingSeconds = m_vTimer.GetRemainingSeconds(m_vLevel.Avatar.LastTickSaved);
             int cost             = GamePlayUtil.GetSpeedUpCost(remainingSeconds);
-            ca.UseDiamonds(cost);
+            if (ca.HasEnoughDiamonds(cost)
+            {
+                FinishConstruction();
+                ca.UseDiamonds(cost);
+            }
         }
 
         public void StartConstructing(int newX, int newY)
