@@ -1121,7 +1121,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <Resource Include="icone-ucs.ico" />
-    <Content Include="bin\Debug\Gamefiles\logic\buildings.csv" />
+    <Content Include="Gamefiles\logic\buildings.csv" />
     <Content Include="Gamefiles\level\NPC\npc1.json"><CopyToOutputDirectory>Always</CopyToOutputDirectory></Content>
     <Content Include="Gamefiles\level\NPC\npc10.json"><CopyToOutputDirectory>Always</CopyToOutputDirectory></Content>
     <Content Include="Gamefiles\level\NPC\npc11.json"><CopyToOutputDirectory>Always</CopyToOutputDirectory></Content>
@@ -1519,4 +1519,5 @@ del *.xml</PostBuildEvent>
   <Target Name="AfterBuild">
   </Target>
   -->
+
 </Project>
