@@ -14,25 +14,28 @@ jobs:
     runs-on: windows-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Setup .NET SDK
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: '8.0.x'  # or match the .NET version in the repo
-      - name: Restore dependencies
-        run: dotnet restore "Ultrapower Community.sln"
-      
-      - name: Build
-        run: dotnet build "Ultrapower Community.sln" -c Release --no-restore
-      
-      - name: Publish
-        run: dotnet publish "Ultrapower Community.sln" -c Release -r win-x64 --no-build
+      # Install NuGet (required for packages.config)
+      - name: Setup NuGet
+        uses: NuGet/setup-nuget@v2
 
-      - name: Upload EXE artifact
+      # Restore legacy packages.config dependencies
+      - name: NuGet restore
+        run: nuget restore "Ultrapower Community.sln"
+
+      # Build ONLY the server (not the whole solution)
+      - name: Build server
+        run: >
+          msbuild
+          "Ultrapowa Clash Server/Ultrapower Clash Server.csproj"
+          /p:Configuration=Release
+          /p:Platform="Any CPU"
+
+      # Upload the EXE
+      - name: Upload server exe
         uses: actions/upload-artifact@v4
         with:
-          name: Ultrapower-Windows-Exe
+          name: Ultrapower-Clash-Server
           path: |
-            **/bin/Release/**/win-x64/publish/*.exe
+            Ultrapowa Clash Server/bin/Release/*.exe
