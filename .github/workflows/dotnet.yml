@@ -21,15 +21,14 @@ jobs:
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.0.x'  # or match the .NET version in the repo
-
       - name: Restore dependencies
-        run: dotnet restore
-
-      - name: Build solution
-        run: dotnet build "Ultrapower Community.sln" --configuration Release --no-restore
-
-      - name: Publish EXE
-        run: dotnet publish "Ultrapower Community.sln" -c Release -r win-x64 --self-contained false --no-build
+        run: dotnet restore "Ultrapower Community.sln"
+      
+      - name: Build
+        run: dotnet build "Ultrapower Community.sln" -c Release --no-restore
+      
+      - name: Publish
+        run: dotnet publish "Ultrapower Community.sln" -c Release -r win-x64 --no-build
 
       - name: Upload EXE artifact
         uses: actions/upload-artifact@v4
