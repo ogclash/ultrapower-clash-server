@@ -25,6 +25,7 @@ namespace UCS.Packets.Messages.Server
             int count = 1;
             foreach (JObject BattleResult in battleResults)
             {
+                if (BattleResult == null) continue;
                 int type = 7; // default: attacked
                 Level pl;
 
