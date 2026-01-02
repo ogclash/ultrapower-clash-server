@@ -39,7 +39,7 @@ namespace UCS.Packets.Messages.Client
 
         internal override void Process()
         {
-            if (this.Device.Player.Avatar.AllianceID != 0)
+            if (this.Device.Player.Avatar.AllianceId != 0)
             {
                 return;
             }
@@ -90,4 +90,5 @@ namespace UCS.Packets.Messages.Client
         }
     }
 }
+
 
