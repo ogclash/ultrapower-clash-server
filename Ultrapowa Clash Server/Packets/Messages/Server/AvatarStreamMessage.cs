@@ -49,10 +49,10 @@ namespace UCS.Packets.Messages.Server
                 JObject jsonList = (JObject)BattleResult["result"];
                 if (avatar.AllianceId != 0)
                 {
+                    JObject stats = (JObject)jsonList["stats"];
                     try
                     {
                         Alliance alliance = ObjectManager.GetAlliance(avatar.AllianceId);
-                        JObject stats = (JObject)jsonList["stats"];
                         stats.Add("allianceBadge", alliance.m_vAllianceBadgeData);
                         stats.Add("allianceName", alliance.m_vAllianceName);
                     }
