@@ -28,7 +28,7 @@ namespace UCS.Packets.Commands.Client
                 Thread.Sleep(10); // Wait a bit
                 go = this.Device.Player.GameObjectManager.GetGameObjectByID(this.m_vBuildingId);
             }
-            ((ConstructionItem)go).FinishConstruction(this.m_vBuildingId);
+            //((ConstructionItem)go).FinishConstruction(this.m_vBuildingId);
             ((ConstructionItem)go).SpeedUpConstruction();
             /*if (go != null)
             {
