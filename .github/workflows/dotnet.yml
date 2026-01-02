@@ -21,10 +21,14 @@ jobs:
 
       - name: NuGet restore
         run: nuget restore "Ultrapower Community.sln"
-
+      
       - name: Build server
-        run: '"C:\Program Files\Microsoft Visual Studio\2022\BuildTools\MSBuild\Current\Bin\MSBuild.exe" "Ultrapowa Clash Server\Ultrapower Clash Server.csproj" /p:Configuration=Release /p:Platform="Any CPU"'
-
+        run: |
+          & "C:\Program Files\Microsoft Visual Studio\2022\BuildTools\MSBuild\Current\Bin\MSBuild.exe" `
+            "Ultrapowa Clash Server\Ultrapower Clash Server.csproj" `
+            /p:Configuration=Release `
+            /p:Platform="Any CPU"
+      
       - name: Upload server exe
         uses: actions/upload-artifact@v4
         with:
