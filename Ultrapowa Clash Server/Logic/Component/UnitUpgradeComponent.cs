@@ -114,9 +114,9 @@ namespace UCS.Logic
                 }
                 var cost = GamePlayUtil.GetSpeedUpCost(remainingSeconds);
                 var ca = GetParent().Avatar.Avatar;
-                FinishUpgrading();
                 if (ca.HasEnoughDiamonds(cost))
                 {
+                    FinishUpgrading();
                     ca.UseDiamonds(cost);
                 }
             }
