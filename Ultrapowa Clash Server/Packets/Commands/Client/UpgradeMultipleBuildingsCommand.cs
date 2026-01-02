@@ -42,18 +42,20 @@ namespace UCS.Packets.Commands.Client
                     var cost = bd.GetBuildCost(b.GetUpgradeLevel() + 1);
                     if (this.Device.Player.HasFreeWorkers())
                     {
-                        b.StartUpgrading();
+                        ResourceData rd = null;
                         if (UpgradeWithEilixir == 1)
                         {
-                            ResourceData elixirLocation = CSVManager.DataTables.GetResourceByName("Elixir");
-                            ca.SetResourceCount(elixirLocation, ca.GetResourceCount(elixirLocation) - cost);
+                            rd = CSVManager.DataTables.GetResourceByName("Elixir");
                         }
                         else
                         {
-                            var rd = bd.GetBuildResource(b.GetUpgradeLevel());
+                            rd = bd.GetBuildResource(b.GetUpgradeLevel());
+                        }
+                        if (ca.HasEnoughResources(rd, cost))
+                        {
+                            b.StartUpgrading();
                             ca.SetResourceCount(rd, ca.GetResourceCount(rd) - cost);
                         }
-                        Logger.Write("Upgrade with Eilixir: " + buildingId + " cost: " + cost);
                     }
                 }
             }
