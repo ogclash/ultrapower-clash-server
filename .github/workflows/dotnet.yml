@@ -16,26 +16,17 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # Install NuGet (required for packages.config)
       - name: Setup NuGet
         uses: NuGet/setup-nuget@v2
 
-      # Restore legacy packages.config dependencies
       - name: NuGet restore
         run: nuget restore "Ultrapower Community.sln"
 
-      # Build ONLY the server (not the whole solution)
       - name: Build server
-        run: >
-          msbuild
-          "Ultrapowa Clash Server/Ultrapower Clash Server.csproj"
-          /p:Configuration=Release
-          /p:Platform="Any CPU"
+        run: '"C:\Program Files\Microsoft Visual Studio\2022\BuildTools\MSBuild\Current\Bin\MSBuild.exe" "Ultrapowa Clash Server\Ultrapower Clash Server.csproj" /p:Configuration=Release /p:Platform="Any CPU"'
 
-      # Upload the EXE
       - name: Upload server exe
         uses: actions/upload-artifact@v4
         with:
           name: Ultrapower-Clash-Server
-          path: |
-            Ultrapowa Clash Server/bin/Release/*.exe
+          path: Ultrapowa Clash Server/bin/Release/*.exe
