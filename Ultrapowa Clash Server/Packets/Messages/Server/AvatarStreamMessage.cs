@@ -49,17 +49,18 @@ namespace UCS.Packets.Messages.Server
                 JObject jsonList = (JObject)BattleResult["result"];
                 if (avatar.AllianceId != 0)
                 {
+                    Alliance alliance = null;
                     JObject stats = (JObject)jsonList["stats"];
                     try
                     {
-                        Alliance alliance = ObjectManager.GetAlliance(avatar.AllianceId);
-                        stats.Add("allianceBadge", alliance.m_vAllianceBadgeData);
-                        stats.Add("allianceName", alliance.m_vAllianceName);
+                        alliance = ObjectManager.GetAlliance(avatar.AllianceId);
+                        stats["allianceBadge"]= alliance.m_vAllianceBadgeData;
+                        stats["allianceName"]= alliance.m_vAllianceName;
                     }
-                    catch (Exception)
+                    catch (Exception) 
                     {
-                        stats["allianceBadge"]= 0;
-                        stats["allianceName"]= "404";
+                        stats.Remove("allianceBadge");
+                        stats.Remove("allianceName");
                     }
                     stats["homeID"] = new JArray(0, avatar.UserId);
                     jsonList["stats"] = stats;
