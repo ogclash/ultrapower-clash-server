@@ -28,6 +28,10 @@ jobs:
       - name: Setup MSBuild
         uses: microsoft/setup-msbuild@v1
 
+      - name: Build solution
+        uses: microsoft/setup-msbuild@v1
+      - run: msbuild "Ultrapower Community.sln" /p:Configuration=Release /p:Platform="Any CPU"
+
       # Build only the server project
       - name: Build server
         run: msbuild "Ultrapowa Clash Server\Ultrapower Clash Server.csproj" /p:Configuration=Release /p:Platform="Any CPU"
