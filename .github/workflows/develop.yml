@@ -1,0 +1,40 @@
+# This workflow will build a .NET project
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
+
+name: nighty-builds
+
+on:
+  push:
+    branches: [ "develop" ]
+  pull_request:
+    branches: [ "develop" ]
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # Setup NuGet for legacy packages.config restore
+      - name: Setup NuGet
+        uses: NuGet/setup-nuget@v2
+
+      # Restore all NuGet packages
+      - name: NuGet restore
+        run: nuget restore "Ultrapower Community.sln"
+
+      # Setup MSBuild in PATH
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v1
+
+      - name: Build solution
+        uses: microsoft/setup-msbuild@v1
+      - run: msbuild "Ultrapower Community.sln" /p:Configuration=Release /p:Platform="Any CPU"
+
+      # Upload the compiled EXE as an artifact
+      - name: Upload server EXE
+        uses: actions/upload-artifact@v4
+        with:
+          name: Ultrapower-Clash-Server
+          path: Ultrapowa Clash Server\bin\Release\*.exe
