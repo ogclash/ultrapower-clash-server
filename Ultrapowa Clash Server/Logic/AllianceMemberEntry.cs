@@ -86,8 +86,9 @@ namespace UCS.Logic
             AvatarId = jsonObject["avatar_id"].ToObject<long>();
             Role = jsonObject["role"].ToObject<int>();
             createdTime = jsonObject["created_time"]?.ToObject<DateTime>() ?? DateTime.Now;
-            if (createdTime.ToString() == "1/1/0001 12:00:00 AM")
+            if (createdTime.ToString() == "1/1/0001 12:00:00 AM" || createdTime.ToString() == "01.01.0001 00:00:00")
                 createdTime = DateTime.Now;
+            //Logger.Say(createdTime.ToString());
             WarOptInStatus = jsonObject["war_opt_in"].ToObject<int>() == 1 ? 1 : 0;
         }
 

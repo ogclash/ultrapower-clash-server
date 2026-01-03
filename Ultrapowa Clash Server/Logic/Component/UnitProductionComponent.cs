@@ -547,15 +547,27 @@ namespace UCS.Logic
                 unitProdObject.Add("slots", unitJsonArray);
                 if (b.IsConstructing())
                 {
-                    GetParent().Avatar.unitProductionJson = unitProdObject;
+                    if (m_vIsSpellForge)
+                        GetParent().Avatar.unitProductionSpellJson = unitProdObject;
+                    else
+                        GetParent().Avatar.unitProductionTroopJson = unitProdObject;
                     return jsonObject;
                 }
             }
             else if (!b.IsConstructing())
             {
-                if (GetParent().Avatar.unitProductionJson != null)
-                    unitProdObject = GetParent().Avatar.unitProductionJson;
-                GetParent().Avatar.unitProductionJson = null;
+                if (m_vIsSpellForge)
+                {
+                    if (GetParent().Avatar.unitProductionSpellJson != null)
+                        unitProdObject = GetParent().Avatar.unitProductionSpellJson;
+                    GetParent().Avatar.unitProductionSpellJson = null;
+                }
+                else
+                {
+                    if (GetParent().Avatar.unitProductionTroopJson != null)
+                        unitProdObject = GetParent().Avatar.unitProductionTroopJson;
+                    GetParent().Avatar.unitProductionTroopJson = null;
+                }
             }
             jsonObject.Add("unit_prod", unitProdObject);
             return jsonObject;

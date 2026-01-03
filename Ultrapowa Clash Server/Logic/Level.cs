@@ -19,7 +19,8 @@ namespace UCS.Logic
         public int lastTrainedUnitIndex = 0;
         public bool IsBuildingPending = false;
         public bool updated = false;
-        public JObject unitProductionJson = null;
+        public JObject unitProductionTroopJson = null;
+        public JObject unitProductionSpellJson = null;
 
         public Level()
         {

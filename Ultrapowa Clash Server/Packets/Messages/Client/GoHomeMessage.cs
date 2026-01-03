@@ -77,15 +77,25 @@ namespace UCS.Packets.Messages.Client
             int goldvalue;
             int elixirvalue;
             level.Avatar.NpcLevels[this.Device.AttackedNpc].Stars = 3;
-            if (avatar.GetResourceCap(goldLocation) >= 800000)
-                goldvalue = 800000;
+            NpcData npc = (NpcData)CSVManager.DataTables.GetTable(16).GetItemAt(this.Device.AttackedNpc);
+            if (npc != null)
+            {
+                goldvalue = npc.Gold;
+                elixirvalue = npc.Elixir;
+            }
             else
-                goldvalue = avatar.GetResourceCap(goldLocation);
+            {
+                if (avatar.GetResourceCap(goldLocation) >= 800000)
+                    goldvalue = 800000;
+                else
+                    goldvalue = avatar.GetResourceCap(goldLocation);
+                
+                if (avatar.GetResourceCap(elixirLocation) >= 800000)
+                    elixirvalue = 800000;
+                else
+                    elixirvalue = avatar.GetResourceCap(elixirLocation);
+            }
             
-            if (avatar.GetResourceCap(elixirLocation) >= 800000)
-                elixirvalue = 800000;
-            else
-                elixirvalue = avatar.GetResourceCap(elixirLocation);
             
             if (currentGold+goldvalue <= avatar.GetResourceCap(goldLocation))
                 avatar.SetResourceCount(goldLocation, currentGold + goldvalue);
@@ -102,16 +112,17 @@ namespace UCS.Packets.Messages.Client
 
         public void ResourcesMultiplayer(Level level)
         {
+            Logger.Say($@"{this.Device.Player.Avatar.AvatarName} [{this.Device.Player.Avatar.UserId}] attacked {this.Device.AttackVictim.Avatar.AvatarName} [{this.Device.AttackVictim.Avatar.UserId}]");
             ClientAvatar avatar = level.Avatar;
-            int goldvalue = 0;
-            int elexirvalue = 0;
-            int darkelixirvalue = 0;
-            int chance = ThreadSafeRandom.Range.Next(100); // 0-99
+            int darkelixirvalue;
+            int elexirvalue;
+            int goldvalue;
             int score;
             
             bool win = false;
-            foreach (JArray unit in this.Device.Player.Avatar.battle.units.ToList())
+            foreach (var jToken in this.Device.Player.Avatar.battle.units.ToList())
             {
+                var unit = (JArray)jToken;
                 int currentCount = (int)unit[1];
                 if (currentCount > 1)
                 {
@@ -123,7 +134,7 @@ namespace UCS.Packets.Messages.Client
             if (this.Device.Player.Avatar.battle.units.Count > 1)
                 win = true;
 
-            JObject result = new JObject();
+            JObject result;
             if (win)
             {
                 int currentGold = avatar.GetResourceCount(CSVManager.DataTables.GetResourceByName("Gold"));
@@ -133,31 +144,43 @@ namespace UCS.Packets.Messages.Client
                 ResourceData elixirLocation = CSVManager.DataTables.GetResourceByName("Elixir");
                 ResourceData darkelixirLocation = CSVManager.DataTables.GetResourceByName("DarkElixir");
                 
-                if (chance < 50) // 50%
+                int enemyCapElixir = this.Device.AttackVictim.Avatar.GetResourceCap(elixirLocation);
+                int enemyCapGold = this.Device.AttackVictim.Avatar.GetResourceCap(goldLocation);
+                if (enemyCapElixir >= 1000000 && enemyCapGold >= 1000000)
                 {
-                    darkelixirvalue = ThreadSafeRandom.Range.Next(500, 1000);
-                    goldvalue = ThreadSafeRandom.Range.Next(10000, 420000);
-                    elexirvalue = ThreadSafeRandom.Range.Next(10000, 420000);
+                    int chance = ThreadSafeRandom.Range.Next(100); // 0-99
+                    if (chance < 50) // 50%
+                    {
+                        darkelixirvalue = ThreadSafeRandom.Range.Next(500, 1000);
+                        goldvalue = ThreadSafeRandom.Range.Next(10000, 420000);
+                        elexirvalue = ThreadSafeRandom.Range.Next(10000, 420000);
+                    }
+                    else if (chance < 80) // 30% (50-79)
+                    {
+                        darkelixirvalue = ThreadSafeRandom.Range.Next(500, 4200);
+                        goldvalue = ThreadSafeRandom.Range.Next(10000, 750000);
+                        elexirvalue = ThreadSafeRandom.Range.Next(10000, 750000);
+                    }
+                    else if (chance < 95) // 15% (80-94)
+                    {
+                        darkelixirvalue = ThreadSafeRandom.Range.Next(1000, 4200);
+                        goldvalue = ThreadSafeRandom.Range.Next(10000, 800000);
+                        elexirvalue = ThreadSafeRandom.Range.Next(10000, 800000);
+                    }
+                    else
+                    {
+                        darkelixirvalue = ThreadSafeRandom.Range.Next(1500, 4200);
+                        goldvalue = ThreadSafeRandom.Range.Next(10000, 1000000);
+                        elexirvalue = ThreadSafeRandom.Range.Next(10000, 1000000);
+                    }
                 }
-                else if (chance < 80) // 30% (50-79)
+                else
                 {
-                    darkelixirvalue = ThreadSafeRandom.Range.Next(500, 4200);
-                    goldvalue = ThreadSafeRandom.Range.Next(10000, 750000);
-                    elexirvalue = ThreadSafeRandom.Range.Next(10000, 750000);
+                    darkelixirvalue = ThreadSafeRandom.Range.Next(0, 500);
+                    goldvalue = ThreadSafeRandom.Range.Next(0, enemyCapGold);
+                    elexirvalue = ThreadSafeRandom.Range.Next(0, enemyCapElixir);
                 }
-                else if (chance < 95) // 15% (80-94)
-                {
-                    darkelixirvalue = ThreadSafeRandom.Range.Next(1000, 4200);
-                    goldvalue = ThreadSafeRandom.Range.Next(10000, 800000);
-                    elexirvalue = ThreadSafeRandom.Range.Next(10000, 800000);
-                }
-                else // 5% (95-99)
-                {
-                    darkelixirvalue = ThreadSafeRandom.Range.Next(1500, 4200);
-                    goldvalue = ThreadSafeRandom.Range.Next(10000, 1000000);
-                    elexirvalue = ThreadSafeRandom.Range.Next(10000, 1000000);
-                }
-
+                
                 if (currentGold+goldvalue <= avatar.GetResourceCap(goldLocation))
                     avatar.SetResourceCount(goldLocation, currentGold + goldvalue);
                 else
@@ -168,7 +191,7 @@ namespace UCS.Packets.Messages.Client
                 else
                     avatar.SetResourceCount(elixirLocation, avatar.GetResourceCap(elixirLocation));
 
-                if (avatar.m_vTownHallLevel >= 6)
+                if (Device.AttackVictim.Avatar.m_vTownHallLevel >= 6)
                     if (currentDarkElixir+darkelixirvalue <= avatar.GetResourceCap(darkelixirLocation))
                         avatar.SetResourceCount(darkelixirLocation, currentDarkElixir + darkelixirvalue);
                     else
@@ -179,6 +202,7 @@ namespace UCS.Packets.Messages.Client
                 var oldscore = avatar.GetScore();
                 var newAttackerScore = LogicELOMath.CalculateNewRating(true, avatar.GetScore(), Device.AttackVictim.Avatar.GetScore(), 20 * 3);
                 score = newAttackerScore - oldscore;
+                
                 result =  new JObject
                 {
                     ["new"] = 2,
@@ -219,39 +243,6 @@ namespace UCS.Packets.Messages.Client
                 avatar.attacks_won++;
                 avatar.SetScore(newAttackerScore);
                 Device.AttackVictim.Avatar.SetScore(Device.AttackVictim.Avatar.GetScore() - score);
-                Device.AttackVictim.Avatar.AllianceUnits.Clear();
-                Device.AttackVictim.Avatar.SetAllianceCastleUsedCapacity(0);
-                try
-                {
-                    foreach (GameObject go in
-                             new List<GameObject>(Device.AttackVictim.GameObjectManager.GetAllGameObjects()[0]))
-                    {
-                        try
-                        {
-                            Building b = (Building)go;
-                            if (b.GetData().GetGlobalID() == 1000027 || b.GetData().GetGlobalID() == 1000021 || b.GetData().GetGlobalID() == 1000031)
-                            {
-                                if (go?.GetComponent(1, true) != null)
-                                    ((CombatComponent) go.GetComponent(1, true)).useAmmo();
-                            }
-                        } catch (Exception) {}
-                    }
-                } catch (Exception) {}
-                
-                try
-                {
-                    foreach (GameObject go2 in
-                             new List<GameObject>(Device.AttackVictim.GameObjectManager.GetAllGameObjects()[4]))
-                    {
-                        try
-                        {
-                            Trap t = (Trap)go2;
-                            ((TriggerComponent)t.GetComponent(8)).TriggerTrap();
-                        } catch (Exception) {}
-                    }
-                } catch (Exception) {}
-                
-
             }
             else
             {
@@ -269,7 +260,7 @@ namespace UCS.Packets.Messages.Client
                     {
                         ["loot"] = new JArray
                         {
-                            new JArray(3000001, 5),
+                            new JArray(3000001, 0),
                             new JArray(3000002, 0),
                             new JArray(3000003, 0)
                         },
@@ -299,9 +290,42 @@ namespace UCS.Packets.Messages.Client
                 Device.AttackVictim.Avatar.SetScore(newdefenderscore);
                 avatar.SetScore(avatar.GetScore() - score);
             }
+            avatar.battles.Add(result);
             Device.AttackVictim.Avatar.battles.Add(result);
             avatar.attackedPlayers.Add(Device.AttackVictim.Avatar.UserId);
-            avatar.battles.Add(result);
+            //Logger.Say("Attack added to Battle-Log!");
+            if (win)
+            {
+                try
+                {
+                    Device.AttackVictim.Avatar.AllianceUnits.Clear();
+                    Device.AttackVictim.Avatar.SetAllianceCastleUsedCapacity(0);
+                    foreach (GameObject go in
+                             new List<GameObject>(Device.AttackVictim.GameObjectManager.GetAllGameObjects()[0]))
+                    {
+                        try
+                        {
+                            Building b = (Building)go;
+                            if (b.GetData().GetGlobalID() == 1000027 || b.GetData().GetGlobalID() == 1000021 || b.GetData().GetGlobalID() == 1000031)
+                            {
+                                if (go?.GetComponent(1, true) != null)
+                                    ((CombatComponent) go.GetComponent(1, true)).useAmmo();
+                            }
+                        } catch (Exception) {}
+                    }
+            
+                    foreach (GameObject go2 in
+                             new List<GameObject>(Device.AttackVictim.GameObjectManager.GetAllGameObjects()[4]))
+                    {
+                        try
+                        {
+                            Trap t = (Trap)go2;
+                            ((TriggerComponent)t.GetComponent(8)).TriggerTrap();
+                        } catch (Exception) {}
+                    }
+                }
+                catch (Exception) { }
+            }
             if (ResourcesManager.IsPlayerOnline(Device.AttackVictim))
                 new GoHomeMessage(Device.AttackVictim.Client, Reader).Send();
         }

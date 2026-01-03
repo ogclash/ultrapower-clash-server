@@ -1,4 +1,4 @@
-﻿
+﻿using System.Threading.Tasks;
 using UCS.Core.Events;
 
 namespace UCS.Core
@@ -13,15 +13,27 @@ namespace UCS.Core
         internal static DatabaseManager DatabaseManager;
         internal static Loader Loader;
         internal static Region Region;
-
+        internal static Task ContentServerTask;
+        internal static ContentServer ContentServer;
 
         internal static void Initialize()
         {
-            Resources.Loader = new Loader();
-            Resources.Random = new Random();
-            Resources.DatabaseManager = new DatabaseManager();
-            Resources.Region = new Region();
-            Resources.Gateway = new Gateway();
+            Loader = new Loader();
+            Random = new Random();
+            DatabaseManager = new DatabaseManager();
+            Region = new Region();
+            //ContentServer = new ContentServer(); // create instance
+            //ContentServerTask = StartContentServerAsync();
+            Gateway = new Gateway();
+        }
+
+        internal static async Task StartContentServerAsync()
+        {
+            if (ContentServer != null)
+            {
+                await ContentServer.StartAsync();
+            }
         }
     }
+
 }

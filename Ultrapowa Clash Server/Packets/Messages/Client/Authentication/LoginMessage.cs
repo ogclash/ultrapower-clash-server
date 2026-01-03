@@ -284,8 +284,7 @@ namespace UCS.Packets.Messages.Client
                 {
                     ErrorCode = 7,
                     ResourceFingerprintData = ObjectManager.FingerPrint.SaveToJson(),
-                    ContentUrl = Utils.ParseConfigString("patchingServer"),
-                    UpdateUrl = Utils.ParseConfigString("UpdateUrl")
+                    ContentUrl = Utils.ParseConfigString("patchingServer")
                 }.Send();
                 Logger.Say("Client updated");
                 this.level.updated = true;
