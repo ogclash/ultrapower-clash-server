@@ -61,7 +61,7 @@ namespace UCS.Packets.Commands.Client
             else
             {
                 if (ca.AddCheatFlag())
-                    ResourcesManager.DisconnectClient(level.Client);
+                    ResourcesManager.DisconnectClient(this.Device);
             }
             
         }

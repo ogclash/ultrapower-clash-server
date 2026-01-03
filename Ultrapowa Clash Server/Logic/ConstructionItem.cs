@@ -341,7 +341,7 @@ namespace UCS.Logic
             else
             {
                 if (ca.AddCheatFlag())
-                    ResourcesManager.DisconnectClient(level.Client);
+                    ResourcesManager.DisconnectClient(m_vLevel.Client);
             }
         }
 
