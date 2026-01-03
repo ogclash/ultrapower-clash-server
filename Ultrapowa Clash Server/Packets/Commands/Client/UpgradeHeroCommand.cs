@@ -1,4 +1,8 @@
-﻿using UCS.Core;
+﻿using System;
+using System.Threading.Tasks;
+using System.Collections.Generic;
+using System.Linq;
+using UCS.Core;
 using UCS.Helpers.Binary;
 using UCS.Logic;
 
@@ -39,6 +43,11 @@ namespace UCS.Packets.Commands.Client
                             Logger.Write("Hero To Upgrade : " + b.GetData().GetName() + " (" + BuildingId + ')');
                             hbc.StartUpgrading();
                         }
+                    }
+                    else
+                    {
+                        if (ca.AddCheatFlag())
+                            ResourcesManager.DisconnectClient(this.Device);
                     }
                 }
             }

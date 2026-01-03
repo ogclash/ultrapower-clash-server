@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
+using System.Collections.Generic;
+using System.Linq;
 using UCS.Core;
 using UCS.Files.Logic;
 using UCS.Helpers.Binary;
@@ -38,7 +40,6 @@ namespace UCS.Packets.Commands.Client
             
 
             var rd = bd.GetBuildResource(0);
-            ca.CommodityCountChangeHelper(0, rd, -bd.GetBuildCost(0));
 
             if (bd.BuildingClass == "Worker")
             {
@@ -50,9 +51,18 @@ namespace UCS.Packets.Commands.Client
                     return;
                 this.Device.Player.Avatar.UseDiamonds(nextWorkerCost);
             }
-            b.StartConstructing(X, Y);
-            this.Device.Player.GameObjectManager.AddGameObject(b);
-            Logger.Say("Construction started successfully.");
+            if (ca.HasEnoughResources(rd, bd.GetBuildCost(0)))
+            {
+                b.StartConstructing(X, Y);
+                ca.CommodityCountChangeHelper(0, rd, -bd.GetBuildCost(0));
+                this.Device.Player.GameObjectManager.AddGameObject(b);
+                Logger.Say("Construction started successfully.");
+            }
+            else
+            {
+                if (ca.AddCheatFlag())
+                    ResourcesManager.DisconnectClient(this.Device);
+            }
             
         }
 

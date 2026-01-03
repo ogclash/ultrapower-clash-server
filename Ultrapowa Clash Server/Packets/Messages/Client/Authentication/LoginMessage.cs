@@ -333,8 +333,9 @@ namespace UCS.Packets.Messages.Client
             
             HashSet<string> sentInvites = new HashSet<string>();
 
-            foreach (AvatarStreamEntry amessage in Device.Player.Avatar.messages)
+            foreach (AvatarStreamEntry amessage in Device.Player.Avatar.messages ?? new List<AvatarStreamEntry>())
             {
+                if (amessage == null) continue;
                 var type = amessage.GetStreamEntryType();
                 if (!amessage.wasOnline)
                 {

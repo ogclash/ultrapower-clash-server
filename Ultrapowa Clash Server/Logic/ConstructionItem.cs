@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
 using UCS.Core;
 using UCS.Files.Logic;
@@ -327,11 +330,19 @@ namespace UCS.Logic
 
         public void SpeedUpConstruction()
         {
-            //FinishConstruction();
             ClientAvatar ca      = Avatar.Avatar;
             int remainingSeconds = m_vTimer.GetRemainingSeconds(m_vLevel.Avatar.LastTickSaved);
             int cost             = GamePlayUtil.GetSpeedUpCost(remainingSeconds);
-            ca.UseDiamonds(cost);
+            if (ca.HasEnoughDiamonds(cost))
+            {
+                FinishConstruction();
+                ca.UseDiamonds(cost);
+            }
+            else
+            {
+                if (ca.AddCheatFlag())
+                    ResourcesManager.DisconnectClient(m_vLevel.Client);
+            }
         }
 
         public void StartConstructing(int newX, int newY)

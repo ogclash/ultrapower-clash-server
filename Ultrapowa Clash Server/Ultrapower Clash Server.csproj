@@ -457,7 +457,7 @@
       <SubType>Code</SubType>
     </Compile>
     <None Include="app.manifest" />
-    <None Include="bin\Debug\Gamefiles\logic\buildings.csv">
+    <None Include="Gamefiles\logic\buildings.csv">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Gamefiles\csv\animations.csv">
@@ -1122,7 +1122,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <Resource Include="icone-ucs.ico" />
-    <Content Include="bin\Debug\Gamefiles\logic\buildings.csv" />
+    <Content Include="Gamefiles\logic\buildings.csv" />
     <Content Include="Gamefiles\level\NPC\npc1.json"><CopyToOutputDirectory>Always</CopyToOutputDirectory></Content>
     <Content Include="Gamefiles\level\NPC\npc10.json"><CopyToOutputDirectory>Always</CopyToOutputDirectory></Content>
     <Content Include="Gamefiles\level\NPC\npc11.json"><CopyToOutputDirectory>Always</CopyToOutputDirectory></Content>
@@ -1520,4 +1520,6 @@ del *.xml</PostBuildEvent>
   <Target Name="AfterBuild">
   </Target>
   -->
+
 </Project>
+

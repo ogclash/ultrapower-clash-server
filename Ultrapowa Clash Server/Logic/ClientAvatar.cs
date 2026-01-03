@@ -93,10 +93,12 @@ namespace UCS.Logic
         //Datetime
         internal DateTime m_vAccountCreationDate;
         internal DateTime LastTickSaved;
-        
+
+        public List<DateTime> CheatFlags;
+
         List<int[]> buildings = new List<int[]>();
         public List<NpcLevel> NpcLevels = new List<NpcLevel>();
-        
+
         public BattleResult battle = new BattleResult();
         public List<long> revenged = new List<long>();
 
@@ -188,6 +190,26 @@ namespace UCS.Logic
                 }
                 i++;
             }
+        }
+
+        public bool AddCheatFlag()
+        {
+            if (this.CheatFlags != null && this.CheatFlags.Count > 0)
+            {
+                DateTime lastFlag = this.CheatFlags.Last();
+                if (DateTime.Now - lastFlag < TimeSpan.FromMinutes(30))
+                    if (this.CheatFlags.Count > 10)
+                    {
+                        this.AccountBanned = true;
+                        return true;
+                    }
+                else
+                    this.CheatFlags.Clear();
+            }
+            else
+                this.CheatFlags = new List<DateTime>();
+            this.CheatFlags.Add(DateTime.Now);
+            return false;
         }
 
         public void AddDiamonds(int diamondCount)

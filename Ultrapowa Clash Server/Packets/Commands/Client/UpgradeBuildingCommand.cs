@@ -1,4 +1,8 @@
-﻿using UCS.Core;
+﻿using System;
+using System.Threading.Tasks;
+using System.Collections.Generic;
+using System.Linq;
+using UCS.Core;
 using UCS.Files.Logic;
 using UCS.Helpers.Binary;
 using UCS.Logic;
@@ -34,20 +38,28 @@ namespace UCS.Packets.Commands.Client
                 int cost = bd.GetBuildCost(b.GetUpgradeLevel() + 1);
                 if (this.Device.Player.HasFreeWorkers())
                 {
-                    string name = this.Device.Player.GameObjectManager.GetGameObjectByID(BuildingId).GetData().GetName();
-                    Logger.Say("Building To Upgrade : " + name + " (" + BuildingId + ')');
-                    
-                    b.StartUpgrading();
-                }
-                if (UpgradeWithEilixir == 1)
-                {
-                    ResourceData elixirLocation = CSVManager.DataTables.GetResourceByName("Elixir");
-                    ca.SetResourceCount(elixirLocation, ca.GetResourceCount(elixirLocation) - cost);
-                }
-                else
-                {
-                    var rd = bd.GetBuildResource(b.GetUpgradeLevel());
-                    ca.SetResourceCount(rd, ca.GetResourceCount(rd) - cost);
+                    ResourceData rd = null;
+                    if (UpgradeWithEilixir == 1)
+                    {
+                        rd = CSVManager.DataTables.GetResourceByName("Elixir");
+                    }
+                    else
+                    {
+                        rd = bd.GetBuildResource(b.GetUpgradeLevel());
+                    }
+                    if (ca.HasEnoughResources(rd, cost))
+                    {
+                        string name = this.Device.Player.GameObjectManager.GetGameObjectByID(BuildingId).GetData().GetName();
+                        Logger.Say("Building To Upgrade : " + name + " (" + BuildingId + ')');
+                        
+                        b.StartUpgrading();
+                        ca.SetResourceCount(rd, ca.GetResourceCount(rd) - cost);
+                    }
+                    else
+                    {
+                        if (ca.AddCheatFlag())
+                            ResourcesManager.DisconnectClient(this.Device);
+                    }
                 }
             }
             else

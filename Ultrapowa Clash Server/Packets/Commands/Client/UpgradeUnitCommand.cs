@@ -1,4 +1,8 @@
-﻿using UCS.Core;
+﻿using System;
+using System.Threading.Tasks;
+using System.Collections.Generic;
+using System.Linq;
+using UCS.Core;
 using UCS.Files.Logic;
 using UCS.Helpers.Binary;
 using UCS.Logic;
@@ -35,6 +39,11 @@ namespace UCS.Packets.Commands.Client
                     Logger.Write("Unit To Upgrade : " + UnitData.GetName() + " (" + UnitData.GetGlobalID() + ')');
                     ca.SetResourceCount(rd, ca.GetResourceCount(rd) - cost);
                     uuc.StartUpgrading(UnitData);
+                }
+                else
+                {
+                    if (ca.AddCheatFlag())
+                        ResourcesManager.DisconnectClient(this.Device);
                 }
             }
         }
