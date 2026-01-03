@@ -1,3 +1,11 @@
+2026-01-03         [RELEASE] Release of ogclash-mirror 1.3.1.2 (Phia)
+2026-01-03 820955c [TASK] make unban load the player into memory so the updated record can be saved to db (Phia)
+2026-01-03 141c236 [TASK] fix bug (Phia)
+2026-01-03 cd8a782 [TASK] fix bug (Phia)
+2026-01-03 8fe3c95 Delete .github/workflows/dotnet.yml (sophia-bln)
+2026-01-03 79dff19 Create release.yml (sophia-bln)
+2026-01-03 a5ae907 Create develop.yml (sophia-bln)
+
 2026-01-03         [RELEASE] Release of ultrapower-clash-server 1.2.3.2-hotfix (Phia)
 2026-01-03 6072d7d [TASK] add latest state to feature branch (dprssdrainbow)
 2026-01-03 ed8e176 [TASK] fix issue (Phia)
