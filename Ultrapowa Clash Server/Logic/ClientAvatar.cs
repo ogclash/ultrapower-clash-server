@@ -198,17 +198,20 @@ namespace UCS.Logic
             {
                 DateTime lastFlag = this.CheatFlags.Last();
                 if (DateTime.Now - lastFlag < TimeSpan.FromMinutes(30))
+                {
                     if (this.CheatFlags.Count > 10)
                     {
                         this.AccountBanned = true;
                         return true;
                     }
+                }
                 else
                     this.CheatFlags.Clear();
             }
             else
                 this.CheatFlags = new List<DateTime>();
             this.CheatFlags.Add(DateTime.Now);
+            Logger.Say($"Added CheatFlag! Current Count: {this.CheatFlags.Count}");
             return false;
         }
 
