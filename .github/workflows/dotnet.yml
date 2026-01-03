@@ -5,9 +5,9 @@ name: .NET
 
 on:
   push:
-    branches: [ "feature/big-commit" ]
+    branches: [ "master" ]
   pull_request:
-    branches: [ "feature/big-commit" ]
+    branches: [ "master" ]
 
 jobs:
   build:
