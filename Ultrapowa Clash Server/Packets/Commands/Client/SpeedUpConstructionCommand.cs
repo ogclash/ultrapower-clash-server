@@ -23,8 +23,11 @@ namespace UCS.Packets.Commands.Client
         internal override void Process()
         {
             var go = this.Device.Player.GameObjectManager.GetGameObjectByID(this.m_vBuildingId);
+            int count = 0;
             while (go == null)
             {
+                if (count >= 1000)
+                    break;
                 Thread.Sleep(10); // Wait a bit
                 go = this.Device.Player.GameObjectManager.GetGameObjectByID(this.m_vBuildingId);
             }

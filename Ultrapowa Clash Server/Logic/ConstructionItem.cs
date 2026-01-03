@@ -330,7 +330,10 @@ namespace UCS.Logic
 
         public void SpeedUpConstruction()
         {
-            ClientAvatar ca      = Avatar.Avatar;
+            ClientAvatar ca = Avatar.Avatar;
+            if (m_vTimer == null)
+                if (ca.AddCheatFlag())
+                    ResourcesManager.DisconnectClient(m_vLevel.Client);
             int remainingSeconds = m_vTimer.GetRemainingSeconds(m_vLevel.Avatar.LastTickSaved);
             int cost             = GamePlayUtil.GetSpeedUpCost(remainingSeconds);
             if (ca.HasEnoughDiamonds(cost))

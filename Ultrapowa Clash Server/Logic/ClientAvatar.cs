@@ -199,7 +199,7 @@ namespace UCS.Logic
                 DateTime lastFlag = this.CheatFlags.Last();
                 if (DateTime.Now - lastFlag < TimeSpan.FromMinutes(30))
                 {
-                    if (this.CheatFlags.Count > 10)
+                    if (this.CheatFlags.Count >= 10)
                     {
                         this.AccountBanned = true;
                         return true;
