@@ -24,7 +24,7 @@ namespace UCS.Packets.GameOpCommands
                     try
                     {
                         var id = Convert.ToInt64(m_vArgs[1]);
-                        var l = await ResourcesManager.GetPlayer(id);
+                        var l = await ResourcesManager.GetPlayer(id, true);
                         if (l != null)
                         {
                             l.Avatar.AccountBanned = false;
