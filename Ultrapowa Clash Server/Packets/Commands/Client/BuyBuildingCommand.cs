@@ -56,6 +56,21 @@ namespace UCS.Packets.Commands.Client
                 this.Device.Player.GameObjectManager.AddGameObject(b);
                 Logger.Say("Construction started successfully.");
             }
+            else
+            {
+                if (ca.CheatFlags != null && ca.CheatFlags.Count > 0)
+                {
+                    DateTime lastFlag = ca.CheatFlags.Last();
+                    if (DateTime.Now - lastFlag < TimeSpan.FromMinutes(30))
+                        if (ca.CheatFlags.Count > 10)
+                            ca.AccountBanned = true;
+                    else
+                        ca.CheatFlags.Clear();
+                }
+                else
+                    ca.CheatFlags = new List<DateTime>();
+                ca.CheatFlags.Add(DateTime.Now);
+            }
             
         }
 

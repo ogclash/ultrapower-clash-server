@@ -93,10 +93,12 @@ namespace UCS.Logic
         //Datetime
         internal DateTime m_vAccountCreationDate;
         internal DateTime LastTickSaved;
-        
+
+        public List<DateTime> CheatFlags;
+
         List<int[]> buildings = new List<int[]>();
         public List<NpcLevel> NpcLevels = new List<NpcLevel>();
-        
+
         public BattleResult battle = new BattleResult();
         public List<long> revenged = new List<long>();
 

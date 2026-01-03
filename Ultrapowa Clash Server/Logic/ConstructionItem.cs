@@ -335,6 +335,21 @@ namespace UCS.Logic
                 FinishConstruction();
                 ca.UseDiamonds(cost);
             }
+            else
+            {
+                if (ca.CheatFlags != null && ca.CheatFlags.Count > 0)
+                {
+                    DateTime lastFlag = ca.CheatFlags.Last();
+                    if (DateTime.Now - lastFlag < TimeSpan.FromMinutes(30))
+                        if (ca.CheatFlags.Count > 10)
+                            ca.AccountBanned = true;
+                    else
+                        ca.CheatFlags.Clear();
+                }
+                else
+                    ca.CheatFlags = new List<DateTime>();
+                ca.CheatFlags.Add(DateTime.Now);
+            }
         }
 
         public void StartConstructing(int newX, int newY)
