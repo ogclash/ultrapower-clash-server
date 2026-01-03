@@ -51,7 +51,7 @@ namespace UCS.Packets.Messages.Client
                         for (int i = 0; i < Message.Length; i++){NewMessage += "*";}
                         this.Message = NewMessage;
                     }
-                    Logger.Say($"Global Chat Message: '{Message}' from: senderName[{senderId}]");
+                    Logger.Say($"Global Chat Message: '{Message}' from: {senderName} [{senderId}]");
                     foreach (Level pl in ResourcesManager.m_vOnlinePlayers)
                     {
                         try
@@ -79,4 +79,5 @@ namespace UCS.Packets.Messages.Client
         }
     }
 }
+
 
