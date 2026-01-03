@@ -45,56 +45,33 @@ namespace UCS.Packets.Messages.Client
                     long senderId = this.Device.Player.Avatar.UserId;
                     string senderName = this.Device.Player.Avatar.AvatarName;
 
-                    bool badword = DirectoryChecker.badwords.Any(s => Message.Contains(s));
-
-                    if (badword)
+                    if (DirectoryChecker.badwords.Any(s => Message.Contains(s)))
                     {
-                        foreach (Level pl in ResourcesManager.m_vOnlinePlayers)
-                        {
-                            try
-                            {
-                                //if (pl.Avatar.Region == this.Device.Player.Avatar.Region)
-                                //{ DE !== DE-de
-                                string NewMessage = "";
-
-                                for (int i = 0; i < Message.Length; i++){NewMessage += "*";}
-
-                                GlobalChatLineMessage p = new GlobalChatLineMessage(pl.Client)
-                                {
-                                    PlayerName = senderName,
-                                    Message = NewMessage,
-                                    HomeId = senderId,
-                                    CurrentHomeId = senderId,
-                                    LeagueId = this.Device.Player.Avatar.m_vLeagueId
-                                };
-
-                                p.SetAlliance(ObjectManager.GetAlliance(this.Device.Player.Avatar.AllianceId));
-                                p.Send();
-                            //}
-                            }
-                            catch (Exception)
-                            {
-                            }
-                        }
+                        string NewMessage = "";
+                        for (int i = 0; i < Message.Length; i++){NewMessage += "*";}
+                        this.Message = NewMessage;
                     }
-                    else
+                    Logger.Say($"Global Chat Message: '{Message}' from: senderName[{senderId}]");
+                    foreach (Level pl in ResourcesManager.m_vOnlinePlayers)
                     {
-                        Logger.Say($"Global Chat Message: '{Message}' from: {senderName}:{senderId}");
-                        foreach (Level onlinePlayer in ResourcesManager.m_vOnlinePlayers)
+                        try
                         {
-                            if (onlinePlayer.Avatar.Region == this.Device.Player.Avatar.Region)
+                            // if (pl.Avatar.Region == this.Device.Player.Avatar.Region)
+                            // DE !== DE-de
+                            GlobalChatLineMessage p = new GlobalChatLineMessage(pl.Client)
                             {
-                                GlobalChatLineMessage p = new GlobalChatLineMessage(onlinePlayer.Client)
-                                {
-                                    PlayerName = senderName,
-                                    Message = this.Message,
-                                    HomeId = senderId,
-                                    CurrentHomeId = senderId,
-                                    LeagueId = this.Device.Player.Avatar.m_vLeagueId
-                                };
-                                p.SetAlliance(ObjectManager.GetAlliance(this.Device.Player.Avatar.AllianceId));
-                                p.Send();
-                            }
+                                PlayerName = senderName,
+                                Message = this.Message,
+                                HomeId = senderId,
+                                CurrentHomeId = senderId,
+                                LeagueId = this.Device.Player.Avatar.m_vLeagueId
+                            };
+
+                            p.SetAlliance(ObjectManager.GetAlliance(this.Device.Player.Avatar.AllianceId));
+                            p.Send();
+                        }
+                        catch (Exception)
+                        {
                         }
                     }
                 }
@@ -102,3 +79,4 @@ namespace UCS.Packets.Messages.Client
         }
     }
 }
+
