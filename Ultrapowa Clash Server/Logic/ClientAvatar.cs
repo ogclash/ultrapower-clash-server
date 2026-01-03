@@ -192,6 +192,26 @@ namespace UCS.Logic
             }
         }
 
+        public bool AddCheatFlag()
+        {
+            if (this.CheatFlags != null && this.CheatFlags.Count > 0)
+            {
+                DateTime lastFlag = this.CheatFlags.Last();
+                if (DateTime.Now - lastFlag < TimeSpan.FromMinutes(30))
+                    if (this.CheatFlags.Count > 10)
+                    {
+                        this.AccountBanned = true;
+                        return true;
+                    }
+                else
+                    this.CheatFlags.Clear();
+            }
+            else
+                this.CheatFlags = new List<DateTime>();
+            this.CheatFlags.Add(DateTime.Now);
+            return false;
+        }
+
         public void AddDiamonds(int diamondCount)
         {
             this.m_vCurrentGems += diamondCount;
